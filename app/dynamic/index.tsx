@@ -74,7 +74,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
     const [modalContent, setModalContent] = useState("");
 
     useEffect(() => {
-        fetch(`http://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
+        fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
             .then((res) => res.json())
             .then((data) => setFormSchema(data))
             .catch((err) => console.error("Erro ao carregar schema:", err));
