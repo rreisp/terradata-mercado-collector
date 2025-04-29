@@ -38,7 +38,13 @@ export default function RootLayout() {
           }} />
 
         <Stack.Screen
-          name="nutrition/index"
+          name="tools/index"
+          options={{
+            headerShown: false
+          }} />
+
+        <Stack.Screen
+          name="loader/index"
           options={{
             headerShown: false
           }} />
@@ -48,6 +54,7 @@ export default function RootLayout() {
           options={{
             headerShown: false
           }} />
+
       </Stack>
     </QueryClientProvider>
   );

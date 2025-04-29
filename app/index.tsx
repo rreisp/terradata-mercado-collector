@@ -19,7 +19,7 @@ export default function Index() {
         Captura de dados com eficiência e precisão.
       </Text>
 
-      <Link href="/dynamic" asChild>
+      <Link href="/tools" asChild>
         <Pressable style={styles.button} accessibilityRole="button">
           <Text style={styles.buttonText}>LOGIN</Text>
         </Pressable>
