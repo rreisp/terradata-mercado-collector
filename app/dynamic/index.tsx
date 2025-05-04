@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, ScrollView } from "react-native";
+import { colors } from '../../constants/colors';
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
+import EF_DepthResearch from "@/components/widgets/com/energy-fuels/depth-research";
 
 type DynamicFormProps = {
     schemaId: string;
@@ -69,6 +72,7 @@ type FormikHelpers = {
 };
 
 const DynamicForm = ({ schemaId }: DynamicFormProps) => {
+    const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
@@ -127,7 +131,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "password":
                 return (
                     <View key={field.id} style={styles.fieldContainer}>
-                        <Text>{field.label}</Text>
+                        <Text style={styles.label}>{field.label}</Text>
                         <TextInput
                             placeholder={field.placeholder}
                             value={value}
@@ -154,67 +158,93 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                         </View>
                     </View>
                 );
+            case "ef_depth_research":
+                return (
+                    <View key={field.id} style={styles.fieldContainer}>
+                        <Text style={styles.label}>{field.label}</Text>
+                        <View style={styles.pickerContainer}>
+                            <EF_DepthResearch />
+                        </View>
+                    </View>
+                );
             default:
                 return null;
         }
     };
 
-    return (
-        <ScrollView style={styles.container}>
-            <Formik
-                initialValues={initialValues}
-                validationSchema={Yup.object(validationShape)}
-                onSubmit={(values, { setSubmitting }) => {
-                    fetch(formSchema.url, {
-                        method: formSchema.method,
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(values)
-                    })
-                        .then(res => res.json())
-                        .then(() => {
-                            setModalContent(formSchema.modal.success.message);
-                            setModalVisible(true);
-                        })
-                        .catch(() => {
-                            setModalContent(formSchema.modal.error.message);
-                            setModalVisible(true);
-                        })
-                        .finally(() => setSubmitting(false));
-                }}
-            >
-                {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
-                    <>
-                        <Text style={styles.title}>{formSchema.title}</Text>
-                        <Text style={styles.description}>{formSchema.description}</Text>
-                        {formSchema.rows.map((row, rowIndex) => (
-                            <View key={rowIndex} style={styles.row}>
-                                {row.columns.map(({ field }) =>
-                                    renderField(field, {
-                                        value: values[field.id],
-                                        onChange: (id, val) => setFieldValue(id, val),
-                                    })
-                                )}
-                            </View>
-                        ))}
-                        <Button title="Enviar" onPress={handleSubmit} disabled={isSubmitting} />
-                    </>
-                )}
-            </Formik>
 
-            <Modal isVisible={modalVisible}>
-                <View style={styles.modal}>
-                    <Text>{modalContent}</Text>
-                    <Button title="Fechar" onPress={() => setModalVisible(false)} />
-                </View>
-            </Modal>
-        </ScrollView>
+    return (
+        <SafeAreaProvider>
+            <ScrollView style={styles.container}>
+                <Formik
+                    initialValues={initialValues}
+                    // validationSchema={Yup.object(validationShape)}
+                    onSubmit={(values) => {
+                        console.log(JSON.stringify(values, null, 2));
+                    }}
+                // onSubmit={(values) => {
+                //     const mensagem = Object.entries(values)
+                //         .map(([chave, valor]) => `${chave}: ${valor}`)
+                //         .join('\n');
+                //     alert(mensagem);
+                // }}            
+
+                // onSubmit={(values, { setSubmitting }) => {
+                //     fetch(formSchema.url, {
+                //         method: formSchema.method,
+                //         headers: { 'Content-Type': 'application/json' },
+                //         body: JSON.stringify(values)
+                //     })
+                //         .then(res => res.json())
+                //         .then(() => {
+                //             setModalContent(formSchema.modal.success.message);
+                //             setModalVisible(true);
+                //         })
+                //         .catch(() => {
+                //             setModalContent(formSchema.modal.error.message);
+                //             setModalVisible(true);
+                //         })
+                //         .finally(() => setSubmitting(false));
+                // }}
+                >
+                    {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
+                        <>
+                            <Text style={styles.title}>{formSchema.title}</Text>
+                            <Text style={styles.description}>{formSchema.description}</Text>
+                            {formSchema.rows.map((row, rowIndex) => (
+                                <View key={rowIndex} style={styles.row}>
+                                    {row.columns.map(({ field }) =>
+                                        renderField(field, {
+                                            value: values[field.id],
+                                            onChange: (id, val) => setFieldValue(id, val),
+                                        })
+                                    )}
+                                </View>
+                            ))}
+                            {/* <Button title="Enviar" onPress={handleSubmit} disabled={isSubmitting} /> */}
+                            <Button title="Enviar" onPress={handleSubmit} />
+                        </>
+                    )}
+                </Formik>
+
+                <Modal isVisible={modalVisible}>
+                    <View style={styles.modal}>
+                        <Text>{modalContent}</Text>
+                        <Button title="Fechar" onPress={() => setModalVisible(false)} />
+                    </View>
+                </Modal>
+            </ScrollView>
+        </SafeAreaProvider>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-        backgroundColor: "#fff",
+        padding: 16,
+        backgroundColor: colors.background,
+    },
+    label: {
+        fontWeight: 'bold'
     },
     title: {
         fontSize: 22,
@@ -230,6 +260,7 @@ const styles = StyleSheet.create({
     },
     fieldContainer: {
         marginBottom: 15,
+        paddingBottom: 15
     },
     input: {
         borderWidth: 1,
@@ -238,7 +269,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     pickerContainer: {
-        borderWidth: 1,
         borderColor: "#ccc",
         borderRadius: 5,
     },

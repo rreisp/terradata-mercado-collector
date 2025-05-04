@@ -6,7 +6,7 @@ import {
   KeyboardTypeOptions,
 } from "react-native";
 import { Controller } from 'react-hook-form';
-import { colors } from '../../constants/colors';
+import { colors } from '../../../constants/colors';
 
 interface InputProps {
   name: string;

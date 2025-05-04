@@ -1,0 +1,29 @@
+import React from 'react';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { useFormikContext } from 'formik';
+
+const EF_EstruturaNotas = ({ index }) => {
+    const { values, setFieldValue } = useFormikContext();
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.label}>Estrutura/Notas {index + 1}:</Text>
+            <TextInput
+                style={styles.textarea}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                value={values.estruturaNotas?.[index] || ''}
+                onChangeText={(text) => setFieldValue(`estruturaNotas[${index}]`, text)}
+            />
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: { marginBottom: 10 },
+    label: { fontWeight: 'bold', marginBottom: 4 },
+    textarea: { borderWidth: 1, borderColor: "#ccc", padding: 8, borderRadius: 5 },
+});
+
+export default EF_EstruturaNotas;
