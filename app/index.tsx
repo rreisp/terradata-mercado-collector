@@ -10,12 +10,12 @@ export default function Index() {
         style={styles.container}
       >
         <Image
-          source={require('../assets/images/react-logo.png')}
+          source={require('../assets/images/EnergyFuels-Logo.png')}
         />
 
-        <Text style={styles.title}>
+        {/* <Text style={styles.title}>
           CAPTURE<Text style={{ color: colors.white }}>.WISE</Text>
-        </Text>
+        </Text> */}
 
         <Text style={styles.text}>
           Captura de dados com eficiência e precisão.
@@ -23,7 +23,7 @@ export default function Index() {
 
         <Link href="/tools" asChild>
           <Pressable style={styles.button} accessibilityRole="button">
-            <Text style={styles.buttonText}>LOGIN</Text>
+            <Text style={styles.buttonText}>ACESSAR</Text>
           </Pressable>
         </Link>
       </View >
