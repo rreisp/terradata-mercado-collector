@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useFormikContext, FieldArray } from 'formik';
 import GlobalStyles from '../../../../../../constants/styles';
+import NumericInput from '../../../../../widgets/input/number';
 
 const EF_Litologia = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
@@ -33,7 +34,7 @@ const EF_Litologia = ({ index }) => {
                         ) : (
                             litologiasGrupo.map((_, subIndex) => (
                                 <View key={subIndex} style={styles.row}>
-                                    <TextInput
+                                    {/* <TextInput
                                         style={[GlobalStyles.col2, styles.input]}
                                         placeholder="De"
                                         keyboardType="numeric"
@@ -41,16 +42,27 @@ const EF_Litologia = ({ index }) => {
                                         onChangeText={(text) =>
                                             setFieldValue(`litologias[${index}][${subIndex}].de`, text)
                                         }
-                                    />
-
-                                    <TextInput
+                                    /> */}
+                                    <NumericInput
                                         style={[GlobalStyles.col2, styles.input]}
+                                        placeholder="De"
+                                        value={litologiasGrupo[subIndex]?.de || ''}
+                                        onChange={(text) =>
+                                            setFieldValue(`litologias[${index}][${subIndex}].de`, text)}
+                                        step={0.1}
+                                        min={0.5}
+                                        max={2.5}
+                                        decimalPlaces={2}
+                                    />
+                                    <NumericInput
                                         placeholder="Até"
-                                        keyboardType="numeric"
                                         value={litologiasGrupo[subIndex]?.ate || ''}
-                                        onChangeText={(text) =>
-                                            setFieldValue(`litologias[${index}][${subIndex}].ate`, text)
-                                        }
+                                        onChange={(text) =>
+                                            setFieldValue(`litologias[${index}][${subIndex}].ate`, text)}
+                                        step={0.1}
+                                        min={0.5}
+                                        max={2.5}
+                                        decimalPlaces={2}
                                     />
                                     <TextInput
                                         style={[GlobalStyles.col7, styles.input]}

@@ -16,7 +16,7 @@ const EF_RunCoreRecovery = ({ index }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Run#/Core Recovery:</Text>
+            <Text style={styles.label}>Recuperação:</Text>
             <View style={styles.pickerView}>
                 <Picker
                     selectedValue={values.runCoreRecovery?.[index] || valorInicial}

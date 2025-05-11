@@ -1,24 +1,28 @@
-import { View, Text, Image, Pressable, StyleSheet } from "react-native";
+import { View, Text, Image, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { colors } from '../constants/colors';
 import { Link } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import GlobalStyles from '../constants/styles';
 
 export default function Index() {
   return (
     <SafeAreaProvider>
       <View
-        style={styles.container}
+        style={[GlobalStyles.container, styles.container]}
       >
-        <Image
-          source={require('../assets/images/EnergyFuels-Logo.png')}
-        />
+        <SafeAreaView>
+          <Image
+            source={require('../assets/images/EnergyFuels-Logo.png')}
+            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+          />
+        </SafeAreaView>
 
-        {/* <Text style={styles.title}>
-          CAPTURE<Text style={{ color: colors.white }}>.WISE</Text>
-        </Text> */}
+        <Text style={[GlobalStyles.title, styles.title]}>
+          CAPTURE<Text style={{ color: colors.grey }}>.WISE</Text>
+        </Text>
 
-        <Text style={styles.text}>
-          Captura de dados com eficiência e precisão.
+        <Text style={GlobalStyles.textMuted}>
+          POWERED BY TERRADATA
         </Text>
 
         <Link href="/tools" asChild>
@@ -33,23 +37,12 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 16
+    alignItems: "center"
   },
   title: {
-    fontSize: 36,
-    fontWeight: 'bold',
     color: colors.green
-  },
-  text: {
-    fontSize: 13,
-    color: colors.white,
-    textAlign: 'center',
-    marginTop: 8,
-    marginBottom: 8
   },
   button: {
     backgroundColor: colors.blue,

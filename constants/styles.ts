@@ -1,5 +1,6 @@
 // GlobalStyles.js
 import { StyleSheet } from 'react-native';
+import { colors } from '../constants/colors';
 
 export default StyleSheet.create({
     // col1: { width: '8.3333333333333%' },
@@ -14,16 +15,42 @@ export default StyleSheet.create({
     // col10: { width: '83.333333333%' },
     // col11: { width: '91.666666667%' },
     // col12: { width: '100%' },
-    col1: { flex: 0.083333333333333 },
-    col2: { flex: 0.16666666667 },
-    col3: { flex: 0.25 },
-    col4: { flex: 0.33333333333 },
-    col5: { width: '41.666666667%'},
-    col6: { width: '50%' },
-    col7: { flex: 0.58333333333 },
-    col8: { width: '66.666666667%' },
-    col9: { width: '75%' },
-    col10: { width: '83.333333333%' },
-    col11: { flex: 0.91666666667 },
-    col12: { flex: 1 },    
+    col: { flex: 1, marginHorizontal: 2 },
+    col1: { flex: 0.083333333333333, marginHorizontal: 2 },
+    col2: { flex: 0.16666666667, marginHorizontal: 2 },
+    col3: { flex: 0.25, marginHorizontal: 2 },
+    col4: { flex: 0.33333333333, marginHorizontal: 2 },
+    col5: { flex: 0.41666666667, marginHorizontal: 2 },
+    col6: { flex: 0.50, marginHorizontal: 2 },
+    col7: { flex: 0.58333333333, marginHorizontal: 2 },
+    col8: { flex: 0.66666666667, marginHorizontal: 2 },
+    col9: { flex: 0.75, marginHorizontal: 2 },
+    col10: { flex: 0.83333333333, marginHorizontal: 2 },
+    col11: { flex: 0.91666666667, marginHorizontal: 2 },
+    col12: { flex: 1, marginHorizontal: 2 },
+    container: {
+        padding: 16,
+        backgroundColor: colors.background,
+    },
+    fieldContainer: {
+        paddingBottom: 5
+    },
+    label: {
+        fontWeight: 'bold'
+    },
+    title: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    subtitle: {
+        fontSize: 16,
+        marginBottom: 10,
+    },
+    textMuted: {
+        color: '#ccc'
+    },
+    logo: {
+        width: 300,
+    }
 });

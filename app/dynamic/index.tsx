@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, ScrollView } from "react-native";
-import { colors } from '../../constants/colors';
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import EF_DepthResearch from "@/components/widgets/com/energy-fuels/depth-research";
+import GlobalStyles from '../../constants/styles';
 
 type DynamicFormProps = {
     schemaId: string;
@@ -57,31 +57,73 @@ type ModalConfig = {
     };
 };
 
+// type FormSchema = {
+//     title: string;
+//     description: string;
+//     rows: Row[];
+//     modal: ModalConfig;
+//     url: string;
+//     method: string;
+// };
+
 type FormSchema = {
+    form_id: string;
     title: string;
     description: string;
-    rows: Row[];
-    modal: ModalConfig;
-    url: string;
+    version: string;
     method: string;
+    url: string;
+    modal: {
+        size: string;
+        success: {
+            header: string;
+            message: string;
+            button: string;
+        };
+        error: {
+            header: string;
+            message: string;
+            button: string;
+        };
+    };
+    grid: {
+        columns: number;
+        spacing: number;
+    };
+    rows: Array<{
+        type: string;
+        name?: string;
+        label?: string;
+        placeholder?: string;
+        options?: { label: string; value: string }[];
+        required?: boolean;
+        [key: string]: any;
+    }>;
 };
+
 
 type FormikHelpers = {
     value: any;
     onChange: (id: string, value: any) => void;
 };
 
+import PerfuracaoSchema from './schemas/energy-fuels.perfuracao.json';
+
 const DynamicForm = ({ schemaId }: DynamicFormProps) => {
+    console.log(schemaId);
     const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
 
     useEffect(() => {
-        fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
-            .then((res) => res.json())
-            .then((data) => setFormSchema(data))
-            .catch((err) => console.error("Erro ao carregar schema:", err));
+        let schema = null;
+        switch(schemaId){
+            case 'energy-fuels.perfuracao':
+                schema = PerfuracaoSchema;
+                break;
+        }
+        setFormSchema(schema)
     }, [schemaId]);
 
     if (!formSchema) return <ActivityIndicator style={{ marginTop: 20 }} />;
@@ -130,8 +172,8 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "number":
             case "password":
                 return (
-                    <View key={field.id} style={styles.fieldContainer}>
-                        <Text style={styles.label}>{field.label}</Text>
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label}</Text>
                         <TextInput
                             placeholder={field.placeholder}
                             value={value}
@@ -144,7 +186,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                 );
             case "dropdown":
                 return (
-                    <View key={field.id} style={styles.fieldContainer}>
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text>{field.label}</Text>
                         <View style={styles.pickerContainer}>
                             <Picker
@@ -160,8 +202,8 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                 );
             case "ef_depth_research":
                 return (
-                    <View key={field.id} style={styles.fieldContainer}>
-                        <Text style={styles.label}>{field.label}</Text>
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label}</Text>
                         <View style={styles.pickerContainer}>
                             <EF_DepthResearch />
                         </View>
@@ -175,7 +217,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
 
     return (
         <SafeAreaProvider>
-            <ScrollView style={styles.container}>
+            <ScrollView style={GlobalStyles.container}>
                 <Formik
                     initialValues={initialValues}
                     // validationSchema={Yup.object(validationShape)}
@@ -209,7 +251,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                 >
                     {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
                         <>
-                            <Text style={styles.title}>{formSchema.title}</Text>
+                            <Text style={GlobalStyles.title}>{formSchema.title}</Text>
                             <Text style={styles.description}>{formSchema.description}</Text>
                             {formSchema.rows.map((row, rowIndex) => (
                                 <View key={rowIndex} style={styles.row}>
@@ -239,28 +281,12 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 16,
-        backgroundColor: colors.background,
-    },
-    label: {
-        fontWeight: 'bold'
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
     description: {
         fontSize: 16,
         marginBottom: 20,
     },
     row: {
         marginBottom: 20,
-    },
-    fieldContainer: {
-        marginBottom: 15,
-        paddingBottom: 15
     },
     input: {
         borderWidth: 1,

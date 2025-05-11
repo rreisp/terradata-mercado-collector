@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
-import { colors } from '../../constants/colors';
+import { View, Text, Image, ActivityIndicator, StyleSheet, SafeAreaView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from "@/types/types";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import GlobalStyles from '../../constants/styles';
+import { colors } from '../../constants/colors';
 
 type Form = {
     id: string;
@@ -23,9 +24,23 @@ const Tools = () => {
     useEffect(() => {
         const fetchFormConfig = async () => {
             try {
-                const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
-                const json = await response.json();
-                setAvailableForms(json);
+                // const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
+                // const json = await response.json();
+                const tools = [
+                    {
+                        "id": "energy-fuels.perfuracao",
+                        "title": "ENERGY FUELS - Caracterização de perfuração"
+                    },
+                    {
+                        "id": "energy-fuels.diario.sondagem",
+                        "title": "ENERGY FUELS - Diário de Sondagem"
+                    },
+                    {
+                        "id": "ef.depth",
+                        "title": "ENERGY FUELS - Teste de Elementos Customizados"
+                    }
+                ];
+                setAvailableForms(tools);
             } catch (error) {
                 console.error('Erro ao buscar configurações dos formulários:', error);
             } finally {
@@ -38,15 +53,22 @@ const Tools = () => {
 
     return (
         <SafeAreaProvider>
-            <View style={styles.container}>
+            <View style={[GlobalStyles.container, styles.container]}>
                 {loading ? (
                     <ActivityIndicator size="large" color="#00ff00" />
                 ) : availableForms.length === 0 ? (
                     <Text>Nenhum formulário disponível.</Text>
                 ) : (
                     <>
-                        <Text style={styles.title}>FERRAMENTAS</Text>
-                        <Text style={styles.subtitle}>Escolha o formulário em que deseja trabalhar:</Text>
+                        <SafeAreaView>
+                            <Image
+                                source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                            />
+                        </SafeAreaView>
+
+                        <Text style={GlobalStyles.title}>FERRAMENTAS</Text>
+                        <Text style={GlobalStyles.subtitle}>Escolha o formulário em que deseja trabalhar:</Text>
                         <Picker
                             selectedValue={selectedForm}
                             onValueChange={(itemValue, itemIndex) => {
@@ -72,23 +94,16 @@ const Tools = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        paddingTop: 40,
-        backgroundColor: colors.background
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 16,
-        marginBottom: 10,
+        justifyContent: "center",
+        alignItems: "center"
     },
     picker: {
         height: 50,
         width: "100%",
-    },
+        borderColor: "#ccc",
+        borderRadius: 5,
+        backgroundColor: colors.white
+    }
 });
 
 export default Tools;
