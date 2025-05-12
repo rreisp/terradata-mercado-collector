@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, ScrollView } from "react-native";
+import { View, Text, TextInput, Button, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Picker } from "@react-native-picker/picker";
 import Modal from "react-native-modal";
 import EF_DepthResearch from "@/components/widgets/com/energy-fuels/depth-research";
 import GlobalStyles from '../../constants/styles';
+import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 
 type DynamicFormProps = {
     schemaId: string;
@@ -108,6 +109,8 @@ type FormikHelpers = {
 };
 
 import PerfuracaoSchema from './schemas/energy-fuels.perfuracao.json';
+import EF_Coordinates from "@/components/widgets/com/energy-fuels/depth-research/coordinates";
+import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates";
 
 const DynamicForm = ({ schemaId }: DynamicFormProps) => {
     console.log(schemaId);
@@ -118,7 +121,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
 
     useEffect(() => {
         let schema = null;
-        switch(schemaId){
+        switch (schemaId) {
             case 'energy-fuels.perfuracao':
                 schema = PerfuracaoSchema;
                 break;
@@ -209,6 +212,24 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                         </View>
                     </View>
                 );
+            case "ef_coordinates":
+                return (
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label}</Text>
+                        <View style={styles.pickerContainer}>
+                            <EF_Coordinates />
+                        </View>
+                    </View>
+                );
+            case "ef_dates":
+                return (
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label}</Text>
+                        <View style={styles.pickerContainer}>
+                            <EF_Dates />
+                        </View>
+                    </View>
+                );
             default:
                 return null;
         }
@@ -251,10 +272,17 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                 >
                     {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
                         <>
-                            <Text style={GlobalStyles.title}>{formSchema.title}</Text>
+                            <View style={styles.container}>
+                                <Image
+                                    source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                    style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                                />
+
+                                <Text style={GlobalStyles.title}>{formSchema.title}</Text>
+                            </View>
                             <Text style={styles.description}>{formSchema.description}</Text>
                             {formSchema.rows.map((row, rowIndex) => (
-                                <View key={rowIndex} style={styles.row}>
+                                <View key={rowIndex}>
                                     {row.columns.map(({ field }) =>
                                         renderField(field, {
                                             value: values[field.id],
@@ -264,7 +292,12 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                                 </View>
                             ))}
                             {/* <Button title="Enviar" onPress={handleSubmit} disabled={isSubmitting} /> */}
-                            <Button title="Enviar" onPress={handleSubmit} />
+                            <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
+                                <View style={GlobalStyles.row}>
+                                    <Icon name="save" size={16} color="#fff" style={styles.icon} />
+                                    <Text style={styles.buttonText}>SALVAR</Text>
+                                </View>
+                            </TouchableOpacity>
                         </>
                     )}
                 </Formik>
@@ -281,11 +314,13 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
     description: {
         fontSize: 16,
-        marginBottom: 20,
-    },
-    row: {
         marginBottom: 20,
     },
     input: {
@@ -302,6 +337,15 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         padding: 20,
         borderRadius: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        flex: 1,
+        alignItems: 'center'
+    },
+    icon: {
+        marginHorizontal: 16
     },
 });
 

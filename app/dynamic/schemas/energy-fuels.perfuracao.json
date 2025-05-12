@@ -1,6 +1,7 @@
 {
   "form_id": "teste_ef_depth_report",
-  "title": "ENERGY FUELS - Relatório de Perfuração",
+  "title": "RELATÓRIO DE PERFURAÇÃO",
+  "logo" : "EnergyFuels-Logo.png",
   "description": "Preencha os campos abaixo.",
   "version": "1.0",
   "method": "POST",
@@ -48,8 +49,21 @@
         },
         {
           "field": {
-            "id": "coordenada",
-            "label": "Coordenada:",
+            "id": "ef_coordinates",
+            "type": "ef_coordinates"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+          }
+        } ,
+        {
+          "field": {
+            "id": "tenement",
+            "label": "Direito Minerário:",
             "type": "text",
             "required": true,
             "validations": {
@@ -69,8 +83,8 @@
         },
         {
           "field": {
-            "id": "data",
-            "label": "Data:",
+            "id": "landowner",
+            "label": "Superficiário:",
             "type": "text",
             "required": true,
             "validations": {
@@ -87,6 +101,19 @@
             "lg": 4,
             "xl": 4
           }
+        },
+        {
+          "field": {
+            "id": "ef_dates",
+            "type": "ef_dates"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+          }
         }
       ]
     },
@@ -95,7 +122,7 @@
         {
           "field": {
             "id": "ef_depth_test",
-            "label": "SEGMENTOS",
+            "label": "SEGMENTOS:",
             "type": "ef_depth_research"
           },
           "size": {

@@ -15,6 +15,7 @@ export default StyleSheet.create({
     // col10: { width: '83.333333333%' },
     // col11: { width: '91.666666667%' },
     // col12: { width: '100%' },
+    row: { flexDirection: 'row', justifyContent: 'space-between' },
     col: { flex: 1, marginHorizontal: 2 },
     col1: { flex: 0.083333333333333, marginHorizontal: 2 },
     col2: { flex: 0.16666666667, marginHorizontal: 2 },
@@ -52,5 +53,33 @@ export default StyleSheet.create({
     },
     logo: {
         width: 300,
-    }
+    },
+    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1 },
+    primaryButton: {
+        backgroundColor: '#007bff',
+        padding: 7,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 5,
+        fontWeight: 'bold'
+    },
+    warnButton: {
+        backgroundColor: '#FFA500',
+        padding: 7,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 5,
+        fontWeight: 'bold'
+    },
+    disabledButton: {
+        backgroundColor: '#aaa',
+        padding: 7,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginVertical: 5,
+        fontWeight: 'bold'
+    },
 });

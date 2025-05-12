@@ -1,24 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, StyleSheet, ScrollView, Text } from 'react-native';
-import EF_Depth from './depth';
-import EF_HMS from './hms';
-import EF_RunCoreRecovery from './run-core-recovery';
-import EF_Litogia from './litologia';
-import EF_Notas from './comment';
-import EF_Hardness from './hardness';
-import EF_Moisture from './moisture';
-import EF_Wash from './wash';
-import EF_Induration from './induration';
-import EF_Grainsize from './grainsize';
-import EF_Sorting from './sorting';
-import EF_Roundness from './roundness';
-import EF_Volume from './volume';
-import EF_Color from './color';
-import EF_Clay from './clay';
-import EF_Micah from './micah';
-import EF_Shells from './shells';
-import EF_OrganicMatter from './organic-matter';
-import EF_LithicFragments from './lithic-fragments';
+import { View, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import Section from './section';
+import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 import GlobalStyles from '../../../../../constants/styles';
 
 const EF_DepthResearch = ({ onChange }) => {
@@ -71,259 +54,40 @@ const EF_DepthResearch = ({ onChange }) => {
                 <Text style={styles.emptyText}>Nenhum segmento adicionado.</Text>
             ) : (
                 elements.map((el, index) => (
-                    <View key={el.id} style={styles.addSectionBtn}>
-                        <Text style={styles.title}>SEGMENTO {index + 1}:</Text>
-                        <EF_Depth
-                            index={index}
-                        // value={depths[index]}
-                        // onChange={(val) => {
-                        //     const novos = [...depths];
-                        //     novos[index] = val;
-                        //     setDepths(novos);
-                        // }}
-                        />
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_RunCoreRecovery
-                                    index={index}
-                                // value={runCoreRecovery[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...runCoreRecovery];
-                                //     novos[index] = val;
-                                //     setRunCoreRecovery(novos);
-                                // }}
-                                />
-                            </View>
-                            <View style={GlobalStyles.col}>
-                                <EF_Moisture
-                                    index={index}
-                                // value={volume[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...volume];
-                                //     novos[index] = val;
-                                //     setVolume(novos);
-                                // }}
-                                />
-                            </View>
+                    <View key={el.id}>
+                        <Section index={index} el={el}></Section>
+                        <View>
+                            <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton)]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
+                                <View style={GlobalStyles.row}>
+                                    <Icon name="trash" size={16} color="#fff" style={styles.icon} />
+                                    <Text style={styles.buttonText}>REMOVER SEGMENTO {index + 1}</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Volume
-                                    index={index}
-                                // value={volume[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...volume];
-                                //     novos[index] = val;
-                                //     setVolume(novos);
-                                // }}
-                                />
-                            </View>
-                            <View style={GlobalStyles.col}>
-                                <EF_Hardness
-                                    index={index}
-                                // value={hardness[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...hardness];
-                                //     novos[index] = val;
-                                //     setHardness(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Wash
-                                    index={index}
-                                // value={wash[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...wash];
-                                //     novos[index] = val;
-                                //     setWash(novos);
-                                // }}
-                                />
-                            </View>
-                            <View style={GlobalStyles.col}>
-                                <EF_Color
-                                    index={index}
-                                // value={wash[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...wash];
-                                //     novos[index] = val;
-                                //     setWash(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Induration
-                                    index={index}
-                                // value={induration[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...induration];
-                                //     novos[index] = val;
-                                //     setInduration(novos);
-                                // }}
-                                />
-                            </View>
-                            <View style={GlobalStyles.col}>
-                                <EF_Grainsize
-                                    index={index}
-                                // value={grainsize[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...grainsize];
-                                //     novos[index] = val;
-                                //     setGrainsize(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Sorting
-                                    index={index}
-                                // value={sorting[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...sorting];
-                                //     novos[index] = val;
-                                //     setSorting(novos);
-                                // }}
-                                />
-                            </View>
-                            <View style={GlobalStyles.col}>
-                                <EF_Roundness
-                                    index={index}
-                                // value={roundness[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...roundness];
-                                //     novos[index] = val;
-                                //     setRoundness(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Clay
-                                    index={index}
-                                // value={clay[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...clay];
-                                //     novos[index] = val;
-                                //     setClay(novos);
-                                // }}
-                                />
-                            </View>
-
-                            <View style={GlobalStyles.col}>
-                                <EF_Micah
-                                    index={index}
-                                // value={clay[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...clay];
-                                //     novos[index] = val;
-                                //     setClay(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Shells
-                                    index={index}
-                                // value={clay[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...clay];
-                                //     novos[index] = val;
-                                //     setClay(novos);
-                                // }}
-                                />
-                            </View>
-
-                            <View style={GlobalStyles.col}>
-                                <EF_OrganicMatter
-                                    index={index}
-                                // value={clay[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...clay];
-                                //     novos[index] = val;
-                                //     setClay(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.row}>
-                            <View style={GlobalStyles.col}>
-                                <EF_LithicFragments
-                                    index={index}
-                                // value={clay[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...clay];
-                                //     novos[index] = val;
-                                //     setClay(novos);
-                                // }}
-                                />
-                            </View>
-                            
-                            <View style={GlobalStyles.col}>
-                                <EF_HMS
-                                    index={index}
-                                // value={hms[index]}
-                                // onChange={(val) => {
-                                //     const novos = [...hms];
-                                //     novos[index] = val;
-                                //     setHms(novos);
-                                // }}
-                                />
-                            </View>
-                        </View>
-                        <EF_Litogia
-                            index={index}
-                        // value={litologias[index]}
-                        // onChange={(val) => {
-                        //     const novos = [...litologias];
-                        //     novos[index] = val;
-                        //     setLitologias(novos);
-                        // }}
-                        />
-                        <EF_Notas
-                            index={index}
-                        // value={estruturaNotas[index]}
-                        // onChange={(val) => {
-                        //     const novos = [...estruturaNotas];
-                        //     novos[index] = val;
-                        //     setEstruturaNotas(novos);
-                        // }}
-                        />
-                        <Button
-                            title={`Remover Segmento ${index + 1}`}
-                            color="orange"
-                            onPress={() => handleRemoveElement(el.id)}
-                        />
                     </View>
                 ))
             )}
-            <View style={styles.addSectionBtn}>
-                <Button title="Adicionar Segmento" onPress={handleAddElement} />
+            <View>
+                <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleAddElement}>
+                    <View style={GlobalStyles.row}>
+                        <Icon name="plus" size={16} color="#fff" style={styles.icon} />
+                        <Text style={styles.buttonText}>ADICIONAR SEGMENTO</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    title: {
-        fontWeight: 'bold',
-        color: 'navy',
-        marginBottom: 3
+    icon: {
+        marginHorizontal: 16
     },
-    addSectionBtn: {
-        paddingTop: 10
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        flex: 1,
+        alignItems: 'center'
     },
     emptyText: {
         fontStyle: 'italic',

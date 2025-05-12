@@ -20,24 +20,6 @@ export default function RootLayout() {
           }} />
 
         <Stack.Screen
-          name="choice/index"
-          options={{
-            headerShown: false
-          }} />
-
-        <Stack.Screen
-          name="step/index"
-          options={{
-            headerShown: false
-          }} />
-
-        <Stack.Screen
-          name="create/index"
-          options={{
-            headerShown: false
-          }} />
-
-        <Stack.Screen
           name="tools/index"
           options={{
             headerShown: false

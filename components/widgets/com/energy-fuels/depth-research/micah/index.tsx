@@ -29,9 +29,9 @@ const EF_Micah = ({ index }) => {
                         color={isChecked ? '#4630EB' : undefined}
                         style={styles.checkbox}
                     />
-                    <Text style={styles.left}>
+                    {/* <Text style={styles.left}>
                         {isChecked ? 'Presente' : 'Ausente'}
-                    </Text>
+                    </Text> */}
                 </View>
                 <View style={[styles.pickerView, GlobalStyles.col11]}>
                     <Picker

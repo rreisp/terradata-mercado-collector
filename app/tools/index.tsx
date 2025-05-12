@@ -31,14 +31,14 @@ const Tools = () => {
                         "id": "energy-fuels.perfuracao",
                         "title": "ENERGY FUELS - Caracterização de perfuração"
                     },
-                    {
-                        "id": "energy-fuels.diario.sondagem",
-                        "title": "ENERGY FUELS - Diário de Sondagem"
-                    },
-                    {
-                        "id": "ef.depth",
-                        "title": "ENERGY FUELS - Teste de Elementos Customizados"
-                    }
+                    // {
+                    //     "id": "energy-fuels.diario.sondagem",
+                    //     "title": "ENERGY FUELS - Diário de Sondagem"
+                    // },
+                    // {
+                    //     "id": "ef.depth",
+                    //     "title": "ENERGY FUELS - Teste de Elementos Customizados"
+                    // }
                 ];
                 setAvailableForms(tools);
             } catch (error) {
