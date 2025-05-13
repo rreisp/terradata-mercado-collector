@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
+import GlobalStyles from '../../../../../../constants/styles';
 
 const EF_Grainsize = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
@@ -22,13 +23,13 @@ const opcoes = [
     }, [index, values.grainsize, setFieldValue, valorInicial]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.label}>Granulometria:</Text>
-            <View style={styles.pickerView}>
+        <View>
+            <Text style={[GlobalStyles.label, styles.label]}>Granulometria:</Text>
+            <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.grainsize?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`grainsize[${index}]`, itemValue)}
-                    style={styles.picker}
+                    style={GlobalStyles.picker}
                 >
                     {opcoes.map((val) => (
                         <Picker.Item key={val} label={`${val}`} value={`${val}`} />
@@ -40,10 +41,7 @@ const opcoes = [
 };
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
-    label: { fontWeight: 'bold', marginBottom: 4 },
-    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
-    picker: { padding: 8, borderWidth: 0 }
+    label: { marginBottom: 3 },
 });
 
 export default EF_Grainsize;

@@ -91,7 +91,7 @@ const EF_Litologia = ({ index }) => {
 
 const styles = StyleSheet.create({
     container: { marginBottom: 10 },
-    row: { flexDirection: 'row', marginBottom: 6 },
+    row: { flexDirection: 'row', marginVertical: 5, marginLeft: 5 },
     label: { fontWeight: 'bold', flex: 1 },
     input: {
         borderWidth: 1,

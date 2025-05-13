@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
+import GlobalStyles from '../../../../../../constants/styles';
 
 const EF_Wash = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
@@ -10,7 +11,6 @@ const EF_Wash = ({ index }) => {
         "Moderada",
         "Difícil",
         "Muito difícil",
-
     ];
     const valorInicial = opcoes[0].toString(); // Primeiro valor disponível
 
@@ -21,13 +21,13 @@ const EF_Wash = ({ index }) => {
     }, [index, values.wash, setFieldValue, valorInicial]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.label}>Deslamagem:</Text>
-            <View style={styles.pickerView}>
+        <View>
+            <Text style={[GlobalStyles.label, styles.label]}>Deslamagem:</Text>
+            <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.wash?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`wash[${index}]`, itemValue)}
-                    style={styles.picker}
+                    style={GlobalStyles.picker}
                 >
                     {opcoes.map((val) => (
                         <Picker.Item key={val} label={`${val}`} value={`${val}`} />
@@ -39,10 +39,7 @@ const EF_Wash = ({ index }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
-    label: { fontWeight: 'bold', marginBottom: 4 },
-    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
-    picker: { padding: 8, borderWidth: 0 }
+    label: { marginBottom: 3 },
 });
 
 export default EF_Wash;

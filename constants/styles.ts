@@ -54,7 +54,7 @@ export default StyleSheet.create({
     logo: {
         width: 300,
     },
-    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1 },
+    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0},
     primaryButton: {
         backgroundColor: '#007bff',
         padding: 7,
@@ -74,7 +74,7 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     disabledButton: {
-        backgroundColor: '#aaa',
+        backgroundColor: '#bbb',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',
@@ -82,4 +82,7 @@ export default StyleSheet.create({
         marginVertical: 5,
         fontWeight: 'bold'
     },
+    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5},
+    picker: { borderWidth: 0, padding: 8}
+    // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
 });

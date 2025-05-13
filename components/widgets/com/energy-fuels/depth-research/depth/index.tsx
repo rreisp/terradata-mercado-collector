@@ -2,23 +2,24 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
+import GlobalStyles from '../../../../../../constants/styles';
 
 const EF_Depth = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.label}>Profundidade {index + 1}:</Text>
-            <View style={styles.row}>
+        <View>
+            <Text style={[GlobalStyles.label, styles.label]}>Profundidade:</Text>
+            <View style={GlobalStyles.row}>
                 <TextInput
-                    style={styles.input}
+                    style={GlobalStyles.input}
                     placeholder="De"
                     keyboardType="numeric"
                     value={values.depths?.[index]?.start || ''}
                     onChangeText={(text) => setFieldValue(`depths[${index}].start`, text)}
                 />
                 <TextInput
-                    style={styles.input}
+                    style={GlobalStyles.input}
                     placeholder="Até"
                     keyboardType="numeric"
                     value={values.depths?.[index]?.end || ''}
@@ -30,10 +31,7 @@ const EF_Depth = ({ index }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
-    label: { fontWeight: 'bold', marginBottom: 3 },
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1 }
+    label: { marginBottom: 3 },
 });
 
 export default EF_Depth;

@@ -18,7 +18,7 @@ const EF_LithicFragments = ({ index }) => {
     }, [index, values.lithicFragments, setFieldValue, valorInicial]);
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text style={[GlobalStyles.label, styles.label]}>Fragmentos Líticos:</Text>
 
             <View style={styles.row}>
@@ -33,11 +33,12 @@ const EF_LithicFragments = ({ index }) => {
                         {isChecked ? 'Presente' : 'Ausente'}
                     </Text> */}
                 </View>
-                <View style={[styles.pickerView, GlobalStyles.col11]}>
+                <View style={[GlobalStyles.pickerView, GlobalStyles.col11]}>
                     <Picker
                         selectedValue={values.lithicFragmentsPct?.[index] || valorInicial}
                         onValueChange={(itemValue) => setFieldValue(`lithicFragmentsPct[${index}]`, itemValue)}
-                        style={styles.picker}
+                        style={GlobalStyles.picker}
+                        enabled={isChecked}
                     >
                         <Picker.Item label="Less than 1%" value="0" />
                         {opcoes.map((val) => (
@@ -62,15 +63,13 @@ const styles = StyleSheet.create({
         padding: 8,
         marginHorizontal: 2,
     },
-    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
-    picker: { padding: 8, borderWidth: 0 },
     checkbox: {
         flexDirection: 'row',
     },
     left: {
         paddingLeft: 3
     },
-    label : {
-        marginBottom: 5
+    label: {
+        marginBottom: 3
     }
 });
