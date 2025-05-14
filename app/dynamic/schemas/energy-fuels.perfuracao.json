@@ -1,7 +1,7 @@
 {
   "form_id": "teste_ef_depth_report",
   "title": "RELATÓRIO DE PERFURAÇÃO",
-  "logo" : "EnergyFuels-Logo.png",
+  "logo": "EnergyFuels-Logo.png",
   "description": "Preencha os campos abaixo.",
   "version": "1.0",
   "method": "POST",
@@ -59,7 +59,7 @@
             "lg": 12,
             "xl": 12
           }
-        } ,
+        },
         {
           "field": {
             "id": "tenement",
@@ -113,6 +113,13 @@
             "md": 12,
             "lg": 12,
             "xl": 12
+          }
+        },
+        {
+          "field": {
+            "id": "interruption_justification",
+            "type": "text",
+            "label": "Justificativa de Interrupção:"
           }
         }
       ]

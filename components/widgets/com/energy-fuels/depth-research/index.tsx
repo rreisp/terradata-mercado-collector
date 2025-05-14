@@ -43,14 +43,16 @@ const EF_DepthResearch = ({ onChange }) => {
             ) : (
                 elements.map((el, index) => (
                     <View key={el.id}>
-                        <Section index={index} el={el} size={elements.length}/>
+                        <Section index={index} el={el} size={elements.length} />
                         <View>
-                            <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton)]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
-                                <View style={GlobalStyles.row}>
-                                    <Icon name="trash" size={16} color="#fff" style={styles.icon} />
-                                    <Text style={styles.buttonText}>REMOVER INTERVALO {index + 1}</Text>
-                                </View>
-                            </TouchableOpacity>
+                            {index == elements.length - 1 &&
+                                <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton)]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
+                                    <View style={GlobalStyles.row}>
+                                        <Icon name="trash" size={16} color="#fff" style={styles.icon} />
+                                        <Text style={styles.buttonText}>REMOVER INTERVALO {index + 1}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            }
                         </View>
                     </View>
                 ))
