@@ -5,25 +5,25 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 
-import EF_Clay from '../clay';
-import EF_Color from '../color';
-import EF_Notas from '../comment';
-import EF_Depth from '../depth';
-import EF_Grainsize from '../grainsize';
-import EF_Hardness from '../hardness';
-import EF_HMS from '../hms';
-import EF_Induration from '../induration';
-import EF_LithicFragments from '../lithic-fragments';
-import EF_Micah from '../micah';
-import EF_Moisture from '../moisture';
-import EF_OrganicMatter from '../organic-matter';
-import EF_Roundness from '../roundness';
-import EF_RunCoreRecovery from '../run-core-recovery';
-import EF_Shells from '../shells';
-import EF_Sorting from '../sorting';
-import EF_Volume from '../volume';
-import EF_Wash from '../wash';
-import EF_Litologia from '../litologia';
+import EF_Clay from './clay';
+import EF_Color from './color';
+import EF_Notas from './comment';
+import EF_Depth from './depth';
+import EF_Grainsize from './grainsize';
+import EF_Hardness from './hardness';
+import EF_HMS from './hms';
+import EF_Induration from './induration';
+import EF_LithicFragments from './lithic-fragments';
+import EF_Micah from './micah';
+import EF_Moisture from './moisture';
+import EF_OrganicMatter from './organic-matter';
+import EF_Roundness from './roundness';
+import EF_RunCoreRecovery from './run-core-recovery';
+import EF_Shells from './shells';
+import EF_Sorting from './sorting';
+import EF_Volume from './volume';
+import EF_Wash from './wash';
+import EF_Litologia from './litologia';
 
 const Section = ({ el, index, size }) => {
     const [collapsed, setCollapsed] = useState(true);
