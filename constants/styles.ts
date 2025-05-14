@@ -73,6 +73,14 @@ export default StyleSheet.create({
         marginVertical: 5,
         fontWeight: 'bold'
     },
+    disabledInput: {
+        backgroundColor: '#bbb',
+        padding: 7,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginVertical: 5,
+        fontWeight: 'bold'
+    },    
     disabledButton: {
         backgroundColor: '#bbb',
         padding: 7,

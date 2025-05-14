@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useFormikContext, FieldArray } from 'formik';
 import GlobalStyles from '../../../../../../constants/styles';
-import NumericInput from '../../../../../widgets/input/number';
+import NumericInput from '../../../../../widgets/input/numeric';
 
 const EF_Litologia = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();

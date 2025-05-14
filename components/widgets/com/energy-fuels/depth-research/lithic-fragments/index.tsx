@@ -4,6 +4,7 @@ import { useFormikContext } from 'formik';
 import Checkbox from 'expo-checkbox';
 import GlobalStyles from '../../../../../../constants/styles';
 import { Picker } from '@react-native-picker/picker';
+import NumericInput from '@/components/widgets/input/numeric';
 
 const EF_LithicFragments = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
@@ -25,26 +26,18 @@ const EF_LithicFragments = ({ index }) => {
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
-                        onValueChange={setIsChecked}
+                        onValueChange={() => {
+                            !isChecked ?
+                                setFieldValue(`lithicFragmentsPct[${index}]`, "0,50") :
+                                setFieldValue(`lithicFragmentsPct[${index}]`, "0");
+                            setIsChecked(!isChecked);
+                        }}
                         color={isChecked ? '#4630EB' : undefined}
                         style={styles.checkbox}
                     />
-                    {/* <Text style={styles.left}>
-                        {isChecked ? 'Presente' : 'Ausente'}
-                    </Text> */}
                 </View>
-                <View style={[GlobalStyles.pickerView, GlobalStyles.col11]}>
-                    <Picker
-                        selectedValue={values.lithicFragmentsPct?.[index] || valorInicial}
-                        onValueChange={(itemValue) => setFieldValue(`lithicFragmentsPct[${index}]`, itemValue)}
-                        style={GlobalStyles.picker}
-                        enabled={isChecked}
-                    >
-                        <Picker.Item label="Less than 1%" value="0" />
-                        {opcoes.map((val) => (
-                            <Picker.Item key={val} label={`${val}%`} value={`${val}`} />
-                        ))}
-                    </Picker>
+                <View style={[GlobalStyles.col11]}>
+                    <NumericInput value={values.lithicFragmentsPct?.[index]} onChange={(text) => setFieldValue(`lithicFragmentsPct[${index}]`, text)} disabled={!isChecked} />
                 </View>
             </View>
         </View>

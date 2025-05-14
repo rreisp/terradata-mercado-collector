@@ -122,7 +122,7 @@
         {
           "field": {
             "id": "ef_depth_test",
-            "label": "SEGMENTOS:",
+            "label": "Segmentos:",
             "type": "ef_depth_research"
           },
           "size": {

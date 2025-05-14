@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
+import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 
@@ -24,18 +25,31 @@ import EF_Volume from '../volume';
 import EF_Wash from '../wash';
 import EF_Litologia from '../litologia';
 
-const Section = ({ el, index }) => {
+const Section = ({ el, index, size }) => {
     const [collapsed, setCollapsed] = useState(true);
+    const { values, setFieldValue } = useFormikContext();
+
+    useEffect(() => {
+        setFieldValue(`depths[${index}].start`, (index == 0 ? 0 : values.depths?.[index - 1].end));
+        setFieldValue(`depths[${index}].end`, (index == 0 ? 100 : Number(values.depths?.[index - 1].end) + 100));
+    }, []);
 
     return (
         <View style={styles.bordered}>
             <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={styles.sectionHeader}>
-                <Text style={GlobalStyles.label}>SEGMENTO {index + 1}</Text>
-                <Icon
-                    name={collapsed ? 'chevron-down' : 'chevron-up'}
-                    size={16}
-                    color="#333"
-                />
+                <View style={GlobalStyles.col1}>
+                    <Text style={GlobalStyles.label}>INTERVALO {index + 1}</Text>
+                </View>
+                <View style={GlobalStyles.col10}>
+                    <Text>de {index == 0 ? 0 : values.depths?.[index]?.start}cm até {values.depths?.[index]?.end || ''}cm</Text>
+                </View>
+                <View style={GlobalStyles.col1, styles.right}>
+                    <Icon
+                        name={collapsed ? 'chevron-down' : 'chevron-up'}
+                        size={16}
+                        color="#333"
+                    />
+                </View>
             </TouchableOpacity>
             <Collapsible collapsed={collapsed}>
                 <View key={el.id} style={styles.sectionContent}>
@@ -43,6 +57,7 @@ const Section = ({ el, index }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Depth
                                 index={index}
+                                editable={index === size-1}
                             // value={depths[index]}
                             // onChange={(val) => {
                             //     const novos = [...depths];
@@ -298,5 +313,8 @@ const styles = StyleSheet.create({
     sectionContent: {
         padding: 3,
         backgroundColor: '#fefefe',
+    },
+    right: {
+        alignContent: "right"
     }
 });

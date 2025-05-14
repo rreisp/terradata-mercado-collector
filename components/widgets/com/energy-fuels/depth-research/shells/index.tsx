@@ -4,6 +4,7 @@ import { useFormikContext } from 'formik';
 import Checkbox from 'expo-checkbox';
 import GlobalStyles from '../../../../../../constants/styles';
 import { Picker } from '@react-native-picker/picker';
+import NumericInput from '@/components/widgets/input/numeric';
 
 const EF_Shells = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
@@ -12,39 +13,31 @@ const EF_Shells = ({ index }) => {
     const [isChecked, setIsChecked] = useState(false);
 
     useEffect(() => {
-        if (!values.shells || !values.shells[index]) {
-            setFieldValue(`shells[${index}]`, valorInicial);
+        if (!values.clay || !values.clay[index]) {
+            setFieldValue(`clay[${index}]`, valorInicial);
         }
-    }, [index, values.shells, setFieldValue, valorInicial]);
+    }, [index, values.clay, setFieldValue, valorInicial]);
 
     return (
-        <View style={styles.container}>
+        <View>
             <Text style={[GlobalStyles.label, styles.label]}>Conchas:</Text>
 
             <View style={styles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
-                        onValueChange={setIsChecked}
+                        onValueChange={() => {
+                            !isChecked ?
+                                setFieldValue(`shellsPct[${index}]`, "0,50") :
+                                setFieldValue(`shellsPct[${index}]`, "0");
+                            setIsChecked(!isChecked);
+                        }}
                         color={isChecked ? '#4630EB' : undefined}
                         style={styles.checkbox}
                     />
-                    {/* <Text style={styles.left}>
-                        {isChecked ? 'Presente' : 'Ausente'}
-                    </Text> */}
                 </View>
-                <View style={[GlobalStyles.pickerView, GlobalStyles.col11]}>
-                    <Picker
-                        selectedValue={values.shellsPct?.[index] || valorInicial}
-                        onValueChange={(itemValue) => setFieldValue(`shellsPct[${index}]`, itemValue)}
-                        style={GlobalStyles.picker}
-                        enabled={isChecked}
-                    >
-                        <Picker.Item label="Less than 1%" value="0" />
-                        {opcoes.map((val) => (
-                            <Picker.Item key={val} label={`${val}%`} value={`${val}`} />
-                        ))}
-                    </Picker>
+                <View style={[GlobalStyles.col11]}>
+                    <NumericInput value={values.shellsPct?.[index]} onChange={(text) => setFieldValue(`shellsPct[${index}]`, text)} disabled={!isChecked} />
                 </View>
             </View>
         </View>
@@ -56,13 +49,6 @@ const styles = StyleSheet.create({
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     col: { flex: 1, marginHorizontal: 1 },
     container: { marginBottom: 10 },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 8,
-        marginHorizontal: 2,
-    },
     checkbox: {
         flexDirection: 'row',
     },
