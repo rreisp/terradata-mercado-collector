@@ -24,7 +24,7 @@ const opcoes = [
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Granulometria:</Text>
+            <Text style={GlobalStyles.label}>Granulometria:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.grainsize?.[index] || valorInicial}
@@ -39,9 +39,5 @@ const opcoes = [
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
 
 export default EF_Grainsize;

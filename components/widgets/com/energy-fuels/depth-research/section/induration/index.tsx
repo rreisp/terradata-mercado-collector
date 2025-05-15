@@ -21,7 +21,7 @@ const EF_Induration = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Cimentação:</Text>
+            <Text style={GlobalStyles.label}>Cimentação:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.induration?.[index] || valorInicial}
@@ -36,9 +36,5 @@ const EF_Induration = ({ index }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
 
 export default EF_Induration;

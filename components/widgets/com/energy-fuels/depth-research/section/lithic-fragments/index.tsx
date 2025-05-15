@@ -20,7 +20,7 @@ const EF_LithicFragments = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Fragmentos Líticos:</Text>
+            <Text style={GlobalStyles.label}>Fragmentos Líticos:</Text>
 
             <View style={styles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>

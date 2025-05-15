@@ -37,7 +37,8 @@ export default StyleSheet.create({
         paddingBottom: 5
     },
     label: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: 2
     },
     title: {
         fontSize: 36,
@@ -73,16 +74,9 @@ export default StyleSheet.create({
         marginVertical: 5,
         fontWeight: 'bold'
     },
-    disabledInput: {
-        backgroundColor: '#bbb',
-        padding: 7,
-        borderRadius: 5,
-        alignItems: 'center',
-        marginVertical: 5,
-        fontWeight: 'bold'
-    },    
+    disabledInput: { backgroundColor: '#eee', borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0},   
     disabledButton: {
-        backgroundColor: '#bbb',
+        backgroundColor: '#ccc',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',
@@ -91,6 +85,6 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5},
-    picker: { borderWidth: 0, padding: 8}
-    // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
+    // picker: { borderWidth: 0, padding: 8}
+    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
 });

@@ -21,7 +21,7 @@ const EF_Moisture = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Umidade:</Text>
+            <Text style={GlobalStyles.label}>Umidade:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.moisture?.[index] || valorInicial}
@@ -38,7 +38,3 @@ const EF_Moisture = ({ index }) => {
 };
 
 export default EF_Moisture;
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});

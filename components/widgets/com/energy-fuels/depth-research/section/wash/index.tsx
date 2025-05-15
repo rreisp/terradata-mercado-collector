@@ -22,7 +22,7 @@ const EF_Wash = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Deslamagem:</Text>
+            <Text style={GlobalStyles.label}>Deslamagem:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.wash?.[index] || valorInicial}
@@ -37,9 +37,5 @@ const EF_Wash = ({ index }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
 
 export default EF_Wash;

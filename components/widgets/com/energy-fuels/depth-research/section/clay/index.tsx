@@ -20,9 +20,9 @@ const EF_Clay = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Argila:</Text>
+            <Text style={GlobalStyles.label}>Argila:</Text>
 
-            <View style={styles.row}>
+            <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
@@ -46,16 +46,11 @@ const EF_Clay = ({ index }) => {
 export default EF_Clay;
 
 const styles = StyleSheet.create({
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    col: { flex: 1, marginHorizontal: 1 },
     container: { marginBottom: 10 },
     checkbox: {
         flexDirection: 'row',
     },
     left: {
         paddingLeft: 3
-    },
-    label: {
-        marginBottom: 3
     }
 });

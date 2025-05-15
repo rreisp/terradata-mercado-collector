@@ -23,7 +23,7 @@ const EF_Sorting = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Seletividade granulométrica:</Text>
+            <Text style={GlobalStyles.label}>Seletividade granulométrica:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.sorting?.[index] || valorInicial}
@@ -40,7 +40,3 @@ const EF_Sorting = ({ index }) => {
 };
 
 export default EF_Sorting;
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 4 },
-});

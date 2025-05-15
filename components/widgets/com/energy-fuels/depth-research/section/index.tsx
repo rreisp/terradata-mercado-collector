@@ -37,11 +37,11 @@ const Section = ({ el, index, size }) => {
     return (
         <View style={styles.bordered}>
             <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={styles.sectionHeader}>
-                <View style={GlobalStyles.col1}>
+                <View style={GlobalStyles.col3}>
                     <Text style={GlobalStyles.label}>INTERVALO {index + 1}</Text>
                 </View>
-                <View style={GlobalStyles.col10}>
-                    <Text>de {index == 0 ? 0 : values.depths?.[index]?.start}cm até {values.depths?.[index]?.end || ''}cm</Text>
+                <View style={GlobalStyles.col8}>
+                    <Text>de {index == 0 ? 0 : values.depths?.[index]?.start} cm até {values.depths?.[index]?.end || ''} cm</Text>
                 </View>
                 <View style={GlobalStyles.col1, styles.right}>
                     <Icon

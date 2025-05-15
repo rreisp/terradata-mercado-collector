@@ -9,7 +9,7 @@ const EF_Depth = ({ index, editable }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Profundidade (cm):</Text>
+            <Text style={GlobalStyles.label}>Profundidade (cm):</Text>
             <View style={GlobalStyles.row}>
                 <TextInput
                     style={{
@@ -37,9 +37,5 @@ const EF_Depth = ({ index, editable }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
 
 export default EF_Depth;

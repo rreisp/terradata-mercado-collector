@@ -20,9 +20,9 @@ const EF_Shells = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Conchas:</Text>
+            <Text style={GlobalStyles.label}>Conchas:</Text>
 
-            <View style={styles.row}>
+            <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
@@ -54,8 +54,5 @@ const styles = StyleSheet.create({
     },
     left: {
         paddingLeft: 3
-    },
-    label: {
-        marginBottom: 3
     }
 });

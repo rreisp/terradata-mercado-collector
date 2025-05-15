@@ -41,7 +41,7 @@ const EF_Color = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Cor:</Text>
+            <Text style={GlobalStyles.label}>Cor:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.color?.[index] || valorInicial}
@@ -56,9 +56,5 @@ const EF_Color = ({ index }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
 
 export default EF_Color;

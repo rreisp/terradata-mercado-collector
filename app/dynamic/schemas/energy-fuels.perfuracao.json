@@ -117,7 +117,7 @@
         },
         {
           "field": {
-            "id": "interruption_justification",
+            "id": "reason",
             "type": "text",
             "label": "Justificativa de Interrupção:"
           }

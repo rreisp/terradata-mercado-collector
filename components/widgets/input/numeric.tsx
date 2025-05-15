@@ -2,20 +2,43 @@ import React from 'react';
 import { TextInput, View, StyleSheet } from 'react-native';
 import GlobalStyles from '../../../constants/styles';
 
+function getPrecision(num) {
+    if (!isFinite(num)) return 0;
+
+    const str = num.toString();
+
+    // Verifica se o número é em notação científica
+    if (str.includes('e')) {
+        const [base, exponent] = str.split('e');
+        const decimalPlaces = (base.split('.')[1] || '').length - parseInt(exponent);
+        return Math.max(0, decimalPlaces);
+    }
+
+    // Número com parte decimal explícita
+    const decimalPart = str.split('.')[1];
+    return decimalPart ? decimalPart.length : 0;
+}
+
 const NumericInput = ({
     value,
     onChange,
     placeholder = 'Digite um número',
     disabled = false,
+    step = 1,
     style = {},
     ...props
 }) => {
-    const handleChange = (text) => {
-        const formatted = text.replace(',', '.');
-        const valid = /^-?\d*(\.\d*)?$/.test(formatted);
 
-        if (valid || formatted === '' || formatted === '-') {
-            onChange(formatted);
+    const handleChange = (text) => {
+        // Aceita apenas dígitos, vírgula
+        // ignora entrada em demaos casos
+        const maxDecimais = getPrecision(step);
+        let regex = /^\d*$/;
+        if (maxDecimais > 0) {
+            regex = new RegExp(`^\\d*(,\\d{0,${maxDecimais}})?$`);
+        }
+        if (regex.test(text)) {
+            onChange(text);
         }
     };
 

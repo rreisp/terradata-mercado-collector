@@ -20,9 +20,9 @@ const EF_OrganicMatter = ({ index }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={[GlobalStyles.label, styles.label]}>Matéria Orgânica:</Text>
+            <Text style={GlobalStyles.label}>Matéria Orgânica:</Text>
 
-            <View style={styles.row}>
+            <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
@@ -46,8 +46,6 @@ const EF_OrganicMatter = ({ index }) => {
 export default EF_OrganicMatter;
 
 const styles = StyleSheet.create({
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    col: { flex: 1, marginHorizontal: 1 },
     container: { marginBottom: 10 },
     input: {
         borderWidth: 1,
@@ -61,8 +59,5 @@ const styles = StyleSheet.create({
     },
     left: {
         paddingLeft: 3
-    },
-    label: {
-        marginBottom: 3
     }
 });

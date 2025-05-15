@@ -23,8 +23,10 @@ const EF_Litologia = ({ index }) => {
             <FieldArray name={`litologias[${index}]`}>
                 {({ push, remove }) => (
                     <>
-                        <View style={styles.row}>
-                            <Text style={styles.label}>Litologia {index + 1}:</Text>
+                        <View style={GlobalStyles.row}>
+                            <View style={GlobalStyles.col11}>
+                                <Text style={styles.label}>Litologia {index + 1}:</Text>
+                            </View>
                             <View style={GlobalStyles.col1}>
                                 <Button title="+" onPress={() => push({ de: '', ate: '', tipo: '' })} />
                             </View>
@@ -33,7 +35,7 @@ const EF_Litologia = ({ index }) => {
                             <Text style={styles.emptyText}>Nenhum item adicionado.</Text>
                         ) : (
                             litologiasGrupo.map((_, subIndex) => (
-                                <View key={subIndex} style={styles.row}>
+                                <View key={subIndex} style={GlobalStyles.row}>
                                     {/* <TextInput
                                         style={[GlobalStyles.col2, styles.input]}
                                         placeholder="De"
@@ -43,35 +45,45 @@ const EF_Litologia = ({ index }) => {
                                             setFieldValue(`litologias[${index}][${subIndex}].de`, text)
                                         }
                                     /> */}
-                                    <NumericInput
-                                        style={[GlobalStyles.col2, styles.input]}
-                                        placeholder="De"
-                                        value={litologiasGrupo[subIndex]?.de || ''}
-                                        onChange={(text) =>
-                                            setFieldValue(`litologias[${index}][${subIndex}].de`, text)}
-                                        step={0.1}
-                                        min={0.5}
-                                        max={2.5}
-                                        decimalPlaces={2}
-                                    />
-                                    <NumericInput
-                                        placeholder="Até"
-                                        value={litologiasGrupo[subIndex]?.ate || ''}
-                                        onChange={(text) =>
-                                            setFieldValue(`litologias[${index}][${subIndex}].ate`, text)}
-                                        step={0.1}
-                                        min={0.5}
-                                        max={2.5}
-                                        decimalPlaces={2}
-                                    />
-                                    <TextInput
-                                        style={[GlobalStyles.col7, styles.input]}
-                                        placeholder="Litologia"
-                                        value={litologiasGrupo[subIndex]?.tipo || ''}
-                                        onChangeText={(text) =>
-                                            setFieldValue(`litologias[${index}][${subIndex}].tipo`, text)
-                                        }
-                                    />
+                                    <View style={GlobalStyles.col2}>
+                                        <NumericInput
+                                            style={GlobalStyles.input}
+                                            placeholder="De"
+                                            value={litologiasGrupo[subIndex]?.de || ''}
+                                            onChange={(text) =>
+                                                setFieldValue(`litologias[${index}][${subIndex}].de`, text)}
+                                            step={0.1}
+                                            min={0.5}
+                                            max={2.5}
+                                            decimalPlaces={2}
+                                        />
+                                    </View>
+
+                                    <View style={GlobalStyles.col2}>
+                                        <NumericInput
+                                            style={GlobalStyles.input}
+                                            placeholder="Até"
+                                            value={litologiasGrupo[subIndex]?.ate || ''}
+                                            onChange={(text) =>
+                                                setFieldValue(`litologias[${index}][${subIndex}].ate`, text)}
+                                            step={0.1}
+                                            min={0.5}
+                                            max={2.5}
+                                            decimalPlaces={2}
+                                        />
+                                    </View>
+
+                                    <View style={GlobalStyles.col7}>
+                                        <TextInput
+                                            style={[GlobalStyles.col7, GlobalStyles.input]}
+                                            placeholder="Litologia"
+                                            value={litologiasGrupo[subIndex]?.tipo || ''}
+                                            onChangeText={(text) =>
+                                                setFieldValue(`litologias[${index}][${subIndex}].tipo`, text)
+                                            }
+                                        />
+                                    </View>
+
                                     <View style={[GlobalStyles.col1]}>
                                         <Button
                                             color="orange"
@@ -91,15 +103,7 @@ const EF_Litologia = ({ index }) => {
 
 const styles = StyleSheet.create({
     container: { marginBottom: 10 },
-    row: { flexDirection: 'row', marginVertical: 5, marginLeft: 5 },
     label: { fontWeight: 'bold', flex: 1 },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 8,
-        marginHorizontal: 2,
-    },
     emptyText: {
         fontStyle: 'italic',
         color: '#777',

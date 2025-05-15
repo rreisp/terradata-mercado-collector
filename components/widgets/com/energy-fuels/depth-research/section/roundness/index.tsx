@@ -21,7 +21,7 @@ const EF_Roundness = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Esfericidade:</Text>
+            <Text style={GlobalStyles.label}>Esfericidade:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.roundness?.[index] || valorInicial}
@@ -36,9 +36,5 @@ const EF_Roundness = ({ index }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 4 },
-});
 
 export default EF_Roundness;

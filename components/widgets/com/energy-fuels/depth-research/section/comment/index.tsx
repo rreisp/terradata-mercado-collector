@@ -8,7 +8,7 @@ const EF_Notas = ({ index }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={[GlobalStyles.label, styles.label]}>Comentários:</Text>
+            <Text style={GlobalStyles.label}>Comentários:</Text>
             <TextInput
                 style={styles.textarea}
                 multiline
@@ -23,7 +23,6 @@ const EF_Notas = ({ index }) => {
 
 const styles = StyleSheet.create({
     container: { marginBottom: 10 },
-    label: { marginBottom: 3 },
     textarea: { borderWidth: 1, borderColor: "#ccc", padding: 8, borderRadius: 5 },
 });
 

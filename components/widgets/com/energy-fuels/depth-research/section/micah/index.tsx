@@ -20,9 +20,9 @@ const EF_Micah = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Mica:</Text>
+            <Text style={GlobalStyles.label}>Mica:</Text>
 
-            <View style={styles.row}>
+            <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
@@ -46,8 +46,6 @@ const EF_Micah = ({ index }) => {
 export default EF_Micah;
 
 const styles = StyleSheet.create({
-    row: { flexDirection: 'row', justifyContent: 'space-between' },
-    col: { flex: 1, marginHorizontal: 1 },
     container: { marginBottom: 10 },
     checkbox: {
         flexDirection: 'row',
@@ -55,7 +53,4 @@ const styles = StyleSheet.create({
     left: {
         paddingLeft: 3
     },
-    label: {
-        marginBottom: 3
-    }
 });

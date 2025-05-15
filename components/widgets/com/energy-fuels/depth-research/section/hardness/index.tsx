@@ -23,7 +23,7 @@ const EF_Hardness = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Dureza:</Text>
+            <Text style={GlobalStyles.label}>Dureza:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.hardness?.[index] || valorInicial}
@@ -38,9 +38,5 @@ const EF_Hardness = ({ index }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
 
 export default EF_Hardness;

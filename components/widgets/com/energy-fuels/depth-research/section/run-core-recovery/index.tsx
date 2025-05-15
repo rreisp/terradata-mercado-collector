@@ -3,11 +3,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
+import NumericInput from '@/components/widgets/input/numeric';
 
 const EF_RunCoreRecovery = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = Array.from({ length: 100 }, (_, i) => i + 1);
-    const valorInicial = opcoes[0].toString(); // Primeiro valor disponível
+    const valorInicial = "";
 
     useEffect(() => {
         if (!values.runCoreRecovery || !values.runCoreRecovery[index]) {
@@ -17,25 +17,12 @@ const EF_RunCoreRecovery = ({ index }) => {
 
     return (
         <View>
-            <Text style={[GlobalStyles.label, styles.label]}>Recuperação:</Text>
-            <View style={GlobalStyles.pickerView}>
-                <Picker
-                    selectedValue={values.runCoreRecovery?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`runCoreRecovery[${index}]`, itemValue)}
-                    style={GlobalStyles.picker}
-                >
-                    <Picker.Item label="0%" value="0" />
-                    {opcoes.map((val) => (
-                        <Picker.Item key={val} label={`${val}%`} value={`${val}`} />
-                    ))}
-                </Picker>
+            <Text style={GlobalStyles.label}>Recuperação:</Text>
+            <View>
+                <NumericInput step={0.01} value={values.runCoreRecovery?.[index]} onChange={(text) => setFieldValue(`runCoreRecovery[${index}]`, text)} />
             </View>
         </View>
     );
 };
 
 export default EF_RunCoreRecovery;
-
-const styles = StyleSheet.create({
-    label: { marginBottom: 3 },
-});
