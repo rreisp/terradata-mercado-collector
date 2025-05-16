@@ -1,22 +1,46 @@
 {
   "form_id": "teste_ef_depth_report",
-  "title": "RELATÓRIO DE PERFURAÇÃO",
+  "title": {
+    "pt-BR": "RELATÓRIO DE PERFURAÇÃO",
+    "en-US": "DRILLING REPORT"
+  },
   "logo": "EnergyFuels-Logo.png",
-  "description": "Preencha os campos abaixo.",
+  "description": {
+    "pt-BR": "Preencha os campos abaixo.",
+    "en-US": "Please fill out the fields below."
+  },
   "version": "1.0",
   "method": "POST",
   "url": "https://www.capturewise.terradata.com.br/index.php",
   "modal": {
     "size": "lg",
     "success": {
-      "header": "Sucesso",
-      "message": "Os dados foram enviados com sucesso.",
-      "button": "Fechar"
+      "header": {
+        "pt-BR": "Sucesso",
+        "en-US": "Success"
+      },
+      "message": {
+        "pt-BR": "Os dados foram enviados com sucesso.",
+        "en-US": "Data submitted successfully."
+      },
+      "button": {
+        "pt-BR": "Fechar",
+        "en-US": "Close"
+      }
     },
     "error": {
-      "header": "Aviso",
-      "message": "Houve um problema ao processar sua solicitação. Tente novamente mais tarde.",
-      "button": "Entendi"
+      "header": {
+        "pt-BR": "Aviso",
+        "en-US": "Warning"
+      },
+      "message": {
+        "pt-BR": "Houve um problema ao processar sua solicitação. Tente novamente mais tarde.",
+        "en-US": "There was a problem processing your request. Please try again later."
+      },
+      "button": {
+        "pt-BR": "Entendi",
+        "en-US": "Got it"
+      }
     }
   },
   "grid": {
@@ -29,13 +53,19 @@
         {
           "field": {
             "id": "perfuracao_id",
-            "label": "Perfuração ID:",
+            "label": {
+              "pt-BR": "Perfuração ID:",
+              "en-US": "Drilling ID:"
+            },
             "type": "text",
             "required": true,
             "validations": {
               "min_length": 1,
               "messages": {
-                "min_length": "Campo obrigatório"
+                "min_length": {
+                  "pt-BR": "Campo obrigatório",
+                  "en-US": "Required field"
+                }
               }
             }
           },
@@ -63,13 +93,19 @@
         {
           "field": {
             "id": "tenement",
-            "label": "Direito Minerário:",
+            "label": {
+              "pt-BR": "Direito Minerário:",
+              "en-US": "Tenement:"
+            },
             "type": "text",
             "required": true,
             "validations": {
               "min_length": 1,
               "messages": {
-                "min_length": "Campo obrigatório"
+                "min_length": {
+                  "pt-BR": "Campo obrigatório",
+                  "en-US": "Required field"
+                }
               }
             }
           },
@@ -84,13 +120,19 @@
         {
           "field": {
             "id": "landowner",
-            "label": "Superficiário:",
+            "label": {
+              "pt-BR": "Superficiário:",
+              "en-US": "Landowner:"
+            },
             "type": "text",
             "required": true,
             "validations": {
               "min_length": 1,
               "messages": {
-                "min_length": "Campo obrigatório"
+                "min_length": {
+                  "pt-BR": "Campo obrigatório",
+                  "en-US": "Required field"
+                }
               }
             }
           },
@@ -119,7 +161,10 @@
           "field": {
             "id": "reason",
             "type": "text",
-            "label": "Justificativa de Interrupção:"
+            "label": {
+              "pt-BR": "Justificativa de Interrupção:",
+              "en-US": "Interruption Reason:"
+            }
           }
         }
       ]
@@ -129,7 +174,10 @@
         {
           "field": {
             "id": "ef_depth_test",
-            "label": "Segmentos:",
+            "label": {
+              "pt-BR": "Segmentos:",
+              "en-US": "Segments:"
+            },
             "type": "ef_depth_research"
           },
           "size": {

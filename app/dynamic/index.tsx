@@ -108,12 +108,13 @@ type FormikHelpers = {
     onChange: (id: string, value: any) => void;
 };
 
-import PerfuracaoSchema from './schemas/energy-fuels.perfuracao.json';
+import PerfuracaoSchema from '../../schemas/energy-fuels.perfuracao.json';
 import EF_Coordinates from "@/components/widgets/com/energy-fuels/depth-research/coordinates";
 import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DynamicForm = ({ schemaId }: DynamicFormProps) => {
-    console.log(schemaId);
+    const { language } = useLanguage();
     const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -176,7 +177,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "password":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{field.label}</Text>
+                        <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                         <TextInput
                             placeholder={field.placeholder}
                             value={value}
@@ -190,7 +191,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "dropdown":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text>{field.label}</Text>
+                        <Text>{field.label[language]}</Text>
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={value}
@@ -206,7 +207,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "ef_depth_research":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{field.label}</Text>
+                        <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                         <View style={styles.pickerContainer}>
                             <EF_DepthResearch />
                         </View>
@@ -215,7 +216,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "ef_coordinates":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{field.label}</Text>
+                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "" )}</Text>
                         <View style={styles.pickerContainer}>
                             <EF_Coordinates />
                         </View>
@@ -224,7 +225,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "ef_dates":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{field.label}</Text>
+                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "" )}</Text>
                         <View style={styles.pickerContainer}>
                             <EF_Dates />
                         </View>
@@ -278,9 +279,9 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
 
-                                <Text style={GlobalStyles.title}>{formSchema.title}</Text>
+                                <Text style={GlobalStyles.title}>{formSchema.title[language]}</Text>
                             </View>
-                            <Text style={styles.description}>{formSchema.description}</Text>
+                            <Text style={styles.description}>{formSchema.description[language]}</Text>
                             {formSchema.rows.map((row, rowIndex) => (
                                 <View key={rowIndex}>
                                     {row.columns.map(({ field }) =>

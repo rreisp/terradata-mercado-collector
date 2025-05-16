@@ -37,10 +37,11 @@ const Tools = () => {
             try {
                 // const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
                 // const json = await response.json();
+                // TODO: ler lista de arquivos da pasta dynamic/schemas
                 const tools = [
                     {
                         "id": "energy-fuels.perfuracao",
-                        "title": "ENERGY FUELS - Caracterização de perfuração"
+                        "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
                     },
                     // {
                     //     "id": "energy-fuels.diario.sondagem",
@@ -51,55 +52,55 @@ const Tools = () => {
                     //     "title": "ENERGY FUELS - Teste de Elementos Customizados"
                     // }
                 ];
-                setAvailableForms(tools);
+setAvailableForms(tools);
             } catch (error) {
-                console.error('Erro ao buscar configurações dos formulários:', error);
-            } finally {
-                setLoading(false);
-            }
+    console.error('Erro ao buscar configurações dos formulários:', error);
+} finally {
+    setLoading(false);
+}
         };
 
-        fetchFormConfig();
+fetchFormConfig();
     }, []);
 
-    return (
-        <SafeAreaProvider>
-            <View style={[GlobalStyles.container, styles.container]}>
-                {loading ? (
-                    <ActivityIndicator size="large" color="#00ff00" />
-                ) : availableForms.length === 0 ? (
-                    <Text>Nenhum formulário disponível.</Text>
-                ) : (
-                    <>
-                        <SafeAreaView>
-                            <Image
-                                source={require('../../assets/images/EnergyFuels-Logo.png')}
-                                style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                            />
-                        </SafeAreaView>
+return (
+    <SafeAreaProvider>
+        <View style={[GlobalStyles.container, styles.container]}>
+            {loading ? (
+                <ActivityIndicator size="large" color="#00ff00" />
+            ) : availableForms.length === 0 ? (
+                <Text>Nenhum formulário disponível.</Text>
+            ) : (
+                <>
+                    <SafeAreaView>
+                        <Image
+                            source={require('../../assets/images/EnergyFuels-Logo.png')}
+                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                        />
+                    </SafeAreaView>
 
-                        <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
-                        <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
-                        <Picker
-                            selectedValue={selectedForm}
-                            onValueChange={(itemValue, itemIndex) => {
-                                setSelectedForm(itemValue);
-                                if (itemValue) {
-                                    navigation.navigate('loader/index', { formId: itemValue });
-                                }
-                            }}
-                            style={styles.picker}
-                        >
-                            <Picker.Item label={language === 'pt'? "SELECIONE" : "CHOOSE"} value={null} />
-                            {availableForms.map((form) => (
-                                <Picker.Item key={form.id} label={form.title} value={form.id} />
-                            ))}
-                        </Picker>
-                    </>
-                )}
-            </View>
-        </SafeAreaProvider>
-    );
+                    <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
+                    <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
+                    <Picker
+                        selectedValue={selectedForm}
+                        onValueChange={(itemValue, itemIndex) => {
+                            setSelectedForm(itemValue);
+                            if (itemValue) {
+                                navigation.navigate('loader/index', { formId: itemValue });
+                            }
+                        }}
+                        style={styles.picker}
+                    >
+                        <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
+                        {availableForms.map((form) => (
+                            <Picker.Item key={form.id} label={form.title} value={form.id} />
+                        ))}
+                    </Picker>
+                </>
+            )}
+        </View>
+    </SafeAreaProvider>
+);
 };
 
 const styles = StyleSheet.create({
