@@ -7,7 +7,7 @@ import { RootStackParamList } from "@/types/types";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyles from '../../constants/styles';
 import { colors } from '../../constants/colors';
-
+import { useLanguage } from '../../contexts/LanguageContext';
 type Form = {
     id: string;
     title: string;
@@ -16,10 +16,21 @@ type Form = {
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/index'>;
 
 const Tools = () => {
+    const { language } = useLanguage();
     const [loading, setLoading] = useState(true);
     const [availableForms, setAvailableForms] = useState<Form[]>([]);
     const [selectedForm, setSelectedForm] = useState<string | undefined>();
     const navigation = useNavigation<NavigationProp>();
+
+    const tools_text = {
+        "en-US": "TOOLS",
+        "pt-BR": "FERRAMENTAS",
+    };
+
+    const tools_details_text = {
+        "en-US": "Choose a form to work",
+        "pt-BR": "Escolha um formulário para trabalhar",
+    };
 
     useEffect(() => {
         const fetchFormConfig = async () => {
@@ -67,8 +78,8 @@ const Tools = () => {
                             />
                         </SafeAreaView>
 
-                        <Text style={GlobalStyles.title}>FERRAMENTAS</Text>
-                        <Text style={GlobalStyles.subtitle}>Escolha o formulário em que deseja trabalhar:</Text>
+                        <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
+                        <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
                         <Picker
                             selectedValue={selectedForm}
                             onValueChange={(itemValue, itemIndex) => {
@@ -79,7 +90,7 @@ const Tools = () => {
                             }}
                             style={styles.picker}
                         >
-                            <Picker.Item label="SELECIONE" value={null} />
+                            <Picker.Item label={language === 'pt'? "SELECIONE" : "CHOOSE"} value={null} />
                             {availableForms.map((form) => (
                                 <Picker.Item key={form.id} label={form.title} value={form.id} />
                             ))}

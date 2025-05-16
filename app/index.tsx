@@ -3,8 +3,16 @@ import { colors } from '../constants/colors';
 import { Link } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyles from '../constants/styles';
+import CountryFlag from "react-native-country-flag";
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Index() {
+  const { setLanguage } = useLanguage();
+
+  const escolherIdioma = (lang: 'pt-BR' | 'en-US') => {
+    setLanguage(lang);
+  };
+
   return (
     <SafeAreaProvider>
       <View
@@ -18,18 +26,31 @@ export default function Index() {
         </SafeAreaView>
 
         <Text style={[GlobalStyles.title, styles.title]}>
-          CAPTURE<Text style={{ color: colors.grey }}>.WISE</Text>
+          FIELD<Text style={{ color: colors.grey }}>COLLECTOR</Text>
         </Text>
 
         <Text style={GlobalStyles.textMuted}>
-          POWERED BY TERRADATA
+          POWERED BY CAPTUREWISE
         </Text>
 
-        <Link href="/tools" asChild>
-          <Pressable style={styles.button} accessibilityRole="button">
-            <Text style={styles.buttonText}>ACESSAR</Text>
-          </Pressable>
-        </Link>
+        <View style={[GlobalStyles.row, styles.row]}>
+          <View style={GlobalStyles.col}>
+            <Link href="/tools" asChild>
+              <Pressable style={styles.button} accessibilityRole="button" onPress={() => escolherIdioma('pt-BR')}>
+                <CountryFlag isoCode="br" size={25} />
+                <Text style={styles.buttonText}>ACESSAR</Text>
+              </Pressable>
+            </Link>
+          </View>
+          <View style={GlobalStyles.col}>
+            <Link href="/tools" asChild>
+              <Pressable style={styles.button} accessibilityRole="button" onPress={() => escolherIdioma('en-US')}>
+                <CountryFlag isoCode="us" size={25} />
+                <Text style={styles.buttonText}>ENTER</Text>
+              </Pressable>
+            </Link>
+          </View>
+        </View>
       </View >
     </SafeAreaProvider>
   );
@@ -41,13 +62,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
+  row: {
+    width: '33%',
+    marginTop: 27
+  },
   title: {
-    color: colors.green
+    color: colors.green,
   },
   button: {
-    backgroundColor: colors.blue,
+    backgroundColor: "#efefef",
     width: '100%',
-    height: 40,
+    height: 69,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
@@ -55,7 +80,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.white,
+    textShadowRadius: 1,
+    textShadowColor: '#bbb',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    paddingTop: 7
   }
 })
