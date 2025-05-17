@@ -3,8 +3,10 @@ import { View, StyleSheet, Text, TouchableOpacity, Alert, Platform } from 'react
 import Section from './section';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 import GlobalStyles from '../../../../../constants/styles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_DepthResearch = ({ onChange }) => {
+    const { language } = useLanguage();        
     const [elements, setElements] = useState<{ id: number }[]>([]);
 
     const handleAddElement = () => {
@@ -19,17 +21,17 @@ const EF_DepthResearch = ({ onChange }) => {
                 setElements(prev => prev.filter((_, i) => i !== index));
             }
         };
-        const msg = "Tem certeza que deseja remover o intervalo?";
+        const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o intervalo?` : `Are you sure you want to remove the range?`);
         if (Platform.OS === 'web') {
             const confirmed = window.confirm(msg);
             if (confirmed) confirmAndRemove();
         } else {
             Alert.alert(
-                'Confirmação',
+                (language === 'pt-BR' ? `Confirmação` : `Confirmation`),
                 msg,
                 [
-                    { text: 'Cancelar', style: 'cancel' },
-                    { text: 'Remover', style: 'destructive', onPress: confirmAndRemove }
+                    { text: (language === 'pt-BR' ? `Cancelar` : `Confirmation`), style: 'cancel' },
+                    { text: (language === 'pt-BR' ? `Remover` : `Delete`), style: 'destructive', onPress: confirmAndRemove }
                 ],
                 { cancelable: true }
             );
@@ -39,7 +41,7 @@ const EF_DepthResearch = ({ onChange }) => {
     return (
         <View>
             {elements.length === 0 ? (
-                <Text style={styles.emptyText}>Nenhum intervalo adicionado.</Text>
+                <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum intervalo adicionado.` : `No ranges added.`}</Text>
             ) : (
                 elements.map((el, index) => (
                     <View key={el.id}>
@@ -49,7 +51,7 @@ const EF_DepthResearch = ({ onChange }) => {
                                 <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton)]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
                                     <View style={GlobalStyles.row}>
                                         <Icon name="trash" size={16} color="#fff" style={styles.icon} />
-                                        <Text style={styles.buttonText}>REMOVER INTERVALO {index + 1}</Text>
+                                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER INTERVALO ${index + 1}` : `REMOVE INTERVAL ${index + 1}`}</Text>
                                     </View>
                                 </TouchableOpacity>
                             }
@@ -61,7 +63,7 @@ const EF_DepthResearch = ({ onChange }) => {
                 <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleAddElement}>
                     <View style={GlobalStyles.row}>
                         <Icon name="plus" size={16} color="#fff" style={styles.icon} />
-                        <Text style={styles.buttonText}>ADICIONAR INTERVALO</Text>
+                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `ADICIONAR INTERVALO` : `ADD INTERVAL`}</Text>
                     </View>
                 </TouchableOpacity>
             </View>

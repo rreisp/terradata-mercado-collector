@@ -85,6 +85,6 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5},
-    // picker: { borderWidth: 0, padding: 8}
-    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
+    picker: { borderWidth: 0, padding: 8}
+    // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
 });

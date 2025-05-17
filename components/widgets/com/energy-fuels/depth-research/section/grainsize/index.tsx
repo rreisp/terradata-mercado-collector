@@ -3,18 +3,31 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Grainsize = ({ index }) => {
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-const opcoes = [
-  "Muito fina",
-  "Fina",
-  "Média",
-  "Grossa",
-  "Muito grossa",
-  "Cascalho"
-];
-    const valorInicial = opcoes[0].toString(); // Primeiro valor disponível
+    const opcoes = {
+        "pt-BR": [
+            "Muito fina",
+            "Fina",
+            "Média",
+            "Grossa",
+            "Muito grossa",
+            "Cascalho"
+        ],
+        "en-US": [
+            "Very fine",
+            "Fine",
+            "Medium",
+            "Coarse",
+            "Very coarse",
+            "Gravel"
+        ]
+    };
+
+    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
         if (!values.grainsize || !values.grainsize[index]) {
@@ -24,14 +37,14 @@ const opcoes = [
 
     return (
         <View>
-            <Text style={GlobalStyles.label}>Granulometria:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.grainsize?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`grainsize[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes.map((val) => (
+                    {opcoes[language].map((val) => (
                         <Picker.Item key={val} label={`${val}`} value={`${val}`} />
                     ))}
                 </Picker>

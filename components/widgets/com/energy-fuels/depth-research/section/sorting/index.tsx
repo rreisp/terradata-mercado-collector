@@ -3,17 +3,29 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Sorting = ({ index }) => {
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = [
-        "Muito fraca",
-        "Fraca",
-        "Moderada",
-        "Boa",
-        "Muito boa"
-    ];
-    const valorInicial = opcoes[0].toString(); // Primeiro valor disponível
+    const opcoes = {
+        "pt-BR": [
+            "Muito fraca",
+            "Fraca",
+            "Moderada",
+            "Boa",
+            "Muito boa"
+        ],
+        "en-US": [
+            "Very weak",
+            "Weak",
+            "Moderate",
+            "Good",
+            "Very good"
+        ]
+    };
+
+    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
         if (!values.sorting || !values.sorting[index]) {
@@ -23,14 +35,14 @@ const EF_Sorting = ({ index }) => {
 
     return (
         <View>
-            <Text style={GlobalStyles.label}>Seletividade granulométrica:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade granulométrica` : `Sorting`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.sorting?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`sorting[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes.map((val) => (
+                    {opcoes[language].map((val) => (
                         <Picker.Item key={val} label={`${val}`} value={`${val}`} />
                     ))}
                 </Picker>

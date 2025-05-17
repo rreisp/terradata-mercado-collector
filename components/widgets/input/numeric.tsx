@@ -22,7 +22,7 @@ function getPrecision(num) {
 const NumericInput = ({
     value,
     onChange,
-    placeholder = 'Digite um número',
+    placeholder = '',
     disabled = false,
     step = 1,
     style = {},

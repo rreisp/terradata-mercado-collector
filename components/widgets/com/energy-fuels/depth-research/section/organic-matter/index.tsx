@@ -5,8 +5,10 @@ import Checkbox from 'expo-checkbox';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { Picker } from '@react-native-picker/picker';
 import NumericInput from '@/components/widgets/input/numeric';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_OrganicMatter = ({ index }) => {
+    const { language } = useLanguage();    
     const { values, setFieldValue } = useFormikContext();
     const opcoes = Array.from({ length: 101 }, (_, i) => i);
     const valorInicial = false; // Primeiro valor disponível
@@ -20,7 +22,7 @@ const EF_OrganicMatter = ({ index }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>Matéria Orgânica:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Matéria Orgânica` : `Organic Matter`}:</Text>
 
             <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>

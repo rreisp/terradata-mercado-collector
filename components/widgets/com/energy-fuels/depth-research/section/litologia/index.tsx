@@ -3,8 +3,10 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useFormikContext, FieldArray } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import NumericInput from '../../../../../input/numeric';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Litologia = ({ index }) => {
+    const { language } = useLanguage();        
     const { values, setFieldValue } = useFormikContext();
 
     // Garante que o array litologias[index] sempre exista
@@ -25,14 +27,14 @@ const EF_Litologia = ({ index }) => {
                     <>
                         <View style={GlobalStyles.row}>
                             <View style={GlobalStyles.col11}>
-                                <Text style={styles.label}>Litologia {index + 1}:</Text>
+                                <Text style={styles.label}>{language === 'pt-BR' ? `Litologia` : `Lithology`} {index + 1}:</Text>
                             </View>
                             <View style={GlobalStyles.col1}>
                                 <Button title="+" onPress={() => push({ de: '', ate: '', tipo: '' })} />
                             </View>
                         </View>
                         {litologiasGrupo.length === 0 ? (
-                            <Text style={styles.emptyText}>Nenhum item adicionado.</Text>
+                            <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum item adicionado` : `No item found`}.</Text>
                         ) : (
                             litologiasGrupo.map((_, subIndex) => (
                                 <View key={subIndex} style={GlobalStyles.row}>
@@ -48,7 +50,7 @@ const EF_Litologia = ({ index }) => {
                                     <View style={GlobalStyles.col2}>
                                         <NumericInput
                                             style={GlobalStyles.input}
-                                            placeholder="De"
+                                            placeholder={(language === 'pt-BR' ? `De` : `From`)}
                                             value={litologiasGrupo[subIndex]?.de || ''}
                                             onChange={(text) =>
                                                 setFieldValue(`litologias[${index}][${subIndex}].de`, text)}
@@ -62,7 +64,7 @@ const EF_Litologia = ({ index }) => {
                                     <View style={GlobalStyles.col2}>
                                         <NumericInput
                                             style={GlobalStyles.input}
-                                            placeholder="Até"
+                                            placeholder={(language === 'pt-BR' ? `Até` : `To`)}
                                             value={litologiasGrupo[subIndex]?.ate || ''}
                                             onChange={(text) =>
                                                 setFieldValue(`litologias[${index}][${subIndex}].ate`, text)}
@@ -76,7 +78,7 @@ const EF_Litologia = ({ index }) => {
                                     <View style={GlobalStyles.col7}>
                                         <TextInput
                                             style={[GlobalStyles.col7, GlobalStyles.input]}
-                                            placeholder="Litologia"
+                                            placeholder=""
                                             value={litologiasGrupo[subIndex]?.tipo || ''}
                                             onChangeText={(text) =>
                                                 setFieldValue(`litologias[${index}][${subIndex}].tipo`, text)

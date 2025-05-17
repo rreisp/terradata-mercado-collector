@@ -2,20 +2,22 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Notas = ({ index }) => {
+    const { language } = useLanguage();     
     const { values, setFieldValue } = useFormikContext();
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>Comentários:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Comentários:` : `Comments:`}</Text>
             <TextInput
                 style={styles.textarea}
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
                 value={values.colorNotas?.[index] || ''}
-                onChangeText={(text) => setFieldValue(`colorNotas[${index}]`, text)}
+                onChangeText={(text) => setFieldValue(`comment[${index}]`, text)}
             />
         </View>
     );

@@ -3,15 +3,25 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Induration = ({ index }) => {
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = [
-        "Calcária",
-        "Arenosa",
-        "Ferro"
-    ];
-    const valorInicial = opcoes[0].toString(); // Primeiro valor disponível
+    const opcoes = {
+        "pt-BR": [
+            "Calcária",
+            "Arenosa",
+            "Ferro"
+        ],
+        "en-US": [
+            "Limestone",
+            "Sandy",
+            "Iron"
+        ]
+    };
+
+    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
         if (!values.induration || !values.induration[index]) {
@@ -21,14 +31,14 @@ const EF_Induration = ({ index }) => {
 
     return (
         <View>
-            <Text style={GlobalStyles.label}>Cimentação:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.induration?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`induration[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes.map((val) => (
+                    {opcoes[language].map((val) => (
                         <Picker.Item key={val} label={`${val}`} value={`${val}`} />
                     ))}
                 </Picker>

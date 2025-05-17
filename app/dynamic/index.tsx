@@ -296,7 +296,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                             <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
                                 <View style={GlobalStyles.row}>
                                     <Icon name="save" size={16} color="#fff" style={styles.icon} />
-                                    <Text style={styles.buttonText}>SALVAR</Text>
+                                    <Text style={styles.buttonText}>{language === 'pt-BR' ? `SALVAR` : `SAVE`}</Text>
                                 </View>
                             </TouchableOpacity>
                         </>

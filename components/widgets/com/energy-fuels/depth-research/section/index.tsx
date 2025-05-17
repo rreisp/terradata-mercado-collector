@@ -24,8 +24,10 @@ import EF_Sorting from './sorting';
 import EF_Volume from './volume';
 import EF_Wash from './wash';
 import EF_Litologia from './litologia';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Section = ({ el, index, size }) => {
+    const { language } = useLanguage();
     const [collapsed, setCollapsed] = useState(true);
     const { values, setFieldValue } = useFormikContext();
 
@@ -38,10 +40,10 @@ const Section = ({ el, index, size }) => {
         <View style={styles.bordered}>
             <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={styles.sectionHeader}>
                 <View style={GlobalStyles.col3}>
-                    <Text style={GlobalStyles.label}>INTERVALO {index + 1}</Text>
+                    <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `INTERVALO ${index + 1}` : `INTERVAL ${index + 1}`}</Text>
                 </View>
                 <View style={GlobalStyles.col8}>
-                    <Text>de {index == 0 ? 0 : values.depths?.[index]?.start} cm até {values.depths?.[index]?.end || ''} cm</Text>
+                    <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values.depths?.[index]?.start}cm {language === 'pt-BR' ? `até` : `to`} {values.depths?.[index]?.end || ''}cm</Text>
                 </View>
                 <View style={GlobalStyles.col1, styles.right}>
                     <Icon
@@ -57,7 +59,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Depth
                                 index={index}
-                                editable={index === size-1}
+                                editable={index === size - 1}
                             // value={depths[index]}
                             // onChange={(val) => {
                             //     const novos = [...depths];

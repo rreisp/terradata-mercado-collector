@@ -4,8 +4,10 @@ import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import NumericInput from '@/components/widgets/input/numeric';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_HMS = ({ index }) => {
+    const { language } = useLanguage();        
     const { values, setFieldValue } = useFormikContext();
     const opcoes = Array.from({ length: 100 }, (_, i) => i + 1);
     const valorInicial = "";

@@ -3,17 +3,29 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Hardness = ({ index }) => {
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = [
-        "Inconsolidada",
-        "Esmagável com o dedo",
-        "Nenhuma resistência a penetração",
-        "Resistência a penetração",
-        "Total resistência a penetração"
-    ];
-    const valorInicial = opcoes[0].toString(); // Primeiro valor disponível
+    const opcoes = {
+        "pt-BR": [
+            "Inconsolidada",
+            "Esmagável com o dedo",
+            "Nenhuma resistência a penetração",
+            "Resistência a penetração",
+            "Total resistência a penetração"
+        ],
+        "en-US": [
+            "Unconsolidated",
+            "Crushable with finger",
+            "No resistance to penetration",
+            "Resistance to penetration",
+            "Total resistance to penetration"
+        ]
+    };
+
+    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
         if (!values.hardness || !values.hardness[index]) {
@@ -23,14 +35,14 @@ const EF_Hardness = ({ index }) => {
 
     return (
         <View>
-            <Text style={GlobalStyles.label}>Dureza:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
                     selectedValue={values.hardness?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`hardness[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes.map((val) => (
+                    {opcoes[language].map((val) => (
                         <Picker.Item key={val} label={`${val}`} value={`${val}`} />
                     ))}
                 </Picker>
