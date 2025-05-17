@@ -28,13 +28,25 @@ export default function RootLayout() {
             }} />
 
           <Stack.Screen
-            name="loader/index"
+            name="loader/list/index"
             options={{
               headerShown: false
             }} />
 
           <Stack.Screen
-            name="dynamic/index"
+            name="loader/form/index"
+            options={{
+              headerShown: false
+            }} />
+
+          <Stack.Screen
+            name="dynamic/list/index"
+            options={{
+              headerShown: false
+            }} />
+
+          <Stack.Screen
+            name="dynamic/form/index"
             options={{
               headerShown: false
             }} />

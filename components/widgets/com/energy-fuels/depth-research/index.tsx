@@ -30,7 +30,7 @@ const EF_DepthResearch = ({ onChange }) => {
                 (language === 'pt-BR' ? `Confirmação` : `Confirmation`),
                 msg,
                 [
-                    { text: (language === 'pt-BR' ? `Cancelar` : `Confirmation`), style: 'cancel' },
+                    { text: (language === 'pt-BR' ? `Cancelar` : `Cancel`), style: 'cancel' },
                     { text: (language === 'pt-BR' ? `Remover` : `Delete`), style: 'destructive', onPress: confirmAndRemove }
                 ],
                 { cancelable: true }

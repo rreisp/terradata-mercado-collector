@@ -70,18 +70,19 @@ const styles = StyleSheet.create({
     color: colors.green,
   },
   button: {
-    backgroundColor: "#efefef",
     width: '100%',
     height: 69,
+    borderWidth: 1,
+    borderColor: "#efefef",
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 34,
   },
   buttonText: {
-    color: colors.white,
+    color: "#777",
     textShadowRadius: 1,
-    textShadowColor: '#bbb',
+    textShadowColor: '#777',
     fontSize: 16,
     fontWeight: 'bold',
     paddingTop: 7

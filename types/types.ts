@@ -1,5 +1,6 @@
 // types.ts
 export type RootStackParamList = {
     // Home: undefined;
-    'loader/index': { formId: string };
+    'loader/list/index': { formId: string };
+    'loader/form/index': { formId: string };
 }

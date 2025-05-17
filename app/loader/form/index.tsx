@@ -3,9 +3,9 @@ import { View, Text } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/types';
 import { useLocalSearchParams } from "expo-router";
-import DynamicForm from '../dynamic/index';
+import DynamicForm from '@/app/dynamic/form';
 
-type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/index'>;
+type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
 
 const FormLoader = () => {
     const route = useRoute<FormLoaderRouteProp>();

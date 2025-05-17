@@ -53,6 +53,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
+    "react-super-responsive-table": "^6.0.2",
     "yup": "^1.6.1",
     "zod": "^3.24.2",
     "zustand": "^5.0.3"

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { View, Text, TextInput, Button, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Button, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import EF_DepthResearch from "@/components/widgets/com/energy-fuels/depth-research";
-import GlobalStyles from '../../constants/styles';
+import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 
 type DynamicFormProps = {
@@ -108,13 +109,14 @@ type FormikHelpers = {
     onChange: (id: string, value: any) => void;
 };
 
-import PerfuracaoSchema from '../../schemas/energy-fuels.perfuracao.json';
+import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
 import EF_Coordinates from "@/components/widgets/com/energy-fuels/depth-research/coordinates";
 import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const DynamicForm = ({ schemaId }: DynamicFormProps) => {
     const { language } = useLanguage();
+    const navigation = useNavigation();    
     const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -129,6 +131,10 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
         }
         setFormSchema(schema)
     }, [schemaId]);
+
+    const openList = () => {
+        navigation.navigate('loader/list/index', { formId: schemaId });
+    };    
 
     if (!formSchema) return <ActivityIndicator style={{ marginTop: 20 }} />;
 
@@ -273,9 +279,16 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                 >
                     {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
                         <>
+                            <View style={GlobalStyles.row}>
+                                <View style={GlobalStyles.col1}>
+                                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openList}>
+                                        <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                    </Pressable>
+                                </View>
+                            </View>
                             <View style={styles.container}>
                                 <Image
-                                    source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                    source={require('../../../assets/images/EnergyFuels-Logo.png')}
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, ActivityIndicator, StyleSheet, SafeAreaView } from "react-native";
+import { View, Text, Image, ActivityIndicator, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,6 +8,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyles from '../../constants/styles';
 import { colors } from '../../constants/colors';
 import { useLanguage } from '../../contexts/LanguageContext';
+import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
+import { goBack } from "expo-router/build/global-state/routing";
+
 type Form = {
     id: string;
     title: string;
@@ -32,6 +35,10 @@ const Tools = () => {
         "pt-BR": "Escolha um formulário para trabalhar",
     };
 
+    const goBack = () => {
+        navigation.navigate('index');
+    };
+
     useEffect(() => {
         const fetchFormConfig = async () => {
             try {
@@ -52,55 +59,64 @@ const Tools = () => {
                     //     "title": "ENERGY FUELS - Teste de Elementos Customizados"
                     // }
                 ];
-setAvailableForms(tools);
+                setAvailableForms(tools);
             } catch (error) {
-    console.error('Erro ao buscar configurações dos formulários:', error);
-} finally {
-    setLoading(false);
-}
+                console.error('Erro ao buscar configurações dos formulários:', error);
+            } finally {
+                setLoading(false);
+            }
         };
 
-fetchFormConfig();
+        fetchFormConfig();
     }, []);
 
-return (
-    <SafeAreaProvider>
-        <View style={[GlobalStyles.container, styles.container]}>
-            {loading ? (
-                <ActivityIndicator size="large" color="#00ff00" />
-            ) : availableForms.length === 0 ? (
-                <Text>Nenhum formulário disponível.</Text>
-            ) : (
-                <>
-                    <SafeAreaView>
-                        <Image
-                            source={require('../../assets/images/EnergyFuels-Logo.png')}
-                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                        />
-                    </SafeAreaView>
+    return (
+        <SafeAreaProvider>
+            <View style={[GlobalStyles.container, styles.container]}>
 
-                    <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
-                    <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
-                    <Picker
-                        selectedValue={selectedForm}
-                        onValueChange={(itemValue, itemIndex) => {
-                            setSelectedForm(itemValue);
-                            if (itemValue) {
-                                navigation.navigate('loader/index', { formId: itemValue });
-                            }
-                        }}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
-                        {availableForms.map((form) => (
-                            <Picker.Item key={form.id} label={form.title} value={form.id} />
-                        ))}
-                    </Picker>
-                </>
-            )}
-        </View>
-    </SafeAreaProvider>
-);
+                {loading ? (
+                    <ActivityIndicator size="large" color="#00ff00" />
+                ) : availableForms.length === 0 ? (
+                    <Text>Nenhum formulário disponível.</Text>
+                ) : (
+                    <>
+                        <SafeAreaView>
+                            <Image
+                                source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                            />
+                        </SafeAreaView>
+
+                        <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
+                        <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
+                        <Picker
+                            selectedValue={selectedForm}
+                            onValueChange={(itemValue, itemIndex) => {
+                                setSelectedForm(itemValue);
+                                if (itemValue) {
+                                    navigation.navigate('loader/list/index', { formId: itemValue });
+                                }
+                            }}
+                            style={styles.picker}
+                        >
+                            <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
+                            {availableForms.map((form) => (
+                                <Picker.Item key={form.id} label={form.title} value={form.id} />
+                            ))}
+                        </Picker>
+
+                        <View style={[GlobalStyles.row, styles.goBack]}>
+                            <View style={GlobalStyles.col12}>
+                                <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
+                                    <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                </Pressable>
+                            </View>
+                        </View>
+                    </>
+                )}
+            </View>
+        </SafeAreaProvider>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -108,6 +124,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center"
+    },
+    goBack : {
+        marginTop: 33
     },
     picker: {
         height: 50,
