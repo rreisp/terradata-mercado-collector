@@ -38,7 +38,7 @@ const Section = ({ el, index, size }) => {
 
     return (
         <View style={styles.bordered}>
-            <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={styles.sectionHeader}>
+            <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={(index % 2 == 0 ? styles.sectionHeaderEven : styles.sectionHeaderOdd)}>
                 <View style={GlobalStyles.col3}>
                     <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `INTERVALO ${index + 1}` : `INTERVAL ${index + 1}`}</Text>
                 </View>
@@ -272,6 +272,7 @@ const Section = ({ el, index, size }) => {
                             />
                         </View>
                     </View>
+
                     <EF_Litologia
                         index={index}
                     // value={litologias[index]}
@@ -281,15 +282,19 @@ const Section = ({ el, index, size }) => {
                     //     setLitologias(novos);
                     // }}
                     />
-                    <EF_Notas
-                        index={index}
-                    // value={estruturaNotas[index]}
-                    // onChange={(val) => {
-                    //     const novos = [...estruturaNotas];
-                    //     novos[index] = val;
-                    //     setEstruturaNotas(novos);
-                    // }}
-                    />
+                    <View style={GlobalStyles.row}>
+                        <View style={GlobalStyles.col}>
+                            <EF_Notas
+                                index={index}
+                            // value={estruturaNotas[index]}
+                            // onChange={(val) => {
+                            //     const novos = [...estruturaNotas];
+                            //     novos[index] = val;
+                            //     setEstruturaNotas(novos);
+                            // }}
+                            />
+                        </View>
+                    </View>
                 </View>
             </Collapsible>
         </View>
@@ -303,11 +308,20 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: '#eee'
     },
-    sectionHeader: {
+    sectionHeaderEven: {
         marginTop: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#cbf4f5',
+        backgroundColor: '#cbf4f1',
+        padding: 12,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+    },
+    sectionHeaderOdd: {
+        marginTop: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: '#b0efff',
         padding: 12,
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
@@ -317,6 +331,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fefefe',
     },
     right: {
-        alignContent: "right"
+        alignContent: "flex-end"
     }
 });

@@ -8,7 +8,7 @@ const EF_Volume = ({ index }) => {
     const { values, setFieldValue } = useFormikContext();
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>Volume (m³):</Text>
             <View>
                 <NumericInput value={values.volume?.[index]} onChange={(text) => setFieldValue(`volume[${index}]`, text)} />
@@ -18,3 +18,7 @@ const EF_Volume = ({ index }) => {
 };
 
 export default EF_Volume;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

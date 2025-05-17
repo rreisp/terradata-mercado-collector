@@ -30,7 +30,7 @@ const EF_Roundness = ({ index }) => {
     }, [index, values.roundness, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Esfericidade` : `Roundness`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -48,3 +48,13 @@ const EF_Roundness = ({ index }) => {
 };
 
 export default EF_Roundness;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 },
+    checkbox: {
+        flexDirection: 'row',
+    },
+    left: {
+        paddingLeft: 3
+    },
+});

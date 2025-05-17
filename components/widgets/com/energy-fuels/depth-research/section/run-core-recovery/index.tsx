@@ -18,7 +18,7 @@ const EF_RunCoreRecovery = ({ index }) => {
     }, [index, values.runCoreRecovery, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Recuperação` : `Recovery`}:</Text>
             <View>
                 <NumericInput step={0.01} value={values.runCoreRecovery?.[index]} onChange={(text) => setFieldValue(`runCoreRecovery[${index}]`, text)} />
@@ -28,3 +28,7 @@ const EF_RunCoreRecovery = ({ index }) => {
 };
 
 export default EF_RunCoreRecovery;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

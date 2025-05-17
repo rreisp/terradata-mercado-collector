@@ -21,7 +21,7 @@ const EF_Clay = ({ index }) => {
     }, [index, values.clay, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Argila:` : `Clay:`}</Text>
 
             <View style={GlobalStyles.row}>
@@ -48,7 +48,7 @@ const EF_Clay = ({ index }) => {
 export default EF_Clay;
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
+    container: { marginTop: 5 },
     checkbox: {
         flexDirection: 'row',
     },

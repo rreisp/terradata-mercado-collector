@@ -8,7 +8,7 @@ import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_LithicFragments = ({ index }) => {
-    const { language } = useLanguage();        
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = Array.from({ length: 101 }, (_, i) => i);
     const valorInicial = false; // Primeiro valor disponível
@@ -21,7 +21,7 @@ const EF_LithicFragments = ({ index }) => {
     }, [index, values.lithicFragments, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fragmentos Líticos` : `Lithic Fragments`}:</Text>
 
             <View style={styles.row}>
@@ -50,7 +50,7 @@ export default EF_LithicFragments;
 const styles = StyleSheet.create({
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     col: { flex: 1, marginHorizontal: 1 },
-    container: { marginBottom: 10 },
+    container: { marginTop: 5 },
     input: {
         borderWidth: 1,
         borderColor: '#ccc',

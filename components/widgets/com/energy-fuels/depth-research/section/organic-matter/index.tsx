@@ -48,7 +48,7 @@ const EF_OrganicMatter = ({ index }) => {
 export default EF_OrganicMatter;
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
+    container: { marginTop: 5 },
     input: {
         borderWidth: 1,
         borderColor: '#ccc',

@@ -8,7 +8,7 @@ import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Micah = ({ index }) => {
-    const { language } = useLanguage();      
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = Array.from({ length: 101 }, (_, i) => i);
     const valorInicial = false; // Primeiro valor disponível
@@ -21,7 +21,7 @@ const EF_Micah = ({ index }) => {
     }, [index, values.clay, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Mica:` : `Micah:`}</Text>
 
             <View style={GlobalStyles.row}>
@@ -48,7 +48,7 @@ const EF_Micah = ({ index }) => {
 export default EF_Micah;
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
+    container: { marginTop: 5 },
     checkbox: {
         flexDirection: 'row',
     },

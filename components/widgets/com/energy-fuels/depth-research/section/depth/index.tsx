@@ -10,7 +10,7 @@ const EF_Depth = ({ index, editable }) => {
     const { values, setFieldValue } = useFormikContext();
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Profundidade` : `Depth`} (cm):</Text>
             <View style={GlobalStyles.row}>
                 <TextInput
@@ -41,3 +41,7 @@ const EF_Depth = ({ index, editable }) => {
 };
 
 export default EF_Depth;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

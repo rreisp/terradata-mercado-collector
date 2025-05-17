@@ -30,7 +30,7 @@ const EF_Moisture = ({ index }) => {
     }, [index, values.moisture, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Umidade` : `Moisture`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -48,3 +48,7 @@ const EF_Moisture = ({ index }) => {
 };
 
 export default EF_Moisture;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

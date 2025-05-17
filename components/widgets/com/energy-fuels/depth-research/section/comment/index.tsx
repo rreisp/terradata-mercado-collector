@@ -24,7 +24,7 @@ const EF_Notas = ({ index }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { marginBottom: 10 },
+    container: { marginTop: 5 },
     textarea: { borderWidth: 1, borderColor: "#ccc", padding: 8, borderRadius: 5 },
 });
 

@@ -63,7 +63,8 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginVertical: 5,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        flex: 1
     },
     warnButton: {
         backgroundColor: '#FFA500',
@@ -71,8 +72,8 @@ export default StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginVertical: 5,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        flex: 1
     },
     disabledInput: { backgroundColor: '#eee', borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0},   
     disabledButton: {

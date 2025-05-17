@@ -32,7 +32,7 @@ const EF_Wash = ({ index }) => {
     }, [index, values.wash, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -50,3 +50,7 @@ const EF_Wash = ({ index }) => {
 };
 
 export default EF_Wash;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

@@ -7,7 +7,7 @@ import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_HMS = ({ index }) => {
-    const { language } = useLanguage();        
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = Array.from({ length: 100 }, (_, i) => i + 1);
     const valorInicial = "";
@@ -19,13 +19,17 @@ const EF_HMS = ({ index }) => {
     }, [index, values.hms, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>%HMS:</Text>
             <View>
                 <NumericInput step={0.1} value={values.hms?.[index]} onChange={(text) => setFieldValue(`hms[${index}]`, text)} />
             </View>
-        </View>        
+        </View>
     );
 };
 
 export default EF_HMS;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 },
+});

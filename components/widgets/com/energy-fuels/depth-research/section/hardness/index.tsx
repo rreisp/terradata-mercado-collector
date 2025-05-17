@@ -34,7 +34,7 @@ const EF_Hardness = ({ index }) => {
     }, [index, values.hardness, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -52,3 +52,7 @@ const EF_Hardness = ({ index }) => {
 };
 
 export default EF_Hardness;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

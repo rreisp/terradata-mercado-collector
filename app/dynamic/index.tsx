@@ -216,7 +216,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "ef_coordinates":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "" )}</Text>
+                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
                         <View style={styles.pickerContainer}>
                             <EF_Coordinates />
                         </View>
@@ -225,7 +225,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
             case "ef_dates":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "" )}</Text>
+                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
                         <View style={styles.pickerContainer}>
                             <EF_Dates />
                         </View>
@@ -292,13 +292,14 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                                     )}
                                 </View>
                             ))}
-                            {/* <Button title="Enviar" onPress={handleSubmit} disabled={isSubmitting} /> */}
-                            <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
-                                <View style={GlobalStyles.row}>
-                                    <Icon name="save" size={16} color="#fff" style={styles.icon} />
-                                    <Text style={styles.buttonText}>{language === 'pt-BR' ? `SALVAR` : `SAVE`}</Text>
-                                </View>
-                            </TouchableOpacity>
+                            <View>
+                                <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
+                                    <View style={GlobalStyles.row}>
+                                        <Icon name="save" size={16} color="#fff" style={styles.icon} />
+                                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `SALVAR` : `SAVE`}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
                         </>
                     )}
                 </Formik>

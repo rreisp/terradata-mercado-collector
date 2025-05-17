@@ -21,7 +21,7 @@ const EF_Shells = ({ index }) => {
     }, [index, values.clay, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Conchas` : `Shells`}:</Text>
 
             <View style={GlobalStyles.row}>
@@ -50,7 +50,7 @@ export default EF_Shells;
 const styles = StyleSheet.create({
     row: { flexDirection: 'row', justifyContent: 'space-between' },
     col: { flex: 1, marginHorizontal: 1 },
-    container: { marginBottom: 10 },
+    container: { marginTop: 10 },
     checkbox: {
         flexDirection: 'row',
     },

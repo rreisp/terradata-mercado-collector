@@ -30,7 +30,7 @@ const EF_Induration = ({ index }) => {
     }, [index, values.induration, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -48,3 +48,8 @@ const EF_Induration = ({ index }) => {
 };
 
 export default EF_Induration;
+
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 },
+});

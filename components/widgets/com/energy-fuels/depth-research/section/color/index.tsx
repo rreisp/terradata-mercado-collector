@@ -68,7 +68,7 @@ const EF_Color = ({ index }) => {
     }, [index, values.color, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cor:` : `Color:`}</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -86,3 +86,7 @@ const EF_Color = ({ index }) => {
 };
 
 export default EF_Color;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});

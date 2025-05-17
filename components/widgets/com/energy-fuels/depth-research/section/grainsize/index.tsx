@@ -36,7 +36,7 @@ const EF_Grainsize = ({ index }) => {
     }, [index, values.grainsize, setFieldValue, valorInicial]);
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
@@ -54,3 +54,7 @@ const EF_Grainsize = ({ index }) => {
 };
 
 export default EF_Grainsize;
+
+const styles = StyleSheet.create({
+    container: { marginTop: 5 }
+});
