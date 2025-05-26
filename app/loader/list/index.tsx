@@ -1,5 +1,4 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/types';
 import { useLocalSearchParams } from "expo-router";
@@ -8,7 +7,7 @@ import DynamicList from '../../dynamic/list/index';
 type ListLoaderRouteProp = RouteProp<RootStackParamList, 'loader/list/index'>;
 
 const ListLoader = () => {
-    const route = useRoute<ListLoaderRouteProp>();
+    // const route = useRoute<ListLoaderRouteProp>();
     const formIdParam = useLocalSearchParams().formId;
     const formId = Array.isArray(formIdParam) ? formIdParam[0] : formIdParam;
 

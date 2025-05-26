@@ -15,6 +15,7 @@ import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates
 import { useLanguage } from "@/contexts/LanguageContext";
 import { values } from "@/constants/values";
 import { colors } from "@/constants/colors";
+import { useOperationMode } from '../../../contexts/OperationModeContext';
 
 type DynamicFormProps = {
     schemaId: string;
@@ -117,6 +118,8 @@ type FormikHelpers = {
 
 const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const { language } = useLanguage();
+    const isOffline = useOperationMode();
+
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
@@ -125,17 +128,27 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const [loading, setLoading] = useState(true);
 
 
-
+    console.warn(isOffline, schemaId);
     useEffect(() => {
-        let schema = null;
-        switch (schemaId) {
-            case 'energy-fuels.perfuracao':
-                schema = PerfuracaoSchema;
-                break;
-        }
-        setFormSchema(schema);
         const timer = setTimeout(() => setLoading(false), values.delay);
-        return () => clearTimeout(timer);
+        if (isOffline) {
+            fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setFormSchema(data);
+                    return () => clearTimeout(timer);
+                })
+                .catch((err) => console.error("Erro ao carregar schema:", err));
+        } else {
+            let schema = null;
+            switch (schemaId) {
+                case 'energy-fuels.perfuracao':
+                    schema = PerfuracaoSchema;
+                    break;
+            }
+            setFormSchema(schema);
+            return () => clearTimeout(timer);
+        }
     }, [schemaId]);
 
     const openList = () => {
@@ -239,7 +252,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
                         <View style={styles.pickerContainer}>
-                            <EF_Dates parent={field.id}/>
+                            <EF_Dates parent={field.id} />
                         </View>
                     </View>
                 );

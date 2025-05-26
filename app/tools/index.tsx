@@ -10,6 +10,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se quiser usar a versão 5
 import { colors } from '../../constants/colors';
 import { values } from "@/constants/values";
+import { OperationModeProvider, useOperationMode } from "@/contexts/OperationModeContext";
 
 type Form = {
     id: string;
@@ -20,6 +21,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/inde
 
 const Tools = () => {
     const { language } = useLanguage();
+    const isOnline = useOperationMode();
     const [availableForms, setAvailableForms] = useState<Form[]>([]);
     const [selectedForm, setSelectedForm] = useState<string | undefined>();
     const navigation = useNavigation<NavigationProp>();
@@ -39,14 +41,48 @@ const Tools = () => {
         navigation.navigate('index');
     };
 
+    // useEffect(() => {
+    //     const fetchFormConfig = async () => {
+    //         try {
+    //             const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
+    //             const json = await response.json();
+    //             setAvailableForms(json);
+    //         } catch (error) {
+    //             console.error('Erro ao buscar configurações dos formulários:', error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchFormConfig();
+    // }, []);
+
     useEffect(() => {
         Icon.loadFont();
-        const tools = [
-            {
-                "id": "energy-fuels.perfuracao",
-                "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
-            }
-        ];
+        let tools = [];
+
+        if (!isOnline) {
+            tools = [
+                {
+                    "id": "energy-fuels.perfuracao",
+                    "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
+                }
+            ];
+            setAvailableForms(tools);
+        } else {
+            const fetchFormConfig = async () => {
+                try {
+                    const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
+                    const tools = await response.json();
+                    setAvailableForms(tools);
+                } catch (error) {
+                    console.error('Erro ao buscar configurações dos formulários:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            fetchFormConfig();
+        }
         setAvailableForms(tools);
         const timer = setTimeout(() => setLoading(false), values.delay);
         return () => clearTimeout(timer);
@@ -61,46 +97,48 @@ const Tools = () => {
             }
             {!loading &&
                 <SafeAreaProvider>
-                    <View style={[GlobalStyles.container, styles.container]}>
-                        {availableForms.length === 0 ? (
-                            <Text>{(language === 'pt-BR' ? "Nenhum formulário disponível" : "No form available")}.</Text>
-                        ) : (
-                            <>
-                                <SafeAreaView>
-                                    <Image
-                                        source={require('../../assets/images/EnergyFuels-Logo.png')}
-                                        style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                                    />
-                                </SafeAreaView>
+                    <OperationModeProvider>
+                        <View style={[GlobalStyles.container, styles.container]}>
+                            {availableForms.length === 0 ? (
+                                <Text>{(language === 'pt-BR' ? "Nenhum formulário disponível" : "No form available")}.</Text>
+                            ) : (
+                                <>
+                                    <SafeAreaView>
+                                        <Image
+                                            source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                                        />
+                                    </SafeAreaView>
 
-                                <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
-                                <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
-                                <Picker
-                                    selectedValue={selectedForm}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setSelectedForm(itemValue);
-                                        if (itemValue) {
-                                            navigation.navigate('loader/list/index', { formId: itemValue });
-                                        }
-                                    }}
-                                    style={styles.picker}
-                                >
-                                    <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
-                                    {availableForms.map((form) => (
-                                        <Picker.Item key={form.id} label={form.title} value={form.id} />
-                                    ))}
-                                </Picker>
+                                    <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
+                                    <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
+                                    <Picker
+                                        selectedValue={selectedForm}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            setSelectedForm(itemValue);
+                                            if (itemValue) {
+                                                navigation.navigate('loader/list/index', { formId: itemValue });
+                                            }
+                                        }}
+                                        style={styles.picker}
+                                    >
+                                        <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
+                                        {availableForms.map((form) => (
+                                            <Picker.Item key={form.id} label={form.title} value={form.id} />
+                                        ))}
+                                    </Picker>
 
-                                <View style={[GlobalStyles.row, styles.goBack]}>
-                                    <View style={GlobalStyles.col12}>
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
-                                            <Icon name="chevron-circle-left" size={16} color="#fff" />
-                                        </Pressable>
+                                    <View style={[GlobalStyles.row, styles.goBack]}>
+                                        <View style={GlobalStyles.col12}>
+                                            <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
+                                                <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                            </Pressable>
+                                        </View>
                                     </View>
-                                </View>
-                            </>
-                        )}
-                    </View>
+                                </>
+                            )}
+                        </View>
+                    </OperationModeProvider>
                 </SafeAreaProvider>
             }
         </>

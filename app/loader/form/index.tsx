@@ -4,6 +4,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/types';
 import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
+import { OperationModeProvider } from '@/contexts/OperationModeContext';
 
 type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
 
@@ -74,7 +75,9 @@ const FormLoader = () => {
     const formId = Array.isArray(formIdParam) ? formIdParam[0] : formIdParam;
 
     return (
-        <DynamicForm schemaId={formId} extract={extract} />
+        <OperationModeProvider>
+            <DynamicForm schemaId={formId} extract={extract} />
+        </OperationModeProvider>
     );
 };
 
