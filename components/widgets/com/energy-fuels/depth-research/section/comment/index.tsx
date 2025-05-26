@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Notas = ({ index }) => {
-    const { language } = useLanguage();     
+const EF_Notas = ({ index, parent }) => {
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
+    const valorInicial = '';
+
+    useEffect(() => {
+        if (!values?.[parent]?.comment?.[index]) {
+            setFieldValue(`${parent}.comments[${index}]`, valorInicial);
+        }
+    }, [index, values?.[parent]?.comments?.[index], setFieldValue, valorInicial]);    
 
     return (
         <View style={styles.container}>
@@ -16,8 +23,8 @@ const EF_Notas = ({ index }) => {
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
-                value={values.colorNotas?.[index] || ''}
-                onChangeText={(text) => setFieldValue(`comment[${index}]`, text)}
+                value={values?.[parent]?.comment?.[index] || valorInicial}
+                onChangeText={(text) => setFieldValue(`${parent}.comment[${index}]`, text)}
             />
         </View>
     );

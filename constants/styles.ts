@@ -41,7 +41,7 @@ export default StyleSheet.create({
         marginBottom: 2
     },
     title: {
-        fontSize: 36,
+        fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
     },
@@ -55,14 +55,13 @@ export default StyleSheet.create({
     logo: {
         width: 300,
     },
-    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0},
+    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0 },
     primaryButton: {
         backgroundColor: '#007bff',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginVertical: 5,
         fontWeight: 'bold',
         flex: 1
     },
@@ -75,17 +74,22 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         flex: 1
     },
-    disabledInput: { backgroundColor: '#eee', borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0},   
+    disabledInput: { backgroundColor: '#eee', borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0 },
     disabledButton: {
         backgroundColor: '#ccc',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginVertical: 5,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        flex: 1
     },
-    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5},
-    picker: { borderWidth: 0, padding: 8}
+    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
+    centered: {
+        flex: 1, // ocupa toda a tela
+        justifyContent: 'center', // alinha verticalmente
+        alignItems: 'center',     // alinha horizontalmente
+    },
+    picker: { borderWidth: 0, padding: 8 },
     // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
 });

@@ -3,35 +3,34 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import Checkbox from 'expo-checkbox';
 import GlobalStyles from '../../../../../../../constants/styles';
-import { Picker } from '@react-native-picker/picker';
 import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_LithicFragments = ({ index }) => {
+const EF_LithicFragments = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = Array.from({ length: 101 }, (_, i) => i);
-    const valorInicial = false; // Primeiro valor disponível
     const [isChecked, setIsChecked] = useState(false);
 
+    const valorInicial = 0;
+
     useEffect(() => {
-        if (!values.lithicFragments || !values.lithicFragments[index]) {
-            setFieldValue(`lithicFragments[${index}]`, valorInicial);
+        if (!values?.[parent]?.lithicFragmentsPct || !values?.[parent]?.lithicFragmentsPct[index]) {
+            setFieldValue(`${parent}.lithicFragmentsPct[${index}]`, valorInicial);
         }
-    }, [index, values.lithicFragments, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.lithicFragmentsPct, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fragmentos Líticos` : `Lithic Fragments`}:</Text>
 
-            <View style={styles.row}>
+            <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={isChecked}
                         onValueChange={() => {
                             !isChecked ?
-                                setFieldValue(`lithicFragmentsPct[${index}]`, "0,50") :
-                                setFieldValue(`lithicFragmentsPct[${index}]`, "0");
+                                setFieldValue(`${parent}.lithicFragmentsPct[${index}]`, "0,5") :
+                                setFieldValue(`${parent}.lithicFragmentsPct[${index}]`, "0");
                             setIsChecked(!isChecked);
                         }}
                         color={isChecked ? '#4630EB' : undefined}
@@ -39,7 +38,10 @@ const EF_LithicFragments = ({ index }) => {
                     />
                 </View>
                 <View style={[GlobalStyles.col11]}>
-                    <NumericInput value={values.lithicFragmentsPct?.[index]} onChange={(text) => setFieldValue(`lithicFragmentsPct[${index}]`, text)} disabled={!isChecked} />
+                    <NumericInput 
+                    value={values?.[parent]?.lithicFragmentsPct?.[index] || valorInicial} 
+                    onChange={(text) => setFieldValue(`${parent}.lithicFragmentsPct[${index}]`, text)} disabled={!isChecked}                 
+                     />
                 </View>
             </View>
         </View>

@@ -7,18 +7,18 @@ import { Picker } from '@react-native-picker/picker';
 import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Micah = ({ index }) => {
+const EF_Micah = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = Array.from({ length: 101 }, (_, i) => i);
-    const valorInicial = false; // Primeiro valor disponível
     const [isChecked, setIsChecked] = useState(false);
 
+    const valorInicial = 0;
+
     useEffect(() => {
-        if (!values.clay || !values.clay[index]) {
-            setFieldValue(`clay[${index}]`, valorInicial);
+        if (!values?.[parent]?.micahPct || !values?.[parent]?.micahPct[index]) {
+            setFieldValue(`${parent}.micahPct[${index}]`, valorInicial);
         }
-    }, [index, values.clay, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.micahPct, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
@@ -30,8 +30,8 @@ const EF_Micah = ({ index }) => {
                         value={isChecked}
                         onValueChange={() => {
                             !isChecked ?
-                                setFieldValue(`micahPct[${index}]`, "0,5") :
-                                setFieldValue(`micahPct[${index}]`, "0");
+                                setFieldValue(`${parent}.micahPct[${index}]`, "0,5") :
+                                setFieldValue(`${parent}.micahPct[${index}]`, "0");
                             setIsChecked(!isChecked);
                         }}
                         color={isChecked ? '#4630EB' : undefined}
@@ -39,7 +39,10 @@ const EF_Micah = ({ index }) => {
                     />
                 </View>
                 <View style={[GlobalStyles.col11]}>
-                    <NumericInput value={values.micahPct?.[index]} onChange={(text) => setFieldValue(`micahPct[${index}]`, text)} disabled={!isChecked} />
+                    <NumericInput 
+                    value={values?.[parent]?.micahPct?.[index] || valorInicial} 
+                    onChange={(text) => setFieldValue(`${parent}.micahPct[${index}]`, text)} disabled={!isChecked}                 
+                     />
                 </View>
             </View>
         </View>

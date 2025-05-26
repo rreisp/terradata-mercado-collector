@@ -8,7 +8,13 @@ import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import EF_DepthResearch from "@/components/widgets/com/energy-fuels/depth-research";
 import GlobalStyles from '../../../constants/styles';
-import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
+import Icon from 'react-native-vector-icons/FontAwesome';
+import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
+import EF_Coordinates from "@/components/widgets/com/energy-fuels/depth-research/coordinates";
+import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { values } from "@/constants/values";
+import { colors } from "@/constants/colors";
 
 type DynamicFormProps = {
     schemaId: string;
@@ -109,18 +115,16 @@ type FormikHelpers = {
     onChange: (id: string, value: any) => void;
 };
 
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
-import EF_Coordinates from "@/components/widgets/com/energy-fuels/depth-research/coordinates";
-import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates";
-import { useLanguage } from "@/contexts/LanguageContext";
-
-const DynamicForm = ({ schemaId }: DynamicFormProps) => {
+const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const { language } = useLanguage();
-    const navigation = useNavigation();    
+    const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
+    const [loading, setLoading] = useState(true);
+
+
 
     useEffect(() => {
         let schema = null;
@@ -129,19 +133,21 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                 schema = PerfuracaoSchema;
                 break;
         }
-        setFormSchema(schema)
+        setFormSchema(schema);
+        const timer = setTimeout(() => setLoading(false), values.delay);
+        return () => clearTimeout(timer);
     }, [schemaId]);
 
     const openList = () => {
         navigation.navigate('loader/list/index', { formId: schemaId });
-    };    
+    };
 
-    if (!formSchema) return <ActivityIndicator style={{ marginTop: 20 }} />;
+    // if (!formSchema) return <ActivityIndicator style={{ marginTop: 20 }} />;
 
     const initialValues: { [key: string]: any } = {};
     const validationShape: { [key: string]: Yup.AnySchema } = {};
 
-    formSchema.rows.forEach(row =>
+    formSchema?.rows.forEach(row =>
         row.columns.forEach(({ field }) => {
             initialValues[field.id] = "";
 
@@ -215,7 +221,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                         <View style={styles.pickerContainer}>
-                            <EF_DepthResearch />
+                            <EF_DepthResearch parent={field.id} />
                         </View>
                     </View>
                 );
@@ -233,7 +239,7 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
                         <View style={styles.pickerContainer}>
-                            <EF_Dates />
+                            <EF_Dates parent={field.id}/>
                         </View>
                     </View>
                 );
@@ -244,87 +250,96 @@ const DynamicForm = ({ schemaId }: DynamicFormProps) => {
 
 
     return (
-        <SafeAreaProvider>
-            <ScrollView style={GlobalStyles.container}>
-                <Formik
-                    initialValues={initialValues}
-                    // validationSchema={Yup.object(validationShape)}
-                    onSubmit={(values) => {
-                        console.log(JSON.stringify(values, null, 2));
-                    }}
-                // onSubmit={(values) => {
-                //     const mensagem = Object.entries(values)
-                //         .map(([chave, valor]) => `${chave}: ${valor}`)
-                //         .join('\n');
-                //     alert(mensagem);
-                // }}            
+        <>
+            {loading &&
+                <View style={GlobalStyles.centered}>
+                    <ActivityIndicator size="large" color={colors.blue} />
+                </View>
+            }
+            {!loading &&
+                <SafeAreaProvider>
+                    <ScrollView style={GlobalStyles.container}>
+                        <Formik
+                            initialValues={initialValues}
+                            // validationSchema={Yup.object(validationShape)}
+                            onSubmit={(values) => {
+                                extract(values);
+                            }}
+                        // onSubmit={(values) => {
+                        //     const mensagem = Object.entries(values)
+                        //         .map(([chave, valor]) => `${chave}: ${valor}`)
+                        //         .join('\n');
+                        //     alert(mensagem);
+                        // }}            
 
-                // onSubmit={(values, { setSubmitting }) => {
-                //     fetch(formSchema.url, {
-                //         method: formSchema.method,
-                //         headers: { 'Content-Type': 'application/json' },
-                //         body: JSON.stringify(values)
-                //     })
-                //         .then(res => res.json())
-                //         .then(() => {
-                //             setModalContent(formSchema.modal.success.message);
-                //             setModalVisible(true);
-                //         })
-                //         .catch(() => {
-                //             setModalContent(formSchema.modal.error.message);
-                //             setModalVisible(true);
-                //         })
-                //         .finally(() => setSubmitting(false));
-                // }}
-                >
-                    {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
-                        <>
-                            <View style={GlobalStyles.row}>
-                                <View style={GlobalStyles.col1}>
-                                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openList}>
-                                        <Icon name="chevron-circle-left" size={16} color="#fff" />
-                                    </Pressable>
-                                </View>
-                            </View>
-                            <View style={styles.container}>
-                                <Image
-                                    source={require('../../../assets/images/EnergyFuels-Logo.png')}
-                                    style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                                />
-
-                                <Text style={GlobalStyles.title}>{formSchema.title[language]}</Text>
-                            </View>
-                            <Text style={styles.description}>{formSchema.description[language]}</Text>
-                            {formSchema.rows.map((row, rowIndex) => (
-                                <View key={rowIndex}>
-                                    {row.columns.map(({ field }) =>
-                                        renderField(field, {
-                                            value: values[field.id],
-                                            onChange: (id, val) => setFieldValue(id, val),
-                                        })
-                                    )}
-                                </View>
-                            ))}
-                            <View>
-                                <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
+                        // onSubmit={(values, { setSubmitting }) => {
+                        //     fetch(formSchema.url, {
+                        //         method: formSchema.method,
+                        //         headers: { 'Content-Type': 'application/json' },
+                        //         body: JSON.stringify(values)
+                        //     })
+                        //         .then(res => res.json())
+                        //         .then(() => {
+                        //             setModalContent(formSchema.modal.success.message);
+                        //             setModalVisible(true);
+                        //         })
+                        //         .catch(() => {
+                        //             setModalContent(formSchema.modal.error.message);
+                        //             setModalVisible(true);
+                        //         })
+                        //         .finally(() => setSubmitting(false));
+                        // }}
+                        >
+                            {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
+                                <>
                                     <View style={GlobalStyles.row}>
-                                        <Icon name="save" size={16} color="#fff" style={styles.icon} />
-                                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `SALVAR` : `SAVE`}</Text>
+                                        <View style={GlobalStyles.col1}>
+                                            <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openList}>
+                                                <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                            </Pressable>
+                                        </View>
                                     </View>
-                                </TouchableOpacity>
-                            </View>
-                        </>
-                    )}
-                </Formik>
+                                    <View style={styles.container}>
+                                        <Image
+                                            source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                                        />
 
-                <Modal isVisible={modalVisible}>
-                    <View style={styles.modal}>
-                        <Text>{modalContent}</Text>
-                        <Button title="Fechar" onPress={() => setModalVisible(false)} />
-                    </View>
-                </Modal>
-            </ScrollView>
-        </SafeAreaProvider>
+                                        <Text style={GlobalStyles.title}>{formSchema.title[language]}</Text>
+                                    </View>
+                                    <Text style={styles.description}>{formSchema.description[language]}</Text>
+                                    {formSchema.rows.map((row, rowIndex) => (
+                                        <View key={rowIndex}>
+                                            {row.columns.map(({ field }) =>
+                                                renderField(field, {
+                                                    value: values[field.id],
+                                                    onChange: (id, val) => setFieldValue(id, val),
+                                                })
+                                            )}
+                                        </View>
+                                    ))}
+                                    <View>
+                                        <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
+                                            <View style={GlobalStyles.row}>
+                                                <Icon name="save" size={16} color="#fff" style={styles.icon} />
+                                                <Text style={styles.buttonText}>{language === 'pt-BR' ? `SALVAR` : `SAVE`}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </>
+                            )}
+                        </Formik>
+
+                        <Modal isVisible={modalVisible}>
+                            <View style={styles.modal}>
+                                <Text>{modalContent}</Text>
+                                <Button title="Fechar" onPress={() => setModalVisible(false)} />
+                            </View>
+                        </Modal>
+                    </ScrollView>
+                </SafeAreaProvider>
+            }
+        </>
     );
 };
 

@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Dates = () => {
+const EF_Dates = ({parent}) => {
     const { language } = useLanguage();    
     const { values, setFieldValue } = useFormikContext();
 
@@ -16,8 +16,8 @@ const EF_Dates = () => {
                 <TextInput
                     style={GlobalStyles.input}
                     keyboardType="numeric"
-                    value={values.easting || ''}
-                    onChangeText={(text) => setFieldValue(`start`, text)}
+                    value={values?.[parent]?.start || ''}
+                    onChangeText={(text) => setFieldValue(`${parent}.start`, text)}
                 />
             </View>
             <View style={GlobalStyles.col6}>
@@ -25,8 +25,8 @@ const EF_Dates = () => {
                 <TextInput
                     style={GlobalStyles.input}
                     keyboardType="numeric"
-                    value={values.northing || ''}
-                    onChangeText={(text) => setFieldValue(`end`, text)}
+                    value={values?.[parent]?.end || ''}
+                    onChangeText={(text) => setFieldValue(`${parent}.end`, text)}
                 />
             </View>          
         </View>

@@ -3,22 +3,21 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import Checkbox from 'expo-checkbox';
 import GlobalStyles from '../../../../../../../constants/styles';
-import { Picker } from '@react-native-picker/picker';
 import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Clay = ({ index }) => {
+const EF_Clay = ({ index, parent }) => {
     const { language } = useLanguage();    
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = Array.from({ length: 101 }, (_, i) => i);
-    const valorInicial = false; // Primeiro valor disponível
     const [isChecked, setIsChecked] = useState(false);
+    
+    const valorInicial = 0;
 
     useEffect(() => {
-        if (!values.clay || !values.clay[index]) {
-            setFieldValue(`clay[${index}]`, valorInicial);
+        if (!values?.[parent]?.clayPct || !values?.[parent]?.clayPct[index]) {
+            setFieldValue(`${parent}.clayPct[${index}]`, valorInicial);
         }
-    }, [index, values.clay, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.clayPct, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
@@ -30,8 +29,8 @@ const EF_Clay = ({ index }) => {
                         value={isChecked}
                         onValueChange={() => {
                             !isChecked ?
-                                setFieldValue(`clayPct[${index}]`, "0,5") :
-                                setFieldValue(`clayPct[${index}]`, "0");
+                                setFieldValue(`${parent}.clayPct[${index}]`, "0,5") :
+                                setFieldValue(`${parent}.clayPct[${index}]`, "0");
                             setIsChecked(!isChecked);
                         }}
                         color={isChecked ? '#4630EB' : undefined}
@@ -39,7 +38,10 @@ const EF_Clay = ({ index }) => {
                     />
                 </View>
                 <View style={[GlobalStyles.col11]}>
-                    <NumericInput value={values.clayPct?.[index]} onChange={(text) => setFieldValue(`clayPct[${index}]`, text)} disabled={!isChecked} />
+                    <NumericInput 
+                    value={values?.[parent]?.clayPct?.[index] || valorInicial} 
+                    onChange={(text) => setFieldValue(`${parent}.clayPct[${index}]`, text)} disabled={!isChecked}                 
+                     />
                 </View>
             </View>
         </View>

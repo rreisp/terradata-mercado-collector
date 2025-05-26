@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, s
 import GlobalStyles from '../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_DepthResearch = ({ onChange }) => {
+const EF_DepthResearch = ({ parent, onChange }) => {
     const { language } = useLanguage();        
     const [elements, setElements] = useState<{ id: number }[]>([]);
 
@@ -45,7 +45,7 @@ const EF_DepthResearch = ({ onChange }) => {
             ) : (
                 elements.map((el, index) => (
                     <View key={el.id}>
-                        <Section index={index} el={el} size={elements.length} />
+                        <Section index={index} el={el} size={elements.length} parent={parent} />
                         <View>
                             {index == elements.length - 1 &&
                                 <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton)]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>

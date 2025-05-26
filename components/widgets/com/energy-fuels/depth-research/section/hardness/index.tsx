@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Hardness = ({ index }) => {
+const EF_Hardness = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
@@ -28,18 +28,18 @@ const EF_Hardness = ({ index }) => {
     const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
-        if (!values.hardness || !values.hardness[index]) {
-            setFieldValue(`hardness[${index}]`, valorInicial);
+        if (!values?.[parent]?.hardness || !values?.[parent]?.hardness[index]) {
+            setFieldValue(`${parent}.hardness[${index}]`, valorInicial);
         }
-    }, [index, values.hardness, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.hardness, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
-                    selectedValue={values.hardness?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`hardness[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.hardness?.[index] || valorInicial}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (
@@ -50,6 +50,7 @@ const EF_Hardness = ({ index }) => {
         </View>
     );
 };
+
 
 export default EF_Hardness;
 

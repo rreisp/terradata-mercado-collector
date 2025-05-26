@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Moisture = ({ index }) => {
+const EF_Moisture = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
@@ -24,18 +24,18 @@ const EF_Moisture = ({ index }) => {
     const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
-        if (!values.moisture || !values.moisture[index]) {
-            setFieldValue(`moisture[${index}]`, valorInicial);
+        if (!values?.[parent]?.moisture || !values?.[parent]?.moisture[index]) {
+            setFieldValue(`${parent}.moisture[${index}]`, valorInicial);
         }
-    }, [index, values.moisture, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.moisture, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Umidade` : `Moisture`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
-                    selectedValue={values.moisture?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`moisture[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.moisture?.[index] || valorInicial}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.moisture[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

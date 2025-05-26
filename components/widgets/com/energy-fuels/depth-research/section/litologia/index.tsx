@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFormikContext, FieldArray } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import NumericInput from '../../../../../input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Picker } from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const EF_Litologia = ({ index }) => {
+const EF_Litologia = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
 
@@ -40,45 +40,60 @@ const EF_Litologia = ({ index }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language][0].toString();
 
-    // Garante que o array litologias[index] sempre exista
+    const pathBase = `${parent}.lithologies`;
+
+    const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
+
+    // Garante que o array `${parent}.lithologies[index]` sempre exista
     useEffect(() => {
-        if (!Array.isArray(values.litologias?.[index])) {
-            const newLitologias = [...(values.litologias || [])];
-            newLitologias[index] = [];
-            setFieldValue('litologias', newLitologias);
+        const currentLithologies = values?.[parent]?.lithologies ?? [];
+        if (!Array.isArray(currentLithologies[index])) {
+            const updatedLithologies = [...currentLithologies];
+            updatedLithologies[index] = [];
+            setFieldValue(`${parent}.lithologies`, updatedLithologies);
         }
-    }, [index, values.litologias, setFieldValue]);
+    }, [index, parent, setFieldValue, values]);
 
-    const litologiasGrupo = values.litologias?.[index] ?? [];
+
+    // console.log(values?.[parent].depth[index].from);
 
     return (
         <View style={styles.container}>
-            <FieldArray name={`litologias[${index}]`}>
+            <FieldArray name={`${pathBase}[${index}]`}>
                 {({ push, remove }) => (
                     <>
                         <View style={GlobalStyles.row}>
                             <View style={GlobalStyles.col11}>
-                                <Text style={styles.label}>{language === 'pt-BR' ? `Litologia` : `Lithology`}:</Text>
+                                <Text style={styles.label}>
+                                    {language === 'pt-BR' ? `Litologia` : `Lithology`}:
+                                </Text>
                             </View>
                             <View style={GlobalStyles.col1}>
-                                <TouchableOpacity style={GlobalStyles.primaryButton} onPress={() => push({ de: '', ate: '', tipo: '' })}>
+                                <TouchableOpacity
+                                    style={GlobalStyles.primaryButton}
+                                    onPress={() => push({ de: '', ate: '', tipo: '' })}
+                                >
                                     <Icon name="plus" size={16} color="#fff" style={styles.icon} />
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        {litologiasGrupo.length === 0 ? (
-                            <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum item adicionado` : `No item found`}.</Text>
+
+                        {lithologiesArray.length === 0 ? (
+                            <Text style={styles.emptyText}>
+                                {language === 'pt-BR' ? `Nenhum item adicionado` : `No item found`}.
+                            </Text>
                         ) : (
-                            litologiasGrupo.map((_, subIndex) => (
+                            lithologiesArray.map((_, subIndex) => (
                                 <View key={subIndex} style={[GlobalStyles.row, styles.row]}>
                                     <View style={GlobalStyles.col2}>
                                         <NumericInput
-                                            placeholder={(language === 'pt-BR' ? `De` : `From`)}
-                                            value={litologiasGrupo[subIndex]?.de || ''}
+                                            placeholder={language === 'pt-BR' ? `De` : `From`}
+                                            value={lithologiesArray[subIndex]?.de || ''}
                                             onChange={(text) =>
-                                                setFieldValue(`litologias[${index}][${subIndex}].de`, text)}
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].de`, text)
+                                            }
                                             step={1}
                                             min={0.5}
                                             max={2.5}
@@ -88,10 +103,11 @@ const EF_Litologia = ({ index }) => {
 
                                     <View style={GlobalStyles.col2}>
                                         <NumericInput
-                                            placeholder={(language === 'pt-BR' ? `Até` : `To`)}
-                                            value={litologiasGrupo[subIndex]?.ate || ''}
+                                            placeholder={language === 'pt-BR' ? `Até` : `To`}
+                                            value={lithologiesArray[subIndex]?.ate || ''}
                                             onChange={(text) =>
-                                                setFieldValue(`litologias[${index}][${subIndex}].ate`, text)}
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].ate`, text)
+                                            }
                                             step={1}
                                             min={0.5}
                                             max={2.5}
@@ -102,9 +118,14 @@ const EF_Litologia = ({ index }) => {
                                     <View style={GlobalStyles.col7}>
                                         <View style={GlobalStyles.pickerView}>
                                             <Picker
-                                                selectedValue={values.litologias?.[index][subIndex].tipo || valorInicial}
+                                                selectedValue={
+                                                    lithologiesArray[subIndex]?.tipo || valorInicial
+                                                }
                                                 onValueChange={(itemValue) =>
-                                                    setFieldValue(`litologias[${index}][${subIndex}].tipo`, itemValue)
+                                                    setFieldValue(
+                                                        `${pathBase}[${index}][${subIndex}].tipo`,
+                                                        itemValue
+                                                    )
                                                 }
                                                 style={GlobalStyles.picker}
                                             >
@@ -115,8 +136,11 @@ const EF_Litologia = ({ index }) => {
                                         </View>
                                     </View>
 
-                                    <View style={[GlobalStyles.col1]}>
-                                        <TouchableOpacity style={GlobalStyles.warnButton} onPress={() => remove(subIndex)}>
+                                    <View style={GlobalStyles.col1}>
+                                        <TouchableOpacity
+                                            style={GlobalStyles.warnButton}
+                                            onPress={() => remove(subIndex)}
+                                        >
                                             <Icon name="trash" size={16} color="#fff" />
                                         </TouchableOpacity>
                                     </View>

@@ -26,15 +26,18 @@ import EF_Wash from './wash';
 import EF_Litologia from './litologia';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const Section = ({ el, index, size }) => {
+const Section = ({ el, index, size, parent }) => {
     const { language } = useLanguage();
     const [collapsed, setCollapsed] = useState(true);
     const { values, setFieldValue } = useFormikContext();
 
     useEffect(() => {
-        setFieldValue(`depths[${index}].start`, (index == 0 ? 0 : values.depths?.[index - 1].end));
-        setFieldValue(`depths[${index}].end`, (index == 0 ? 100 : Number(values.depths?.[index - 1].end) + 100));
+        setFieldValue(`${parent}.depth[${index}].from`, (index == 0 ? 0 : values?.[parent]?.depth?.[index - 1].to));
+        setFieldValue(`${parent}.depth[${index}].to`, (index == 0 ? 100 : Number(values?.[parent]?.depth?.[index - 1].to) + 100));
     }, []);
+
+
+    // setFieldValue(`${index}.depth[${index}].to`, (index == 0 ? 100 : values?.[parent]?.depth?.[index - 1].to) + 100));
 
     return (
         <View style={styles.bordered}>
@@ -43,7 +46,7 @@ const Section = ({ el, index, size }) => {
                     <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `INTERVALO ${index + 1}` : `INTERVAL ${index + 1}`}</Text>
                 </View>
                 <View style={GlobalStyles.col8}>
-                    <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values.depths?.[index]?.start}cm {language === 'pt-BR' ? `até` : `to`} {values.depths?.[index]?.end || ''}cm</Text>
+                    <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values?.[parent]?.depth?.[index]?.from}cm {language === 'pt-BR' ? `até` : `to`} {values?.[parent]?.depth?.[index]?.to || ''}cm</Text>
                 </View>
                 <View style={GlobalStyles.col1, styles.right}>
                     <Icon
@@ -60,6 +63,7 @@ const Section = ({ el, index, size }) => {
                             <EF_Depth
                                 index={index}
                                 editable={index === size - 1}
+                                parent={parent}
                             // value={depths[index]}
                             // onChange={(val) => {
                             //     const novos = [...depths];
@@ -74,6 +78,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_RunCoreRecovery
                                 index={index}
+                                parent={parent}
                             // value={runCoreRecovery[index]}
                             // onChange={(val) => {
                             //     const novos = [...runCoreRecovery];
@@ -85,6 +90,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Moisture
                                 index={index}
+                                parent={parent}
                             // value={volume[index]}
                             // onChange={(val) => {
                             //     const novos = [...volume];
@@ -99,6 +105,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Volume
                                 index={index}
+                                parent={parent}
                             // value={volume[index]}
                             // onChange={(val) => {
                             //     const novos = [...volume];
@@ -110,6 +117,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Hardness
                                 index={index}
+                                parent={parent}
                             // value={hardness[index]}
                             // onChange={(val) => {
                             //     const novos = [...hardness];
@@ -124,6 +132,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Wash
                                 index={index}
+                                parent={parent}
                             // value={wash[index]}
                             // onChange={(val) => {
                             //     const novos = [...wash];
@@ -135,6 +144,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Color
                                 index={index}
+                                parent={parent}
                             // value={wash[index]}
                             // onChange={(val) => {
                             //     const novos = [...wash];
@@ -149,6 +159,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Induration
                                 index={index}
+                                parent={parent}
                             // value={induration[index]}
                             // onChange={(val) => {
                             //     const novos = [...induration];
@@ -160,6 +171,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Grainsize
                                 index={index}
+                                parent={parent}
                             // value={grainsize[index]}
                             // onChange={(val) => {
                             //     const novos = [...grainsize];
@@ -174,6 +186,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Sorting
                                 index={index}
+                                parent={parent}
                             // value={sorting[index]}
                             // onChange={(val) => {
                             //     const novos = [...sorting];
@@ -185,6 +198,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Roundness
                                 index={index}
+                                parent={parent}
                             // value={roundness[index]}
                             // onChange={(val) => {
                             //     const novos = [...roundness];
@@ -199,6 +213,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Clay
                                 index={index}
+                                parent={parent}
                             // value={clay[index]}
                             // onChange={(val) => {
                             //     const novos = [...clay];
@@ -211,6 +226,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Micah
                                 index={index}
+                                parent={parent}
                             // value={clay[index]}
                             // onChange={(val) => {
                             //     const novos = [...clay];
@@ -225,6 +241,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Shells
                                 index={index}
+                                parent={parent}
                             // value={clay[index]}
                             // onChange={(val) => {
                             //     const novos = [...clay];
@@ -237,6 +254,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_OrganicMatter
                                 index={index}
+                                parent={parent}
                             // value={clay[index]}
                             // onChange={(val) => {
                             //     const novos = [...clay];
@@ -251,6 +269,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_LithicFragments
                                 index={index}
+                                parent={parent}
                             // value={clay[index]}
                             // onChange={(val) => {
                             //     const novos = [...clay];
@@ -263,6 +282,7 @@ const Section = ({ el, index, size }) => {
                         <View style={GlobalStyles.col}>
                             <EF_HMS
                                 index={index}
+                                parent={parent}
                             // value={hms[index]}
                             // onChange={(val) => {
                             //     const novos = [...hms];
@@ -275,17 +295,19 @@ const Section = ({ el, index, size }) => {
 
                     <EF_Litologia
                         index={index}
-                    // value={litologias[index]}
+                        parent={parent}
+                    // value={lithologies[index]}
                     // onChange={(val) => {
-                    //     const novos = [...litologias];
+                    //     const novos = [...lithologies];
                     //     novos[index] = val;
-                    //     setLitologias(novos);
+                    //     setlithologies(novos);
                     // }}
                     />
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Notas
                                 index={index}
+                                parent={parent}
                             // value={estruturaNotas[index]}
                             // onChange={(val) => {
                             //     const novos = [...estruturaNotas];

@@ -7,22 +7,22 @@ import { Picker } from '@react-native-picker/picker';
 import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_OrganicMatter = ({ index }) => {
+const EF_OrganicMatter = ({ index, parent }) => {
     const { language } = useLanguage();    
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = Array.from({ length: 101 }, (_, i) => i);
-    const valorInicial = false; // Primeiro valor disponível
     const [isChecked, setIsChecked] = useState(false);
 
+    const valorInicial = 0;
+
     useEffect(() => {
-        if (!values.organicMatter || !values.organicMatter[index]) {
-            setFieldValue(`organicMatter[${index}]`, valorInicial);
+        if (!values?.[parent]?.organicMatterPct || !values?.[parent]?.organicMatterPct[index]) {
+            setFieldValue(`${parent}.organicMatterPct[${index}]`, valorInicial);
         }
-    }, [index, values.organicMatter, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.organicMatterPct, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Matéria Orgânica` : `Organic Matter`}:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Matéria Orgânica:` : `Organic Matter:`}</Text>
 
             <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
@@ -30,8 +30,8 @@ const EF_OrganicMatter = ({ index }) => {
                         value={isChecked}
                         onValueChange={() => {
                             !isChecked ?
-                                setFieldValue(`organicMatterPct[${index}]`, "0,50") :
-                                setFieldValue(`organicMatterPct[${index}]`, "0");
+                                setFieldValue(`${parent}.organicMatterPct[${index}]`, "0,5") :
+                                setFieldValue(`${parent}.organicMatterPct[${index}]`, "0");
                             setIsChecked(!isChecked);
                         }}
                         color={isChecked ? '#4630EB' : undefined}
@@ -39,7 +39,10 @@ const EF_OrganicMatter = ({ index }) => {
                     />
                 </View>
                 <View style={[GlobalStyles.col11]}>
-                    <NumericInput value={values.organicMatterPct?.[index]} onChange={(text) => setFieldValue(`organicMatterPct[${index}]`, text)} disabled={!isChecked} />
+                    <NumericInput 
+                    value={values?.[parent]?.organicMatterPct?.[index] || valorInicial} 
+                    onChange={(text) => setFieldValue(`${parent}.organicMatterPct[${index}]`, text)} disabled={!isChecked}                 
+                     />
                 </View>
             </View>
         </View>

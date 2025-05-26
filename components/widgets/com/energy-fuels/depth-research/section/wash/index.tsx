@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Wash = ({ index }) => {
+const EF_Wash = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
@@ -22,22 +22,22 @@ const EF_Wash = ({ index }) => {
             "Very hard"
         ]
     };
-
+    
     const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
-        if (!values.wash || !values.wash[index]) {
-            setFieldValue(`wash[${index}]`, valorInicial);
+        if (!values?.[parent]?.wash || !values?.[parent]?.wash[index]) {
+            setFieldValue(`${parent}.wash[${index}]`, valorInicial);
         }
-    }, [index, values.wash, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.wash, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
-                    selectedValue={values.wash?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`wash[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.wash?.[index] || valorInicial}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

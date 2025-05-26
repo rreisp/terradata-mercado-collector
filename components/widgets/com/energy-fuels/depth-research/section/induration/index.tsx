@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Induration = ({ index }) => {
+const EF_Induration = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
@@ -24,18 +24,18 @@ const EF_Induration = ({ index }) => {
     const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
-        if (!values.induration || !values.induration[index]) {
-            setFieldValue(`induration[${index}]`, valorInicial);
+        if (!values?.[parent]?.induration || !values?.[parent]?.induration[index]) {
+            setFieldValue(`${parent}.induration[${index}]`, valorInicial);
         }
-    }, [index, values.induration, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.induration, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
-                    selectedValue={values.induration?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`induration[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.induration?.[index] || valorInicial}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

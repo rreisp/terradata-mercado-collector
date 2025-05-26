@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Sorting = ({ index }) => {
+const EF_Sorting = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
@@ -28,18 +28,18 @@ const EF_Sorting = ({ index }) => {
     const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
-        if (!values.sorting || !values.sorting[index]) {
-            setFieldValue(`sorting[${index}]`, valorInicial);
+        if (!values?.[parent]?.sorting || !values?.[parent]?.sorting[index]) {
+            setFieldValue(`${parent}.sorting[${index}]`, valorInicial);
         }
-    }, [index, values.sorting, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.sorting, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade granulométrica` : `Sorting`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
-                    selectedValue={values.sorting?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`sorting[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.sorting?.[index] || valorInicial}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

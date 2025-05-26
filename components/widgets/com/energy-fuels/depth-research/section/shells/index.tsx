@@ -3,26 +3,25 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import Checkbox from 'expo-checkbox';
 import GlobalStyles from '../../../../../../../constants/styles';
-import { Picker } from '@react-native-picker/picker';
 import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Shells = ({ index }) => {
+const EF_Shells = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const opcoes = Array.from({ length: 101 }, (_, i) => i);
-    const valorInicial = false; // Primeiro valor disponível
     const [isChecked, setIsChecked] = useState(false);
 
+    const valorInicial = 0;
+
     useEffect(() => {
-        if (!values.clay || !values.clay[index]) {
-            setFieldValue(`clay[${index}]`, valorInicial);
+        if (!values?.[parent]?.shellsPct || !values?.[parent]?.shellsPct[index]) {
+            setFieldValue(`${parent}.shellsPct[${index}]`, valorInicial);
         }
-    }, [index, values.clay, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.shellsPct, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Conchas` : `Shells`}:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Conchas:` : `Shells:`}</Text>
 
             <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
@@ -30,8 +29,8 @@ const EF_Shells = ({ index }) => {
                         value={isChecked}
                         onValueChange={() => {
                             !isChecked ?
-                                setFieldValue(`shellsPct[${index}]`, "0,50") :
-                                setFieldValue(`shellsPct[${index}]`, "0");
+                                setFieldValue(`${parent}.shellsPct[${index}]`, "0,5") :
+                                setFieldValue(`${parent}.shellsPct[${index}]`, "0");
                             setIsChecked(!isChecked);
                         }}
                         color={isChecked ? '#4630EB' : undefined}
@@ -39,7 +38,10 @@ const EF_Shells = ({ index }) => {
                     />
                 </View>
                 <View style={[GlobalStyles.col11]}>
-                    <NumericInput value={values.shellsPct?.[index]} onChange={(text) => setFieldValue(`shellsPct[${index}]`, text)} disabled={!isChecked} />
+                    <NumericInput 
+                    value={values?.[parent]?.shellsPct?.[index] || valorInicial} 
+                    onChange={(text) => setFieldValue(`${parent}.shellsPct[${index}]`, text)} disabled={!isChecked}                 
+                     />
                 </View>
             </View>
         </View>

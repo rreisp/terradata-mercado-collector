@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_Roundness = ({ index }) => {
+const EF_Roundness = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
@@ -24,18 +24,18 @@ const EF_Roundness = ({ index }) => {
     const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
 
     useEffect(() => {
-        if (!values.roundness || !values.roundness[index]) {
-            setFieldValue(`roundness[${index}]`, valorInicial);
+        if (!values?.[parent]?.roundness || !values?.[parent]?.roundness[index]) {
+            setFieldValue(`${parent}.roundness[${index}]`, valorInicial);
         }
-    }, [index, values.roundness, setFieldValue, valorInicial]);
+    }, [index, values?.[parent]?.roundness, setFieldValue, valorInicial]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Esfericidade` : `Roundness`}:</Text>
             <View style={GlobalStyles.pickerView}>
                 <Picker
-                    selectedValue={values.roundness?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`roundness[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.roundness?.[index] || valorInicial}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.roundness[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

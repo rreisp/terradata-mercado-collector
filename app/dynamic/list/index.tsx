@@ -4,8 +4,8 @@ import { View, Text, TextInput, Button, Image, ActivityIndicator, StyleSheet, Sc
 import * as Yup from "yup";
 import Modal from "react-native-modal";
 import GlobalStyles from '../../../constants/styles';
-import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { values } from '../../../constants/values';
 
 type DynamicListProps = {
     schemaId: string;
@@ -94,6 +94,7 @@ type FormSchema = {
 import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link, useNavigation } from "@react-navigation/native";
+import { colors } from "@/constants/colors";
 
 const DynamicList = ({ schemaId }: DynamicListProps) => {
     const { language } = useLanguage();
@@ -102,18 +103,20 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        Icon.loadFont();
         let schema = null;
         switch (schemaId) {
             case 'energy-fuels.perfuracao':
                 schema = PerfuracaoSchema;
                 break;
         }
-        setFormSchema(schema)
+        setFormSchema(schema);
+        const timer = setTimeout(() => setLoading(false), values.delay);
+        return () => clearTimeout(timer);
     }, [schemaId]);
-
-    if (!formSchema) return <ActivityIndicator style={{ marginTop: 20 }} />;
 
     const goBack = () => {
         navigation.navigate('tools/index', { formId: schemaId });
@@ -124,47 +127,58 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     };
 
     return (
-        <SafeAreaProvider>
-            <ScrollView style={GlobalStyles.container}>
-                <View style={GlobalStyles.row}>
-                    <View style={GlobalStyles.col1}>
-                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
-                            <Icon name="chevron-circle-left" size={16} color="#fff" />
-                        </Pressable>
-                    </View>
+        <>
+            {loading &&
+                <View style={GlobalStyles.centered}>
+                    <ActivityIndicator size="large" color={colors.blue} />
                 </View>
-                <View style={GlobalStyles.row}>
-                    <View style={[GlobalStyles.col, styles.center]}>
-                        <Image
-                            source={require('../../../assets/images/EnergyFuels-Logo.png')}
-                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                        />
-                        <Text style={[GlobalStyles.title, styles.centeredText]}>{formSchema.title[language]} {language === 'pt-BR' ? `LISTAGEM` : `LIST`}</Text>
-                    </View>
-                </View>
-                <View style={GlobalStyles.row}>
-                    <View style={GlobalStyles.col11}></View>
-                    <View style={GlobalStyles.col1}>
-                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openForm}>
-                            <Icon name="plus" size={16} color="#fff" />
-                        </Pressable>
-                    </View>
-                </View>
-                <View style={GlobalStyles.row}>
-                    <View style={GlobalStyles.col12}>
-                        <ScrollView>
+            }
+            {!loading &&
+                <SafeAreaProvider>
+                    <ScrollView style={GlobalStyles.container}>
+                        <>
+                            <View style={GlobalStyles.row}>
+                                <View style={GlobalStyles.col1}>
+                                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
+                                        <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                    </Pressable>
+                                </View>
+                            </View>
+                            <View style={GlobalStyles.row}>
+                                <View style={[GlobalStyles.col, styles.center]}>
+                                    <Image
+                                        source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                                        style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                                    />
+                                    <Text style={[GlobalStyles.title, GlobalStyles.centered]}>{formSchema.title[language]} {language === 'pt-BR' ? `LISTAGEM` : `LIST`}</Text>
+                                </View>
+                            </View>
+                            <View style={GlobalStyles.row}>
+                                <View style={GlobalStyles.col11}></View>
+                                <View style={GlobalStyles.col1}>
+                                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openForm}>
+                                        <Icon name="plus" size={16} color="#fff" />
+                                    </Pressable>
+                                </View>
+                            </View>
+                            <View style={GlobalStyles.row}>
+                                <View style={GlobalStyles.col12}>
+                                    <ScrollView>
 
-                        </ScrollView>
-                    </View>
-                </View>
-                <Modal isVisible={modalVisible}>
-                    <View style={styles.modal}>
-                        <Text>{modalContent}</Text>
-                        <Button title="Fechar" onPress={() => setModalVisible(false)} />
-                    </View>
-                </Modal>
-            </ScrollView>
-        </SafeAreaProvider>
+                                    </ScrollView>
+                                </View>
+                            </View>
+                        </>
+                        <Modal isVisible={modalVisible}>
+                            <View style={styles.modal}>
+                                <Text>{modalContent}</Text>
+                                <Button title="Fechar" onPress={() => setModalVisible(false)} />
+                            </View>
+                        </Modal>
+                    </ScrollView>
+                </SafeAreaProvider >
+            }
+        </>
     );
 };
 
@@ -202,11 +216,7 @@ const styles = StyleSheet.create({
     center: {
         alignContent: "center",
         alignItems: 'center'
-    },
-    centeredText: {
-        textAlign: 'center',      // centraliza o texto dentro do Text
-        fontSize: 18,
-    },
+    }
 });
 
 export default DynamicList;
