@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 
-const isOnline = false;
+const isOnline = true;
 
 // Cria o contexto
 const OperationModeContext = createContext(isOnline);

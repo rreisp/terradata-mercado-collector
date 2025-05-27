@@ -16,100 +16,10 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { values } from "@/constants/values";
 import { colors } from "@/constants/colors";
 import { useOperationMode } from '../../../contexts/OperationModeContext';
-
-type DynamicFormProps = {
-    schemaId: string;
-};
-
-type ValidationMessages = {
-    min_length?: string;
-    max_length?: string;
-    email?: string;
-};
-
-type FieldValidations = {
-    min_length?: number;
-    max_length?: number;
-    messages: ValidationMessages;
-};
-
-type Field = {
-    id: string;
-    type: string;
-    required?: boolean;
-    validations?: FieldValidations;
-    label?: string;
-    placeholder?: string;
-    options?: { label: string; value: string }[];
-};
-
-type Column = {
-    size: number;
-    field: Field;
-};
-
-type Row = {
-    columns: Column[];
-};
-
-type ModalConfig = {
-    size: string;
-    success: {
-        header: string;
-        message: string;
-        button: string;
-    };
-    error: {
-        header: string;
-        message: string;
-        button: string;
-    };
-};
-
-// type FormSchema = {
-//     title: string;
-//     description: string;
-//     rows: Row[];
-//     modal: ModalConfig;
-//     url: string;
-//     method: string;
-// };
-
-type FormSchema = {
-    form_id: string;
-    title: string;
-    description: string;
-    version: string;
-    method: string;
-    url: string;
-    modal: {
-        size: string;
-        success: {
-            header: string;
-            message: string;
-            button: string;
-        };
-        error: {
-            header: string;
-            message: string;
-            button: string;
-        };
-    };
-    grid: {
-        columns: number;
-        spacing: number;
-    };
-    rows: Array<{
-        type: string;
-        name?: string;
-        label?: string;
-        placeholder?: string;
-        options?: { label: string; value: string }[];
-        required?: boolean;
-        [key: string]: any;
-    }>;
-};
-
+import NumericInput from "@/components/widgets/input/numeric";
+import { Field } from "@/types/field";
+import { FormSchema } from "@/types/form-schema";
+import { DynamicFormProps } from "@/types/dynamic-form-props";
 
 type FormikHelpers = {
     value: any;
@@ -118,7 +28,7 @@ type FormikHelpers = {
 
 const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const { language } = useLanguage();
-    const isOffline = useOperationMode();
+    const isOnline = useOperationMode();
 
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
@@ -127,11 +37,10 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const [modalContent, setModalContent] = useState("");
     const [loading, setLoading] = useState(true);
 
-
-    console.warn(isOffline, schemaId);
+    // console.warn(isOnline, schemaId);
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), values.delay);
-        if (isOffline) {
+        if (isOnline) {
             fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
                 .then((res) => res.json())
                 .then((data) => {
@@ -194,18 +103,31 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
 
     const renderField = (field: Field, formik: FormikHelpers) => {
         const { value, onChange } = formik;
+        // console.log(field.label, language);
 
         switch (field.type) {
+            case "number":
+                return (
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                        <NumericInput
+                            step={ field.step || 1}
+                            value={value || ""}
+                            max={10}
+                            min={5}
+                            onChange={(text) => onChange(field.id, text)}
+                        />
+                    </View>
+                );
             case "text":
             case "email":
-            case "number":
             case "password":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                         <TextInput
                             placeholder={field.placeholder}
-                            value={value}
+                            value={value || 0}
                             onChangeText={(text) => onChange(field.id, text)}
                             style={styles.input}
                             keyboardType={field.type === "number" ? "numeric" : "default"}

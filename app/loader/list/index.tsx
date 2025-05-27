@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { RootStackParamList } from '@/types/types';
+import { RootStackParamList } from '@/types/root-stack-param-list';
 import { useLocalSearchParams } from "expo-router";
 import DynamicList from '../../dynamic/list/index';
 

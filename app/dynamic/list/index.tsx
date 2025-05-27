@@ -95,9 +95,12 @@ import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link, useNavigation } from "@react-navigation/native";
 import { colors } from "@/constants/colors";
+import { useOperationMode } from "@/contexts/OperationModeContext";
 
 const DynamicList = ({ schemaId }: DynamicListProps) => {
     const { language } = useLanguage();
+    const isOnline = useOperationMode();
+
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
@@ -105,17 +108,29 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [modalContent, setModalContent] = useState("");
     const [loading, setLoading] = useState(true);
 
+
     useEffect(() => {
-        Icon.loadFont();
-        let schema = null;
-        switch (schemaId) {
-            case 'energy-fuels.perfuracao':
-                schema = PerfuracaoSchema;
-                break;
-        }
-        setFormSchema(schema);
         const timer = setTimeout(() => setLoading(false), values.delay);
-        return () => clearTimeout(timer);
+        if (isOnline) {
+            fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setFormSchema(data);
+                    return () => clearTimeout(timer);
+                })
+                .catch((err) => console.error("Erro ao carregar schema:", err));
+        } else {
+            Icon.loadFont();
+            let schema = null;
+            switch (schemaId) {
+                case 'energy-fuels.perfuracao':
+                    schema = PerfuracaoSchema;
+                    break;
+            }
+            setFormSchema(schema);
+            const timer = setTimeout(() => setLoading(false), values.delay);
+            return () => clearTimeout(timer);
+        }
     }, [schemaId]);
 
     const goBack = () => {

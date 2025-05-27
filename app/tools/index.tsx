@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator, StyleSheet, SafeAreaView, Pressab
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from "@/types/types";
+import { RootStackParamList } from "@/types/root-stack-param-list";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyles from '../../constants/styles';
 import { useLanguage } from '../../contexts/LanguageContext';
