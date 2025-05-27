@@ -34,16 +34,14 @@ const NumericInput = ({
         : /^\d*$/;
 
     const handleChange = (text) => {
-        // Permite apagar tudo
         if (text === '') {
             onChange('');
             return;
         }
 
-        // Valida formato básico (ex: apenas dígitos e vírgula)
         if (!regex.test(text)) return;
 
-        onChange(text); // Aceita o valor mesmo se intermediário
+        onChange(text); // permite entrada parcial
     };
 
     const handleBlur = () => {
@@ -52,18 +50,8 @@ const NumericInput = ({
         const normalized = value.replace(',', '.');
         const num = parseFloat(normalized);
 
-        if (isNaN(num)) return;
-
-        // Aplica min/max no blur
-        let clamped = num;
-        if (num < min) clamped = min;
-        if (num > max) clamped = max;
-
-        // Volta para string com vírgula
-        const fixed = clamped.toFixed(getPrecision(step)).replace('.', ',');
-
-        if (fixed !== value) {
-            onChange(fixed);
+        if (isNaN(num) || num < min || num > max) {
+            onChange(''); // limpa se inválido ou fora dos limites
         }
     };
 
