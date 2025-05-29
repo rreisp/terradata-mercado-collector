@@ -8,7 +8,7 @@ import { OperationModeProvider } from '@/contexts/OperationModeContext';
 
 type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
 
-const extract = (info) => {
+const extract = (info: any) => {
     console.log(info);
     console.warn('Extract Info');
     const drilling = extractDrillingInfo(info);
@@ -20,7 +20,7 @@ const extract = (info) => {
 };
 
 
-const extractDrillingInfo = (info) => {
+const extractDrillingInfo = (info: any) => {
     return {
         drilling_id: info.perfuracao_id,
         easting: info.easting,
@@ -34,7 +34,7 @@ const extractDrillingInfo = (info) => {
     }
 };
 
-const extractDrillingIntervalInfo = (info) => {
+const extractDrillingIntervalInfo = (info: any) => {
     const size = info.ef_depth_test.depth?.length || 0;
     let intervals = [];
     for (let i = 0; i < size; i++) {
@@ -65,18 +65,26 @@ const extractDrillingIntervalInfo = (info) => {
     return intervals;
 };
 
-const extractIntervalsLithologyInfo = (info) => {
+const extractIntervalsLithologyInfo = (info: any) => {
     console.log(info.ef_depth_test.lithologies);
 };
 
 const FormLoader = () => {
     const route = useRoute<FormLoaderRouteProp>();
+    // const route = useRoute();
     const formIdParam = useLocalSearchParams().formId;
-    const formId = Array.isArray(formIdParam) ? formIdParam[0] : formIdParam;
+    const formId = typeof formIdParam === 'string'
+        ? formIdParam
+        : Array.isArray(formIdParam)
+            ? formIdParam[0]
+            : String(formIdParam);
+    // const formId = route.params?.formId;
+
+    console.warn(formId);
 
     return (
         <OperationModeProvider>
-            <DynamicForm schemaId={formId} extract={extract} />
+            <DynamicForm schemaId={formId} />
         </OperationModeProvider>
     );
 };

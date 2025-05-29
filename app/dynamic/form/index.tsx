@@ -3,15 +3,10 @@ import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-cont
 import { View, Text, TextInput, Button, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
-import EF_DepthResearch from "@/components/widgets/com/energy-fuels/depth-research";
 import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
-import EF_Coordinates from "@/components/widgets/com/energy-fuels/depth-research/coordinates";
-import EF_Dates from "@/components/widgets/com/energy-fuels/depth-research/dates";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { values } from "@/constants/values";
 import { colors } from "@/constants/colors";
@@ -19,14 +14,13 @@ import { useOperationMode } from '../../../contexts/OperationModeContext';
 import NumericInput from "@/components/widgets/input/numeric";
 import { Field } from "@/types/field";
 import { FormSchema } from "@/types/form-schema";
-import { DynamicFormProps } from "@/types/dynamic-form-props";
+import { CameraInput } from "@/components/widgets/input/camera";
 
-type FormikHelpers = {
-    value: any;
-    onChange: (id: string, value: any) => void;
-};
+import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
+import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
+import { FormikHelpers } from "@/types/formik-helpers";
 
-const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
+const DynamicForm = ({ schemaId }: { schemaId: string }) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
 
@@ -41,16 +35,26 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), values.delay);
         if (isOnline) {
-            fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
-                .then((res) => res.json())
-                .then((data) => {
+            const loadSchema = async () => {
+                try {
+                    const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
+                    const data = await res.json();
                     setFormSchema(data);
-                    return () => clearTimeout(timer);
-                })
-                .catch((err) => console.error("Erro ao carregar schema:", err));
+                } catch (err) {
+                    console.error("Erro ao carregar schema:", err);
+                } finally {
+                    clearTimeout(timer);
+                }
+            };
+
+            // Executa a função e depois continua
+            loadSchema();
         } else {
             let schema = null;
             switch (schemaId) {
+                case 'cw.dialeto.cadastro':
+                    schema = CadastroSchema;
+                    break;
                 case 'energy-fuels.perfuracao':
                     schema = PerfuracaoSchema;
                     break;
@@ -63,8 +67,6 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const openList = () => {
         navigation.navigate('loader/list/index', { formId: schemaId });
     };
-
-    // if (!formSchema) return <ActivityIndicator style={{ marginTop: 20 }} />;
 
     const initialValues: { [key: string]: any } = {};
     const validationShape: { [key: string]: Yup.AnySchema } = {};
@@ -82,19 +84,19 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
             if (field.validations?.min_length) {
                 validator = validator.min(
                     field.validations.min_length,
-                    field.validations.messages.min_length
+                    field.validations.messages?.min_length
                 );
             }
 
             if (field.validations?.max_length) {
                 validator = validator.max(
                     field.validations.max_length,
-                    field.validations.messages.max_length
+                    field.validations.messages?.max_length
                 );
             }
 
             if (field.type === "email") {
-                validator = validator.email(field.validations?.messages.email || "E-mail inválido");
+                validator = Yup.string().email(field.validations?.messages?.email || (language === "pt-BR" ? "E-mail inválido" : "Invalid e-mail"));
             }
 
             validationShape[field.id] = validator;
@@ -106,16 +108,24 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
         // console.log(field.label, language);
 
         switch (field.type) {
+            case "photo":
+                return (
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                        <CameraInput key={field.id} name={field.id} />
+                    </View>
+                );
             case "number":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                         <NumericInput
-                            step={ field.step || 1}
+                            step={field.step || 1}
+                            // value={value || ""}
                             value={value || ""}
                             max={10}
                             min={5}
-                            onChange={(text) => onChange(field.id, text)}
+                            onChange={(text: string) => onChange(field.id, text)}
                         />
                     </View>
                 );
@@ -126,58 +136,57 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
                     <View key={field.id} style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                         <TextInput
-                            placeholder={field.placeholder}
+                            placeholder={field.placeholder ? field.placeholder[language] : ""}
                             value={value || 0}
                             onChangeText={(text) => onChange(field.id, text)}
                             style={styles.input}
-                            keyboardType={field.type === "number" ? "numeric" : "default"}
                             secureTextEntry={field.type === "password"}
                         />
                     </View>
                 );
-            case "dropdown":
-                return (
-                    <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text>{field.label[language]}</Text>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={value}
-                                onValueChange={(val) => onChange(field.id, val)}
-                            >
-                                {field.options?.map(opt => (
-                                    <Picker.Item label={opt.label} value={opt.value} key={opt.value} />
-                                ))}
-                            </Picker>
-                        </View>
-                    </View>
-                );
-            case "ef_depth_research":
-                return (
-                    <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                        <View style={styles.pickerContainer}>
-                            <EF_DepthResearch parent={field.id} />
-                        </View>
-                    </View>
-                );
-            case "ef_coordinates":
-                return (
-                    <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
-                        <View style={styles.pickerContainer}>
-                            <EF_Coordinates />
-                        </View>
-                    </View>
-                );
-            case "ef_dates":
-                return (
-                    <View key={field.id} style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
-                        <View style={styles.pickerContainer}>
-                            <EF_Dates parent={field.id} />
-                        </View>
-                    </View>
-                );
+            // case "dropdown":
+            //     return (
+            //         <View key={field.id} style={GlobalStyles.fieldContainer}>
+            //             <Text>{field.label[language]}</Text>
+            //             <View style={styles.pickerContainer}>
+            //                 <Picker
+            //                     selectedValue={""}
+            //                     onValueChange={(val) => onChange(field.id, val)}
+            //                 >
+            //                     {field.options?.map(opt => (
+            //                         <Picker.Item label={opt.label} value={opt.value} key={opt.value} />
+            //                     ))}
+            //                 </Picker>
+            //             </View>
+            //         </View>
+            //     );
+            // case "ef_depth_research":
+            //     return (
+            //         <View key={field.id} style={GlobalStyles.fieldContainer}>
+            //             <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+            //             <View style={styles.pickerContainer}>
+            //                 <EF_DepthResearch parent={field.id} />
+            //             </View>
+            //         </View>
+            //     );
+            // case "ef_coordinates":
+            //     return (
+            //         <View key={field.id} style={GlobalStyles.fieldContainer}>
+            //             <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
+            //             <View style={styles.pickerContainer}>
+            //                 <EF_Coordinates />
+            //             </View>
+            //         </View>
+            //     );
+            // case "ef_dates":
+            //     return (
+            //         <View key={field.id} style={GlobalStyles.fieldContainer}>
+            //             <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
+            //             <View style={styles.pickerContainer}>
+            //                 <EF_Dates parent={field.id} />
+            //             </View>
+            //         </View>
+            //     );
             default:
                 return null;
         }
@@ -186,7 +195,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
 
     return (
         <>
-            {loading &&
+            {(loading || !formSchema) &&
                 <View style={GlobalStyles.centered}>
                     <ActivityIndicator size="large" color={colors.blue} />
                 </View>
@@ -198,7 +207,8 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
                             initialValues={initialValues}
                             // validationSchema={Yup.object(validationShape)}
                             onSubmit={(values) => {
-                                extract(values);
+                                // extract(values);
+                                console.log(values);
                             }}
                         // onSubmit={(values) => {
                         //     const mensagem = Object.entries(values)
@@ -240,10 +250,10 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
                                             style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                         />
 
-                                        <Text style={GlobalStyles.title}>{formSchema.title[language]}</Text>
+                                        <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
                                     </View>
-                                    <Text style={styles.description}>{formSchema.description[language]}</Text>
-                                    {formSchema.rows.map((row, rowIndex) => (
+                                    <Text style={styles.description}>{formSchema?.description[language] || ""}</Text>
+                                    {formSchema?.rows.map((row, rowIndex) => (
                                         <View key={rowIndex}>
                                             {row.columns.map(({ field }) =>
                                                 renderField(field, {

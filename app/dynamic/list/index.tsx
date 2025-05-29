@@ -7,95 +7,76 @@ import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { values } from '../../../constants/values';
 
-type DynamicListProps = {
-    schemaId: string;
-};
-
-type ValidationMessages = {
-    min_length?: string;
-    max_length?: string;
-    email?: string;
-};
-
-type FieldValidations = {
-    min_length?: number;
-    max_length?: number;
-    messages: ValidationMessages;
-};
-
-type Field = {
-    id: string;
-    type: string;
-    required?: boolean;
-    validations?: FieldValidations;
-    label?: string;
-    placeholder?: string;
-    options?: { label: string; value: string }[];
-};
-
-type Column = {
-    size: number;
-    field: Field;
-};
-
-type Row = {
-    columns: Column[];
-};
-
-type ModalConfig = {
-    size: string;
-    success: {
-        header: string;
-        message: string;
-        button: string;
-    };
-    error: {
-        header: string;
-        message: string;
-        button: string;
-    };
-};
-
-type FormSchema = {
-    form_id: string;
-    title: string;
-    description: string;
-    version: string;
-    method: string;
-    url: string;
-    modal: {
-        size: string;
-        success: {
-            header: string;
-            message: string;
-            button: string;
-        };
-        error: {
-            header: string;
-            message: string;
-            button: string;
-        };
-    };
-    grid: {
-        columns: number;
-        spacing: number;
-    };
-    rows: Array<{
-        type: string;
-        name?: string;
-        label?: string;
-        placeholder?: string;
-        options?: { label: string; value: string }[];
-        required?: boolean;
-        [key: string]: any;
-    }>;
-};
-
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Link, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { colors } from "@/constants/colors";
 import { useOperationMode } from "@/contexts/OperationModeContext";
+import { FormSchema } from "@/types/form-schema";
+import { DynamicListProps } from "@/types/dynamic-list-props";
+
+import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
+import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
+
+const extract = (info: any) => {
+    console.log(info);
+    console.warn('Extract Info');
+    const drilling = extractDrillingInfo(info);
+    console.log(drilling);
+    const drillingIntervals = extractDrillingIntervalInfo(info);
+    console.log(drillingIntervals);
+    const intervalsLithologies = extractIntervalsLithologyInfo(info);
+    console.log(intervalsLithologies);
+};
+
+
+const extractDrillingInfo = (info: any) => {
+    return {
+        drilling_id: info.perfuracao_id,
+        easting: info.easting,
+        northing: info.northing,
+        elevation: info.elevation,
+        tenement: info.tenement,
+        landowner: info.landowner,
+        start_date: info.ef_dates.start,
+        end_date: info.ef_dates.end,
+        reason: info.reason
+    }
+};
+
+const extractDrillingIntervalInfo = (info: any) => {
+    const size = info.ef_depth_test.depth?.length || 0;
+    let intervals = [];
+    for (let i = 0; i < size; i++) {
+        let obj = {
+            depthFrom: info.ef_depth_test.depth[i].from,
+            depthTo: info.ef_depth_test.depth[i].to,
+            recovery: info.ef_depth_test.runCoreRecovery[i],
+            moisture: info.ef_depth_test.moisture[i],
+            volume: info.ef_depth_test.volume[i],
+            hardness: info.ef_depth_test.hardness[i],
+            wash: info.ef_depth_test.wash[i],
+            color: info.ef_depth_test.color[i],
+            induration: info.ef_depth_test.induration[i],
+            grainsize: info.ef_depth_test.grainsize[i],
+            sorting: info.ef_depth_test.sorting[i],
+            roundness: info.ef_depth_test.roundness[i],
+            clay: info.ef_depth_test.clayPct[i],
+            micah: info.ef_depth_test.micahPct[i],
+            shells: info.ef_depth_test.shellsPct[i],
+            organicMatter: info.ef_depth_test.organicMatterPct[i],
+            lithicFragments: info.ef_depth_test.lithicFragmentsPct[i],
+            hms: info.ef_depth_test.hms[i],
+            comments: info.ef_depth_test.comments[i]
+        };
+
+        intervals.push(obj);
+    }
+    return intervals;
+};
+
+const extractIntervalsLithologyInfo = (info: any) => {
+    console.log(info.ef_depth_test.lithologies);
+};
 
 const DynamicList = ({ schemaId }: DynamicListProps) => {
     const { language } = useLanguage();
@@ -123,9 +104,12 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
             Icon.loadFont();
             let schema = null;
             switch (schemaId) {
+                case 'cw.dialeto.cadastro':
+                    schema = CadastroSchema;
+                    break;
                 case 'energy-fuels.perfuracao':
                     schema = PerfuracaoSchema;
-                    break;
+                    break;                    
             }
             setFormSchema(schema);
             const timer = setTimeout(() => setLoading(false), values.delay);
@@ -134,10 +118,13 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     }, [schemaId]);
 
     const goBack = () => {
+        // navigation.navigate('tools/index', { schemaId });
         navigation.navigate('tools/index', { formId: schemaId });
     };
 
     const openForm = () => {
+        // navigation.navigate('loader/form/index', { schemaId });
+        console.warn('schemaId:', schemaId, 'typeof:', typeof schemaId);
         navigation.navigate('loader/form/index', { formId: schemaId });
     };
 
@@ -165,7 +152,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                                         source={require('../../../assets/images/EnergyFuels-Logo.png')}
                                         style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                     />
-                                    <Text style={[GlobalStyles.title, GlobalStyles.centered]}>{formSchema.title[language]} {language === 'pt-BR' ? `LISTAGEM` : `LIST`}</Text>
+                                    <Text style={[GlobalStyles.title, GlobalStyles.centered]}>{formSchema?.title[language]|| ""} {String(language) === 'pt-BR' ? `LISTAGEM` : `LIST`}</Text>
                                 </View>
                             </View>
                             <View style={GlobalStyles.row}>

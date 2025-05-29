@@ -1,34 +1,29 @@
+import { Field } from "./field";
+import { LocalizedString } from "./localized-string";
+import { ModalContent } from "./modal-content";
+import { ResponsiveSize } from "./responsive-size";
+
 export type FormSchema = {
-    form_id: string;
-    title: string;
-    description: string;
+    formId: string;
+    title: LocalizedString;
+    description: LocalizedString;
+    logo?: string;
     version: string;
     method: string;
     url: string;
     modal: {
         size: string;
-        success: {
-            header: string;
-            message: string;
-            button: string;
-        };
-        error: {
-            header: string;
-            message: string;
-            button: string;
-        };
+        success: ModalContent;
+        error: ModalContent;
     };
     grid: {
         columns: number;
-        spacing: number;
+        gap?: string | number;
     };
     rows: Array<{
-        type: string;
-        name?: string;
-        label?: string;
-        placeholder?: string;
-        options?: { label: string; value: string }[];
-        required?: boolean;
-        [key: string]: any;
+        columns: Array<{
+            field: Field;
+            size: ResponsiveSize;
+        }>;
     }>;
 };

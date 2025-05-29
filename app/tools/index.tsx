@@ -11,13 +11,14 @@ import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se
 import { colors } from '../../constants/colors';
 import { values } from "@/constants/values";
 import { OperationModeProvider, useOperationMode } from "@/contexts/OperationModeContext";
+import { Tool } from "@/types/tool";
 
 type Form = {
     id: string;
     title: string;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/index'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/list/index'>;
 
 const Tools = () => {
     const { language } = useLanguage();
@@ -59,10 +60,14 @@ const Tools = () => {
 
     useEffect(() => {
         Icon.loadFont();
-        let tools = [];
+        let tools: Tool[] = [];
 
         if (!isOnline) {
             tools = [
+                {
+                    "id": "cw.dialeto.cadastro",
+                    "title": (language === 'pt-BR' ? "Cadastro de Participante" : "Participant Registry")
+                },                
                 {
                     "id": "energy-fuels.perfuracao",
                     "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
@@ -73,7 +78,7 @@ const Tools = () => {
             const fetchFormConfig = async () => {
                 try {
                     const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
-                    const tools = await response.json();
+                    tools = await response.json();
                     setAvailableForms(tools);
                 } catch (error) {
                     console.error('Erro ao buscar configurações dos formulários:', error);

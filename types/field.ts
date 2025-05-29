@@ -1,12 +1,24 @@
-import { FieldValidations } from "./field-validations";
+import { LocalizedString } from "./localized-string";
 
 export type Field = {
     id: string;
+    label: LocalizedString;
     type: string;
     required?: boolean;
+    placeholder?: LocalizedString;
     step?: number;
-    validations?: FieldValidations;
-    label?: string;
-    placeholder?: string;
-    options?: { label: string; value: string }[];
+    min?: number;
+    max?: number;
+    options?: Array<{
+        value: string;
+        label: LocalizedString;
+    }>;
+    validations?: {
+        min_length?: number;
+        required?: boolean;
+        messages?: {
+            [rule: string]: LocalizedString;
+        };
+    };
+    [key: string]: any;
 };
