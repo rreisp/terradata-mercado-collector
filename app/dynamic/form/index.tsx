@@ -19,6 +19,7 @@ import { CameraInput } from "@/components/widgets/input/camera";
 import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
 import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
 import { FormikHelpers } from "@/types/formik-helpers";
+import { MultiCameraInput } from "@/components/widgets/input/multi-camera";
 
 const DynamicForm = ({ schemaId }: { schemaId: string }) => {
     const { language } = useLanguage();
@@ -115,6 +116,13 @@ const DynamicForm = ({ schemaId }: { schemaId: string }) => {
                         <CameraInput key={field.id} name={field.id} />
                     </View>
                 );
+            case "photos":
+                return (
+                    <View key={field.id} style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                        <MultiCameraInput key={field.id} name={field.id} />
+                    </View>
+                );                
             case "number":
                 return (
                     <View key={field.id} style={GlobalStyles.fieldContainer}>

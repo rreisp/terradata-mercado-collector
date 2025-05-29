@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useField, useFormikContext } from 'formik';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type CameraInputProps = {
     name: string;
@@ -14,7 +15,7 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
     const handleLaunchCamera = async () => {
         const permission = await ImagePicker.requestCameraPermissionsAsync();
         if (!permission.granted) {
-            Alert.alert('Permissão necessária', 'Precisamos da permissão da câmera para tirar fotos.');
+            Alert.alert('Permissão Necessária', 'Precisamos da permissão da câmera para tirar fotos.');
             return;
         }
 
@@ -32,12 +33,45 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
         }
     };
 
+    const handleRemovePhoto = () => {
+        Alert.alert(
+            'Remover Foto',
+            'Tem certeza que deseja remover esta foto?',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Remover',
+                    onPress: () => {
+                        setFieldValue(name, ''); // Define o valor do campo como uma string vazia para "remover" a foto
+                    },
+                    style: 'destructive',
+                },
+            ],
+            { cancelable: true }
+        );
+    };
+
+    const photoExists = typeof field.value === 'string' && field.value.trim() !== '';
+
     return (
         <View style={styles.container}>
-            <Button title="Tirar Foto" onPress={handleLaunchCamera} />
-            {typeof field.value === 'string' && field.value.trim() !== '' && (
-                <Image source={{ uri: field.value }} style={styles.preview} />
+            {!photoExists ? (
+                <Button title="Tirar Foto" onPress={handleLaunchCamera} />
+            ) : (
+                <View style={styles.imageWrapper}>
+                    <Image source={{ uri: field.value }} style={styles.preview} />
+                    <TouchableOpacity
+                        style={styles.removeButton}
+                        onPress={handleRemovePhoto}
+                    >
+                        <MaterialIcons name="cancel" size={24} color="red" />
+                    </TouchableOpacity>
+                </View>
             )}
+
             {meta.touched && meta.error && (
                 <Text style={styles.errorText}>{meta.error}</Text>
             )}
@@ -47,6 +81,27 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
 
 const styles = StyleSheet.create({
     container: { marginVertical: 10 },
-    preview: { width: 200, height: 200, marginTop: 10, borderRadius: 10 },
+    imageWrapper: {
+        position: 'relative',
+        marginTop: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 10,
+        overflow: 'hidden',
+        alignSelf: 'center', // Centraliza o wrapper se o container for maior
+    },
+    preview: {
+        width: 100,
+        height: 100,
+        borderRadius: 9,
+    },
+    removeButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        backgroundColor: 'rgba(255,255,255,0.7)',
+        borderRadius: 12,
+        padding: 1,
+    },
     errorText: { color: 'red', marginTop: 5 },
 });
