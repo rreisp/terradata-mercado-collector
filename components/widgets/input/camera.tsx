@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 10,
         overflow: 'hidden',
-        alignSelf: 'center', // Centraliza o wrapper se o container for maior
+        alignSelf: 'flex-start', // Centraliza o wrapper se o container for maior
     },
     preview: {
         width: 100,
