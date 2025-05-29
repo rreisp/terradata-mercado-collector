@@ -1,7 +1,6 @@
-// components/CameraInput.tsx
 import React from 'react';
 import { View, Text, Button, Image, StyleSheet, Alert } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import { useField, useFormikContext } from 'formik';
 
 type CameraInputProps = {
@@ -13,23 +12,23 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
     const [field, meta] = useField(name);
 
     const handleLaunchCamera = async () => {
-        const result = await launchCamera({
-            mediaType: 'photo',
-            cameraType: 'back',
-            quality: 0.8,
-            includeBase64: true,
-        });
-
-        if (result.didCancel) return;
-
-        if (result.errorCode) {
-            Alert.alert('Erro ao abrir a câmera', result.errorMessage || 'Erro desconhecido');
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) {
+            Alert.alert('Permissão necessária', 'Precisamos da permissão da câmera para tirar fotos.');
             return;
         }
 
+        const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.8,
+            base64: true,
+        });
+
+        if (result.canceled) return;
+
         const photo = result.assets?.[0];
         if (photo?.base64) {
-            setFieldValue(name, `data:${photo.type};base64,${photo.base64}`);
+            setFieldValue(name, `data:image/jpeg;base64,${photo.base64}`);
         }
     };
 
