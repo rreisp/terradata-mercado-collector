@@ -21,7 +21,7 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.8,
+            quality: 1,
             base64: true,
         });
 
@@ -57,7 +57,7 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
     const photoExists = typeof field.value === 'string' && field.value.trim() !== '';
 
     return (
-        <View style={styles.container}>
+        <View>
             {!photoExists ? (
                 <Button title="Tirar Foto" onPress={handleLaunchCamera} />
             ) : (
@@ -80,10 +80,8 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { marginVertical: 10 },
     imageWrapper: {
         position: 'relative',
-        marginTop: 10,
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 10,

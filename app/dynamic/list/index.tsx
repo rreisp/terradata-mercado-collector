@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { View, Text, TextInput, Button, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, Pressable } from "react-native";
-import * as Yup from "yup";
+import { View, Text, Button, Image, ActivityIndicator, StyleSheet, ScrollView, Pressable } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -83,7 +81,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const isOnline = useOperationMode();
 
     const navigation = useNavigation();
-    const insets = useSafeAreaInsets();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
@@ -109,7 +106,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                     break;
                 case 'energy-fuels.perfuracao':
                     schema = PerfuracaoSchema;
-                    break;                    
+                    break;
             }
             setFormSchema(schema);
             const timer = setTimeout(() => setLoading(false), values.delay);
@@ -136,49 +133,47 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                 </View>
             }
             {!loading &&
-                <SafeAreaProvider>
-                    <ScrollView style={GlobalStyles.container}>
-                        <>
-                            <View style={GlobalStyles.row}>
-                                <View style={GlobalStyles.col1}>
-                                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
-                                        <Icon name="chevron-circle-left" size={16} color="#fff" />
-                                    </Pressable>
-                                </View>
+                <ScrollView style={GlobalStyles.container}>
+                    <>
+                        <View style={GlobalStyles.row}>
+                            <View style={GlobalStyles.col1}>
+                                <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
+                                    <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                </Pressable>
                             </View>
-                            <View style={GlobalStyles.row}>
-                                <View style={[GlobalStyles.col, styles.center]}>
-                                    <Image
-                                        source={require('../../../assets/images/EnergyFuels-Logo.png')}
-                                        style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                                    />
-                                    <Text style={[GlobalStyles.title, GlobalStyles.centered]}>{formSchema?.title[language]|| ""} {String(language) === 'pt-BR' ? `LISTAGEM` : `LIST`}</Text>
-                                </View>
+                        </View>
+                        <View style={GlobalStyles.row}>
+                            <View style={[GlobalStyles.col, styles.center]}>
+                                <Image
+                                    source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                                    style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                                />
+                                <Text style={[GlobalStyles.title, GlobalStyles.centered]}>{formSchema?.title[language] || ""} {String(language) === 'pt-BR' ? `LISTAGEM` : `LIST`}</Text>
                             </View>
-                            <View style={GlobalStyles.row}>
-                                <View style={GlobalStyles.col11}></View>
-                                <View style={GlobalStyles.col1}>
-                                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openForm}>
-                                        <Icon name="plus" size={16} color="#fff" />
-                                    </Pressable>
-                                </View>
+                        </View>
+                        <View style={GlobalStyles.row}>
+                            <View style={GlobalStyles.col11}></View>
+                            <View style={GlobalStyles.col1}>
+                                <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openForm}>
+                                    <Icon name="plus" size={16} color="#fff" />
+                                </Pressable>
                             </View>
-                            <View style={GlobalStyles.row}>
-                                <View style={GlobalStyles.col12}>
-                                    <ScrollView>
+                        </View>
+                        <View style={GlobalStyles.row}>
+                            <View style={GlobalStyles.col12}>
+                                <ScrollView>
 
-                                    </ScrollView>
-                                </View>
+                                </ScrollView>
                             </View>
-                        </>
-                        <Modal isVisible={modalVisible}>
-                            <View style={styles.modal}>
-                                <Text>{modalContent}</Text>
-                                <Button title="Fechar" onPress={() => setModalVisible(false)} />
-                            </View>
-                        </Modal>
-                    </ScrollView>
-                </SafeAreaProvider >
+                        </View>
+                    </>
+                    <Modal isVisible={modalVisible}>
+                        <View style={styles.modal}>
+                            <Text>{modalContent}</Text>
+                            <Button title="Fechar" onPress={() => setModalVisible(false)} />
+                        </View>
+                    </Modal>
+                </ScrollView>
             }
         </>
     );

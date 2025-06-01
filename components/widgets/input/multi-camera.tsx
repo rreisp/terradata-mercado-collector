@@ -103,11 +103,10 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 };
 
 const styles = StyleSheet.create({
-    container: { marginVertical: 10, width: '100%' },
+    container: { width: '100%' },
     previewContainer: {
         flexDirection: 'row',
-        marginTop: 10,
-        paddingBottom: 10, // Espaço para a sombra/ícone
+        marginTop: 3,
     },
     imageWrapper: {
         position: 'relative',

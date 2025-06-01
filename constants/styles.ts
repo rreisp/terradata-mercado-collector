@@ -90,6 +90,13 @@ export default StyleSheet.create({
         justifyContent: 'center', // alinha verticalmente
         alignItems: 'center',     // alinha horizontalmente
     },
-    picker: { borderWidth: 0, padding: 8 },
-    // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7}
+    // picker: { borderWidth: 0, padding: 8 },
+    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7 },
+    section: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    checkbox: {
+        marginRight: 8,
+    },
 });

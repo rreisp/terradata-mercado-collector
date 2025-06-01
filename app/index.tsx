@@ -1,8 +1,7 @@
-import { View, Text, Image, Pressable, StyleSheet, SafeAreaView, ActivityIndicator } from "react-native";
+import { View, Text, Image, Pressable, StyleSheet, SafeAreaView, ActivityIndicator, StatusBar } from "react-native";
 import { colors } from '../constants/colors';
 import { values } from '../constants/values';
 import { Link } from 'expo-router';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyles from '../constants/styles';
 import CountryFlag from "react-native-country-flag";
 import { useLanguage } from '../contexts/LanguageContext';
@@ -29,10 +28,10 @@ export default function Index() {
         </View>
       }
       {!loading &&
-        <SafeAreaProvider>
           <View
-            style={[GlobalStyles.container, styles.container]}
+            style={[GlobalStyles.container, styles.container ]}
           >
+            <StatusBar hidden={true} />
             <SafeAreaView>
               <Image
                 source={require('../assets/images/EnergyFuels-Logo.png')}
@@ -67,7 +66,6 @@ export default function Index() {
               </View>
             </View>
           </View >
-        </SafeAreaProvider>
       }
     </>
   );

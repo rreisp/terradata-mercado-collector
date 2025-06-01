@@ -4,7 +4,6 @@ import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from "@/types/root-stack-param-list";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GlobalStyles from '../../constants/styles';
 import { useLanguage } from '../../contexts/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se quiser usar a versão 5
@@ -67,7 +66,7 @@ const Tools = () => {
                 {
                     "id": "cw.dialeto.cadastro",
                     "title": (language === 'pt-BR' ? "Cadastro de Participante" : "Participant Registry")
-                },                
+                },
                 {
                     "id": "energy-fuels.perfuracao",
                     "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
@@ -101,50 +100,48 @@ const Tools = () => {
                 </View>
             }
             {!loading &&
-                <SafeAreaProvider>
-                    <OperationModeProvider>
-                        <View style={[GlobalStyles.container, styles.container]}>
-                            {availableForms.length === 0 ? (
-                                <Text>{(language === 'pt-BR' ? "Nenhum formulário disponível" : "No form available")}.</Text>
-                            ) : (
-                                <>
-                                    <SafeAreaView>
-                                        <Image
-                                            source={require('../../assets/images/EnergyFuels-Logo.png')}
-                                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                                        />
-                                    </SafeAreaView>
+                <OperationModeProvider>
+                    <View style={[GlobalStyles.container, styles.container]}>
+                        {availableForms.length === 0 ? (
+                            <Text>{(language === 'pt-BR' ? "Nenhum formulário disponível" : "No form available")}.</Text>
+                        ) : (
+                            <>
+                                <SafeAreaView>
+                                    <Image
+                                        source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                        style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                                    />
+                                </SafeAreaView>
 
-                                    <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
-                                    <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
-                                    <Picker
-                                        selectedValue={selectedForm}
-                                        onValueChange={(itemValue, itemIndex) => {
-                                            setSelectedForm(itemValue);
-                                            if (itemValue) {
-                                                navigation.navigate('loader/list/index', { formId: itemValue });
-                                            }
-                                        }}
-                                        style={styles.picker}
-                                    >
-                                        <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
-                                        {availableForms.map((form) => (
-                                            <Picker.Item key={form.id} label={form.title} value={form.id} />
-                                        ))}
-                                    </Picker>
+                                <Text style={GlobalStyles.title}>{tools_text[language]}</Text>
+                                <Text style={GlobalStyles.subtitle}>{tools_details_text[language]}</Text>
+                                <Picker
+                                    selectedValue={selectedForm}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setSelectedForm(itemValue);
+                                        if (itemValue) {
+                                            navigation.navigate('loader/list/index', { formId: itemValue });
+                                        }
+                                    }}
+                                    style={styles.picker}
+                                >
+                                    <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
+                                    {availableForms.map((form) => (
+                                        <Picker.Item key={form.id} label={form.title} value={form.id} />
+                                    ))}
+                                </Picker>
 
-                                    <View style={[GlobalStyles.row, styles.goBack]}>
-                                        <View style={GlobalStyles.col12}>
-                                            <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
-                                                <Icon name="chevron-circle-left" size={16} color="#fff" />
-                                            </Pressable>
-                                        </View>
+                                <View style={[GlobalStyles.row, styles.goBack]}>
+                                    <View style={GlobalStyles.col12}>
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
+                                            <Icon name="chevron-circle-left" size={16} color="#fff" />
+                                        </Pressable>
                                     </View>
-                                </>
-                            )}
-                        </View>
-                    </OperationModeProvider>
-                </SafeAreaProvider>
+                                </View>
+                            </>
+                        )}
+                    </View>
+                </OperationModeProvider>
             }
         </>
     );
