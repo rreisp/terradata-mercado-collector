@@ -7,7 +7,6 @@ import {
   ScrollView
 } from 'react-native'
 import { colors } from '../../constants/colors'
-import { Header } from '../../components/header'
 import { Input } from '../../components/widgets/input'
 
 import { z } from 'zod'

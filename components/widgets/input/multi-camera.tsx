@@ -22,7 +22,7 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 
     const handleLaunchCamera = async () => {
         // Verifica se o limite máximo de fotos foi atingido, se especificado
-        if (maxPhotos && field.value.length >= maxPhotos) {
+        if (maxPhotos && field?.value?.length >= maxPhotos) {
             Alert.alert('Limite de Fotos', `Você atingiu o limite de ${maxPhotos} fotos.`);
             return;
         }
@@ -74,12 +74,12 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
     return (
         <View style={styles.container}>
             <Button
-                title={field.value.length > 0 ? "Adicionar Mais Fotos" : "Tirar Foto"}
+                title={field?.value?.length > 0 ? "Adicionar Mais Fotos" : "Tirar Foto"}
                 onPress={handleLaunchCamera}
-                disabled={maxPhotos && field.value.length >= maxPhotos} // Desabilita o botão se o limite for atingido
+                disabled={maxPhotos && field?.value?.length >= maxPhotos} // Desabilita o botão se o limite for atingido
             />
 
-            {field.value.length > 0 && (
+            {field?.value?.length > 0 && (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.previewContainer}>
                     {field.value.map((photoUri, index) => (
                         <View key={index} style={styles.imageWrapper}>
