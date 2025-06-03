@@ -3,11 +3,60 @@ import { RootStackParamList } from '@/types/root-stack-param-list';
 import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
 import { OperationModeProvider } from '@/contexts/OperationModeContext';
+// import RNFS from 'react-native-fs';
 
-type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
+export function base64ToBlob(base64Data: string, contentType = 'image/jpeg'): Blob {
+  const byteCharacters = atob(base64Data.replace(/^data:image\/\w+;base64,/, ''));
+  const byteArrays = [];
 
-const extract = (info: any) => {
-    // console.log(info);
+  for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+    const slice = byteCharacters.slice(offset, offset + 512);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  return new Blob(byteArrays, { type: contentType });
+}
+
+export function downloadBase64Image(base64Data: string, filename = 'image.jpg') {
+  const blob = base64ToBlob(base64Data);
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+// const saveBase64Image = async (base64Data: string, fileName: string = 'image.jpg'): Promise<string | null> => {
+    //     try {
+        //         // Caminho do arquivo a ser salvo
+//         const path = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+
+//         // Remove prefixo data:image/jpeg;base64, se estiver presente
+//         const base64WithoutPrefix = base64Data.replace(/^data:image\/\w+;base64,/, '');
+
+//         // Salva o arquivo
+//         await RNFS.writeFile(path, base64WithoutPrefix, 'base64');
+
+//         console.log('Imagem salva em:', path);
+//         return path; // você pode usar esse path para exibir a imagem depois
+//     } catch (error) {
+    //         console.error('Erro ao salvar a imagem:', error);
+    //         return null;
+    //     }
+    // };
+    
+    const extract = (info: any) => {
+        // console.log(info);
     console.warn('Extract Info');
     const drilling = extractDrillingInfo(info);
     console.log(drilling);
@@ -17,7 +66,9 @@ const extract = (info: any) => {
     // console.log(intervalsLithologies);
 
     const photos = extractPhotosInfo(info);
-    console.log(photos);    
+    console.log(photos);
+    // saveBase64Image(photos[0], 'fotoPerfil.jpg');
+     downloadBase64Image(photos[0], 'foto.jpg');
 };
 
 
@@ -60,7 +111,7 @@ const extractDrillingIntervalInfo = (info: any) => {
             hms: info.ef_depth_test.hms[i],
             comments: info.ef_depth_test.comments[i]
         };
-
+        
         intervals.push(obj);
     }
     return intervals;
@@ -71,9 +122,10 @@ const extractIntervalsLithologyInfo = (info: any) => {
 };
 
 const extractPhotosInfo = (info: any) => {
-    console.log(info.photos);
+    return info.photos;
 }
 
+type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
 const FormLoader = () => {
     const route = useRoute<FormLoaderRouteProp>();
     // const route = useRoute();
