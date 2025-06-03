@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Alert, Platform } from 'react-native';
 import Section from './section';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 import GlobalStyles from '../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const EF_DepthResearch = ({ parent, onChange }) => {
-    const { language } = useLanguage();        
+const EF_DepthResearch = ({ parent }: { parent: string }) => {
+    const { language } = useLanguage();
     const [elements, setElements] = useState<{ id: number }[]>([]);
 
     const handleAddElement = () => {

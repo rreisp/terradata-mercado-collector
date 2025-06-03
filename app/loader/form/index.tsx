@@ -7,14 +7,17 @@ import { OperationModeProvider } from '@/contexts/OperationModeContext';
 type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
 
 const extract = (info: any) => {
-    console.log(info);
+    // console.log(info);
     console.warn('Extract Info');
     const drilling = extractDrillingInfo(info);
     console.log(drilling);
-    const drillingIntervals = extractDrillingIntervalInfo(info);
-    console.log(drillingIntervals);
-    const intervalsLithologies = extractIntervalsLithologyInfo(info);
-    console.log(intervalsLithologies);
+    // const drillingIntervals = extractDrillingIntervalInfo(info);
+    // console.log(drillingIntervals);
+    // const intervalsLithologies = extractIntervalsLithologyInfo(info);
+    // console.log(intervalsLithologies);
+
+    const photos = extractPhotosInfo(info);
+    console.log(photos);    
 };
 
 
@@ -67,6 +70,10 @@ const extractIntervalsLithologyInfo = (info: any) => {
     console.log(info.ef_depth_test.lithologies);
 };
 
+const extractPhotosInfo = (info: any) => {
+    console.log(info.photos);
+}
+
 const FormLoader = () => {
     const route = useRoute<FormLoaderRouteProp>();
     // const route = useRoute();
@@ -82,7 +89,7 @@ const FormLoader = () => {
 
     return (
         <OperationModeProvider>
-            <DynamicForm schemaId={formId} />
+            <DynamicForm schemaId={formId} extract={extract} />
         </OperationModeProvider>
     );
 };

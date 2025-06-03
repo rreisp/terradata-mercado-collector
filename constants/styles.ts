@@ -87,14 +87,14 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         flex: 1
     },
-    pickerView: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
     centered: {
         flex: 1, // ocupa toda a tela
         justifyContent: 'center', // alinha verticalmente
         alignItems: 'center',     // alinha horizontalmente
     },
-    // picker: { borderWidth: 0, padding: 8 },
-    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7 },
+    picker: { borderWidth: 0, padding: 8 },
+    // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7 },
+    pickerContainer: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
     section: {
         flexDirection: 'row',
         alignItems: 'center',

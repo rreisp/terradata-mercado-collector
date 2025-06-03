@@ -1,8 +1,6 @@
 import React from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-// import EF_Coordinates from "./EF_Coordinates";
-// import EF_Dates from "./EF_Dates";
 import GlobalStyles from "../../constants/styles";
 import { CameraInput } from "../widgets/input/camera";
 import { MultiCameraInput } from "../widgets/input/multi-camera";
@@ -10,15 +8,9 @@ import NumericInput from "../widgets/input/numeric";
 import EF_DepthResearch from "../widgets/com/energy-fuels/depth-research";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Checkbox } from "expo-checkbox";
-
-interface Field {
-    id: string;
-    type: string;
-    label: Record<string, string>;
-    placeholder?: Record<string, string>;
-    options?: { label: Record<string, string>; value: string }[];
-    step?: number;
-}
+import { Field } from "@/types/field";
+import EF_Coordinates from "../widgets/com/energy-fuels/depth-research/coordinates";
+import EF_Dates from "../widgets/com/energy-fuels/depth-research/dates";
 
 interface FieldRendererProps {
     field: Field;
@@ -53,9 +45,9 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <NumericInput
                         step={field.step || 1}
-                        value={value || ""}
-                        max={10}
-                        min={5}
+                        value={value || ''}
+                        max={field.max ?? undefined}
+                        min={field.min ?? undefined}
                         onChange={(text: string) => onChange(field.id, text)}
                     />
                 </View>
@@ -80,7 +72,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
                 <View style={[GlobalStyles.fieldContainer, GlobalStyles.section]}>
                     <Checkbox
                         style={GlobalStyles.checkbox}
-                        value={value}
+                        value={value || false}
                         onValueChange={(val) => onChange(field.id, val)}
                     />
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
@@ -90,7 +82,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
             return (
                 <View style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <View style={styles.pickerContainer}>
+                    <View style={GlobalStyles.pickerContainer}>
                         <Picker
                             selectedValue={value}
                             onValueChange={(val) => onChange(field.id, val)}
@@ -107,13 +99,29 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
             return (
                 <View style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <View style={styles.pickerContainer}>
+                    <View>
                         <EF_DepthResearch parent={field.id} />
                     </View>
                 </View>
             );
-        // case "ef_coordinates":
-        // case "ef_dates":
+        case "ef_coordinates":
+            return (
+                <View key={field.id} style={GlobalStyles.fieldContainer}>
+                    <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
+                    <View>
+                        <EF_Coordinates />
+                    </View>
+                </View>
+            );
+        case "ef_dates":
+            return (
+                <View key={field.id} style={GlobalStyles.fieldContainer}>
+                    <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
+                    <View>
+                        <EF_Dates parent={field.id} />
+                    </View>
+                </View>
+            );
         // Adicione outros componentes especiais aqui quando necessário
         default:
             return null;
@@ -121,11 +129,3 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
 };
 
 export default FieldRenderer;
-
-const styles = StyleSheet.create({
-    pickerContainer: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        borderRadius: 5,
-    },
-});

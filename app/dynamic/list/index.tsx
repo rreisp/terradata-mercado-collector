@@ -170,25 +170,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    description: {
-        fontSize: 16,
-        marginBottom: 20,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#ccc",
-        padding: 10,
-        borderRadius: 5,
-    },
-    pickerContainer: {
-        borderColor: "#ccc",
-        borderRadius: 5,
-    },
     modal: {
         backgroundColor: "white",
         padding: 20,

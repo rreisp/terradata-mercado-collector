@@ -6,9 +6,9 @@ export type Field = {
     type: string;
     required?: boolean;
     placeholder?: LocalizedString;
-    step?: number;
-    min?: number;
-    max?: number;
+    step?: number | undefined;
+    min?: number | undefined;
+    max?: number | undefined;
     options?: Array<{
         value: string;
         label: LocalizedString;

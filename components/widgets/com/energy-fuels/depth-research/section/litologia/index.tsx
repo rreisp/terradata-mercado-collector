@@ -85,38 +85,34 @@ const EF_Litologia = ({ index, parent }) => {
                                 {language === 'pt-BR' ? `Nenhum item adicionado` : `No item found`}.
                             </Text>
                         ) : (
-                            lithologiesArray.map((_, subIndex) => (
+                            lithologiesArray.map((_, subIndex: number) => (
                                 <View key={subIndex} style={[GlobalStyles.row, styles.row]}>
-                                    <View style={GlobalStyles.col2}>
+                                    <View style={[GlobalStyles.col2, {flexDirection: 'row'}]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `De` : `From`}
                                             value={lithologiesArray[subIndex]?.de || ''}
-                                            onChange={(text) =>
+                                            onChange={(text: String) =>
                                                 setFieldValue(`${pathBase}[${index}][${subIndex}].de`, text)
                                             }
                                             step={1}
-                                            min={0.5}
-                                            max={2.5}
-                                            style={styles.input}
+                                            style={[GlobalStyles.input, styles.input]}
                                         />
                                     </View>
 
-                                    <View style={GlobalStyles.col2}>
+                                    <View style={[GlobalStyles.col2, {flexDirection: 'row'}]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `Até` : `To`}
-                                            value={lithologiesArray[subIndex]?.ate || ''}
-                                            onChange={(text) =>
+                                            value={lithologiesArray[subIndex]?.ate || '888'}
+                                            onChange={(text : string) =>
                                                 setFieldValue(`${pathBase}[${index}][${subIndex}].ate`, text)
                                             }
                                             step={1}
-                                            min={0.5}
-                                            max={2.5}
-                                            style={styles.input}
+                                            style={[GlobalStyles.input, styles.input]}
                                         />
                                     </View>
 
                                     <View style={GlobalStyles.col7}>
-                                        <View style={GlobalStyles.pickerView}>
+                                        <View style={GlobalStyles.pickerContainer}>
                                             <Picker
                                                 selectedValue={
                                                     lithologiesArray[subIndex]?.tipo || valorInicial
@@ -158,7 +154,8 @@ const styles = StyleSheet.create({
     container: { marginTop: 5 },
     row: { marginVertical: 1 },
     input: {
-        flex: 1
+        flex: 1,
+        margin: 0
     },
     label: { fontWeight: 'bold', flex: 1 },
     emptyText: {

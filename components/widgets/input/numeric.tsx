@@ -2,7 +2,7 @@ import React from 'react';
 import { TextInput, View, StyleSheet } from 'react-native';
 import GlobalStyles from '../../../constants/styles';
 
-function getPrecision(num) {
+function getPrecision(num: number) {
     if (!isFinite(num)) return 0;
     const str = num.toString();
 
@@ -24,7 +24,6 @@ const NumericInput = ({
     step = 1,
     min = -Infinity,
     max = Infinity,
-    style = {},
     ...props
 }) => {
     const maxDecimais = getPrecision(step);
@@ -56,9 +55,9 @@ const NumericInput = ({
     };
 
     return (
-        <View style={[styles.container, style]}>
+        <View style={[styles.container]}>
             <TextInput
-                value={value?.toString()}
+                value={value?.toString() || ''}
                 onChangeText={handleChange}
                 onBlur={handleBlur}
                 keyboardType="decimal-pad"

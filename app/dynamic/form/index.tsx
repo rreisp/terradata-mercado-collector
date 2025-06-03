@@ -18,8 +18,9 @@ import { FormikHelpers } from "@/types/formik-helpers";
 
 import FieldRenderer from "@/components/renderer";
 import SafeAreaContainer from "@/components/safe-container";
+import { DynamicFormProps } from "@/types/dynamic-form-props";
 
-const DynamicForm = ({ schemaId }: { schemaId: string }) => {
+const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -112,8 +113,8 @@ const DynamicForm = ({ schemaId }: { schemaId: string }) => {
                 initialValues={initialValues}
                 // validationSchema={Yup.object(validationShape)}
                 onSubmit={(values) => {
-                    // extract(values);
-                    console.log(values);
+                    extract(values);
+                    // console.log(values);
                 }}
             // onSubmit={(values) => {
             //     const mensagem = Object.entries(values)
