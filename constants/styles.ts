@@ -34,7 +34,8 @@ export default StyleSheet.create({
         backgroundColor: colors.background,
     },
     scrollContainer: {
-        paddingBottom: 25
+        paddingBottom: 25,
+        flexGrow: 1
     },
     fieldContainer: {
         paddingBottom: 5

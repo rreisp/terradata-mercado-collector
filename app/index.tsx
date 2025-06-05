@@ -24,7 +24,7 @@ export default function Index() {
   return (
     <SafeAreaContainer>
       <View
-        style={[GlobalStyles.container, styles.container]}
+        style={[GlobalStyles.container, GlobalStyles.centered]}
       >
         <Image
           source={require('../assets/images/EnergyFuels-Logo.png')}
@@ -40,7 +40,7 @@ export default function Index() {
         </Text>
 
         <View style={[GlobalStyles.row, styles.row]}>
-          <View style={GlobalStyles.col}>
+          <View style={GlobalStyles.col6}>
             <Link href="/tools" asChild>
               <Pressable style={styles.button} accessibilityRole="button" onPress={() => escolherIdioma('pt-BR')}>
                 <CountryFlag isoCode="br" size={25} />
@@ -48,7 +48,7 @@ export default function Index() {
               </Pressable>
             </Link>
           </View>
-          <View style={GlobalStyles.col}>
+          <View style={GlobalStyles.col6}>
             <Link href="/tools" asChild>
               <Pressable style={styles.button} accessibilityRole="button" onPress={() => escolherIdioma('en-US')}>
                 <CountryFlag isoCode="us" size={25} />
@@ -63,14 +63,8 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center"
-  },
   row: {
-    width: '33%',
-    marginTop: 27
+    width: '50%',
   },
   title: {
     color: colors.green,
@@ -78,7 +72,6 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     height: 69,
-    borderWidth: 1,
     borderColor: "#efefef",
     borderRadius: 4,
     justifyContent: 'center',

@@ -24,7 +24,7 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
                 </View>
             ) : scrollable ? (
                 <ScrollView
-                    style={GlobalStyles.container}
+                    style={[GlobalStyles.container, styles.fill]}
                     contentContainerStyle={GlobalStyles.scrollContainer}
                 >
                     {children}
