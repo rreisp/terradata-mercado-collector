@@ -1,6 +1,6 @@
 // components/layout/SafeAreaContainer.tsx
 import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import { colors } from "@/constants/colors";
 import GlobalStyles from "@/constants/styles";
@@ -16,6 +16,8 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
     isLoading = false,
     scrollable = true,
 }) => {
+    const insets = useSafeAreaInsets();
+    
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {isLoading ? (
@@ -30,7 +32,9 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
                     {children}
                 </ScrollView>
             ) : (
-                <View style={styles.fill}>{children}</View>
+                <View style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+                    {children}
+                </View>
             )}
         </SafeAreaView>
     );

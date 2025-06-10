@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, ScrollView, Pressable } from "react-native";
+import { View, Text, Button, Image, StyleSheet, ScrollView, Pressable, FlatList } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,66 +16,13 @@ import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
 
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
 import SafeAreaContainer from "@/components/safe-container";
+import { CrudService } from "@/lib/db/crud-service";
+import { ImageRecord } from "@/types/image-record";
 
-const extract = (info: any) => {
-    console.log(info);
-    console.warn('Extract Info');
-    const drilling = extractDrillingInfo(info);
-    console.log(drilling);
-    const drillingIntervals = extractDrillingIntervalInfo(info);
-    console.log(drillingIntervals);
-    const intervalsLithologies = extractIntervalsLithologyInfo(info);
-    console.log(intervalsLithologies);
-};
-
-const extractDrillingInfo = (info: any) => {
-    return {
-        drilling_id: info.perfuracao_id,
-        easting: info.easting,
-        northing: info.northing,
-        elevation: info.elevation,
-        tenement: info.tenement,
-        landowner: info.landowner,
-        start_date: info.ef_dates.start,
-        end_date: info.ef_dates.end,
-        reason: info.reason
-    }
-};
-
-const extractDrillingIntervalInfo = (info: any) => {
-    const size = info.ef_depth_test.depth?.length || 0;
-    let intervals = [];
-    for (let i = 0; i < size; i++) {
-        let obj = {
-            depthFrom: info.ef_depth_test.depth[i].from,
-            depthTo: info.ef_depth_test.depth[i].to,
-            recovery: info.ef_depth_test.runCoreRecovery[i],
-            moisture: info.ef_depth_test.moisture[i],
-            volume: info.ef_depth_test.volume[i],
-            hardness: info.ef_depth_test.hardness[i],
-            wash: info.ef_depth_test.wash[i],
-            color: info.ef_depth_test.color[i],
-            induration: info.ef_depth_test.induration[i],
-            grainsize: info.ef_depth_test.grainsize[i],
-            sorting: info.ef_depth_test.sorting[i],
-            roundness: info.ef_depth_test.roundness[i],
-            clay: info.ef_depth_test.clayPct[i],
-            micah: info.ef_depth_test.micahPct[i],
-            shells: info.ef_depth_test.shellsPct[i],
-            organicMatter: info.ef_depth_test.organicMatterPct[i],
-            lithicFragments: info.ef_depth_test.lithicFragmentsPct[i],
-            hms: info.ef_depth_test.hms[i],
-            comments: info.ef_depth_test.comments[i]
-        };
-
-        intervals.push(obj);
-    }
-    return intervals;
-};
-
-const extractIntervalsLithologyInfo = (info: any) => {
-    console.log(info.ef_depth_test.lithologies);
-};
+async function listImages(): Promise<ImageRecord[]> {
+    const images = await CrudService.list<ImageRecord>('images');
+    return images;
+}
 
 const DynamicList = ({ schemaId }: DynamicListProps) => {
     const { language } = useLanguage();
@@ -84,12 +31,13 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
-    const [loading, setLoading] = useState(true);
-
     const insets = useSafeAreaInsets(); // <-- Novo
+    const [images, setImages] = useState<ImageRecord[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), values.delay);
+        // Icon.loadFont();
         if (isOnline) {
             fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
                 .then((res) => res.json())
@@ -99,7 +47,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                 })
                 .catch((err) => console.error("Erro ao carregar schema:", err));
         } else {
-            Icon.loadFont();
             let schema = null;
             switch (schemaId) {
                 case 'cw.dialeto.cadastro':
@@ -115,6 +62,21 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
         }
     }, [schemaId]);
 
+    useEffect(() => {
+        async function fetchImages() {
+            try {
+                const data = await listImages();
+                setImages(data);
+            } catch (error) {
+                console.error('Erro ao carregar imagens:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchImages();
+    }, []);
+
     const goBack = () => {
         navigation.navigate('tools/index', { formId: schemaId });
     };
@@ -125,7 +87,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     };
 
     return (
-        <SafeAreaContainer isLoading={loading}>
+        <SafeAreaContainer isLoading={loading} scrollable={false}>
             <View style={GlobalStyles.row}>
                 <View style={GlobalStyles.col1}>
                     <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
@@ -154,9 +116,22 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
             </View>
             <View style={GlobalStyles.row}>
                 <View style={GlobalStyles.col12}>
-                    <ScrollView>
-                        {/* conteúdo futuro aqui */}
-                    </ScrollView>
+                    <FlatList
+                        data={images}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <View style={styles.item}>
+                                <Image source={{ uri: `${item.img}` }} style={styles.image} />
+                                <Text>Intervalo: {item.fgk_interval}</Text>
+                            </View>
+                        )}
+                        ListEmptyComponent={() => (
+                            <View style={styles.center}>
+                                <Text>Nenhuma imagem encontrada.</Text>
+                            </View>
+                        )}
+                         style={{ marginBottom: 130}}
+                    />
                 </View>
             </View>
             <Modal isVisible={modalVisible}>
@@ -182,9 +157,25 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     center: {
-        alignContent: "center",
-        alignItems: 'center'
-    }
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    item: {
+        marginVertical: 8,
+        marginHorizontal: 16,
+        backgroundColor: '#eee',
+        padding: 10,
+        borderRadius: 6,
+        alignItems: 'center',
+    },
+    image: {
+        width: 200,
+        height: 150,
+        marginBottom: 8,
+        borderRadius: 6,
+    },
 });
 
 export default DynamicList;
+

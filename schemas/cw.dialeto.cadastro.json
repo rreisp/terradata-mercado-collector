@@ -283,28 +283,28 @@
             "required": false,
             "options": [
               {
-                "value": "feminino",
+                "value": 1,
                 "label": {
                   "pt-BR": "Feminino",
                   "en-US": "Female"
                 }
               },
               {
-                "value": "masculino",
+                "value": 2,
                 "label": {
                   "pt-BR": "Masculino",
                   "en-US": "Male"
                 }
               },
               {
-                "value": "outro",
+                "value": 3,
                 "label": {
                   "pt-BR": "Outro",
                   "en-US": "Other"
                 }
               },
               {
-                "value": "prefiro_nao_dizer",
+                "value": 0,
                 "label": {
                   "pt-BR": "Prefiro não dizer",
                   "en-US": "Prefer not to say"
