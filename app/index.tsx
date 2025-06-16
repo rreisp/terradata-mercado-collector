@@ -7,25 +7,26 @@ import CountryFlag from "react-native-country-flag";
 import { useLanguage } from '../contexts/LanguageContext';
 import { useEffect, useState } from "react";
 import SafeAreaContainer from "@/components/safe-container";
-import { CrudService } from "@/lib/db/crud-service";
+import { CrudService } from "@/services/crud-service";
+import { initDatabase } from "@/init/energy-fuels.perfuracao.init";
 
-// CRIA TABELAS SE ELAS NÃO EXISTEM
-async function createImagesTable() {
-  try {
-    await CrudService.createTable('images', `
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      fgk_interval INTEGER,
-      img TEXT
-      `);
-    console.log('Tabela images criada (ou já existia).');
-    // await CrudService.clearTable('images');
-  } catch (error) {
-    console.error('Erro ao criar a tabela images:', error);
+  // CRIA TABELAS SE ELAS NÃO EXISTEM
+  async function createImagesTable() {
+    try {
+      await CrudService.createTable('images', `
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fgk_interval INTEGER,
+        img TEXT
+        `);
+      console.log('Tabela images criada (ou já existia).');
+      // await CrudService.clearTable('images');
+    } catch (error) {
+      console.error('Erro ao criar a tabela images:', error);
+    }
   }
-}
 
-// Executa a função para criar a tabela
-createImagesTable();
+  // Executa a função para criar a tabela
+  createImagesTable();
 
 export default function Index() {
   const { setLanguage } = useLanguage();
@@ -33,6 +34,7 @@ export default function Index() {
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), values.delay);
+    initDatabase();    
     return () => clearTimeout(timer);
   }, []);
 

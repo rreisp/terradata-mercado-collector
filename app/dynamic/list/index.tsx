@@ -16,7 +16,7 @@ import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
 
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
 import SafeAreaContainer from "@/components/safe-container";
-import { CrudService } from "@/lib/db/crud-service";
+import { CrudService } from "@/services/crud-service";
 import { ImageRecord } from "@/types/image-record";
 
 async function listImages(): Promise<ImageRecord[]> {

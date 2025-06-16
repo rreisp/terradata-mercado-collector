@@ -13,7 +13,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { router } from 'expo-router'
-import { useDataStore } from '../../store/data'
+// import { useDataStore } from '../../store/data'
 
 
 const schema = z.object({

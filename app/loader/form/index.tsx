@@ -3,11 +3,14 @@ import { RootStackParamList } from '@/types/root-stack-param-list';
 import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
 import { OperationModeProvider } from '@/contexts/OperationModeContext';
-import { extract as extractDrilling } from '@/extractors/energy-fuels.perfuracao';
+import { Extractor } from '@/types/extractor';
+import { EnergyFuelsDrillingExtractor } from '@/extractors/energy-fuels.perfuracao.extractor';
 
 type FormLoaderRouteProp = RouteProp<RootStackParamList, 'loader/form/index'>;
 
 const FormLoader = () => {
+    const extractor: Extractor = new EnergyFuelsDrillingExtractor();
+
     const route = useRoute<FormLoaderRouteProp>();
     const formIdParam = useLocalSearchParams().formId;
     const formId = typeof formIdParam === 'string'
@@ -20,7 +23,7 @@ const FormLoader = () => {
 
     return (
         <OperationModeProvider>
-            <DynamicForm schemaId={formId} extract={extractDrilling} />
+            <DynamicForm schemaId={formId} extract={extractor.extract.bind(extractor)} />
         </OperationModeProvider>
     );
 };
