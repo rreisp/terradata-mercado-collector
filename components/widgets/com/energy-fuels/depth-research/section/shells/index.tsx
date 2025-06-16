@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
     container: { marginTop: 10 },
     checkbox: {
         flexDirection: 'row',
+        marginRight: 5,
+        paddingTop: 1
     },
-    left: {
-        paddingLeft: 3
-    }
 });

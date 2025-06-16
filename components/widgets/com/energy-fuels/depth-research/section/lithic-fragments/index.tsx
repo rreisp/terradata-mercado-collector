@@ -62,9 +62,8 @@ const styles = StyleSheet.create({
     },
     checkbox: {
         flexDirection: 'row',
-    },
-    left: {
-        paddingLeft: 3
+        marginRight: 5,
+        paddingTop: 1
     },
     label: {
         marginBottom: 3

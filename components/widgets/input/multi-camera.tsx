@@ -35,7 +35,7 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.7, // Qualidade um pouco menor para arrays de fotos
+            quality: 1, // Qualidade um pouco menor para arrays de fotos
             base64: true,
             allowsMultipleSelection: false, // Tiramos uma por uma
         });

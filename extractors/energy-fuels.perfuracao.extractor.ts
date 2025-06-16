@@ -9,12 +9,12 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         console.warn('Extract Info');
 
         const drilling = this.extractDrillingInfo(info);
-        console.log(drilling);
+        // console.log(drilling);
 
-        enviarBancoPorEmail();
+        // enviarBancoPorEmail();
 
         // Exemplo de extração adicional:
-        // const drillingIntervals = this.extractDrillingIntervalInfo(info);
+        const drillingIntervals = this.extractDrillingIntervalInfo(info);
         // const lithologies = this.extractIntervalsLithologyInfo(info);
         // const photos = this.extractPhotosInfo(info);
         // await this.save(photos);
@@ -73,7 +73,8 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
                 organicMatter: info.ef_depth_test.organicMatterPct[i],
                 lithicFragments: info.ef_depth_test.lithicFragmentsPct[i],
                 hms: info.ef_depth_test.hms[i],
-                comments: info.ef_depth_test.comments[i]
+                comments: info.ef_depth_test.comments[i],
+                photos: info.ef_depth_test.photos[i]
             });
         }
         return intervals;

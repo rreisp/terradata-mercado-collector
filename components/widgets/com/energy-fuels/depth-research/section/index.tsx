@@ -25,6 +25,7 @@ import EF_Volume from './volume';
 import EF_Wash from './wash';
 import EF_Litologia from './litologia';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { MultiCameraInput } from '@/components/widgets/input/multi-camera';
 
 const Section = ({ el, index, size, parent }) => {
     const { language } = useLanguage();
@@ -58,6 +59,10 @@ const Section = ({ el, index, size, parent }) => {
             </TouchableOpacity>
             <Collapsible collapsed={collapsed}>
                 <View key={el.id} style={styles.sectionContent}>
+                    <View style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `FOTOS ${index + 1}` : `PHOTOS ${index + 1}`}</Text>
+                        <MultiCameraInput name={`${parent}.photos[${index}]`} />
+                    </View>
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Depth
