@@ -7,7 +7,7 @@ import CountryFlag from "react-native-country-flag";
 import { useLanguage } from '../contexts/LanguageContext';
 import { useEffect, useState } from "react";
 import SafeAreaContainer from "@/components/safe-container";
-import { CrudService } from "@/services/crud-service";
+import { CrudService } from "@/services/crud.service";
 import { initDatabase } from "@/init/energy-fuels.perfuracao.init";
 
   // CRIA TABELAS SE ELAS NÃO EXISTEM

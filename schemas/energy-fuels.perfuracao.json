@@ -52,66 +52,12 @@
       "columns": [
         {
           "field": {
-            "id": "perfuracao_id",
+            "id": "title",
             "label": {
               "pt-BR": "Perfuração ID:",
               "en-US": "Drilling ID:"
             },
             "type": "text",
-            "required": true,
-            "validations": {
-              "min_length": 1,
-              "messages": {
-                "min_length": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
-                }
-              }
-            }
-          },
-          "size": {
-            "xs": 12,
-            "sm": 6,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-          }
-        },
-        {
-          "field": {
-            "id": "photos",
-            "label": {
-              "pt-BR": "Fotos:",
-              "en-US": "Photos:"
-            },
-            "type": "photos",
-            "required": true,
-            "validations": {
-              "min_length": 1,
-              "messages": {
-                "min_length": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
-                }
-              }
-            }
-          },
-          "size": {
-            "xs": 12,
-            "sm": 6,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-          }
-        },
-        {
-          "field": {
-            "id": "photo",
-            "label": {
-              "pt-BR": "Foto:",
-              "en-US": "Photo:"
-            },
-            "type": "photo",
             "required": true,
             "validations": {
               "min_length": 1,

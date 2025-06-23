@@ -66,8 +66,7 @@ export default StyleSheet.create({
         borderRadius: 5,
         alignItems: 'center',
         justifyContent: 'space-between',
-        fontWeight: 'bold',
-        flex: 1
+        fontWeight: 'bold'
     },
     warnButton: {
         backgroundColor: '#FFA500',
@@ -76,8 +75,15 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         fontWeight: 'bold',
-        flex: 1
     },
+    dangerButton: {
+        backgroundColor: '#dc3545',
+        padding: 7,
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        fontWeight: 'bold'
+    },    
     disabledInput: { backgroundColor: '#eee', borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0 },
     disabledButton: {
         backgroundColor: '#ccc',

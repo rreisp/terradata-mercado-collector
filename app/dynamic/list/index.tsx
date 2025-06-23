@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, ScrollView, Pressable, FlatList } from "react-native";
+import { View, Text, Button, Image, StyleSheet, Pressable, FlatList } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,12 +16,13 @@ import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
 
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
 import SafeAreaContainer from "@/components/safe-container";
-import { CrudService } from "@/services/crud-service";
+import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from "@/types/image-record";
+import { DrillingRecord } from "@/types/drilling-record";
 
-async function listImages(): Promise<ImageRecord[]> {
-    const images = await CrudService.list<ImageRecord>('images');
-    return images;
+async function listDrillings(): Promise<DrillingRecord[]> {
+    const drillings = await CrudService.list<DrillingRecord>('drillings');
+    return drillings;
 }
 
 const DynamicList = ({ schemaId }: DynamicListProps) => {
@@ -32,7 +33,8 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
     const insets = useSafeAreaInsets(); // <-- Novo
-    const [images, setImages] = useState<ImageRecord[]>([]);
+    // const [images, setImages] = useState<ImageRecord[]>([]);
+    const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -65,8 +67,8 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     useEffect(() => {
         async function fetchImages() {
             try {
-                const data = await listImages();
-                setImages(data);
+                const data = await listDrillings();
+                setDrillings(data);
             } catch (error) {
                 console.error('Erro ao carregar imagens:', error);
             } finally {
@@ -101,28 +103,36 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                         source={require('../../../assets/images/EnergyFuels-Logo.png')}
                         style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                     />
-                    <Text style={[GlobalStyles.title, GlobalStyles.centered]}>
-                        {formSchema?.title[language] || ""} {String(language) === 'pt-BR' ? `LISTAGEM` : `LIST`}
-                    </Text>
+                    <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
                 </View>
             </View>
             <View style={GlobalStyles.row}>
                 <View style={GlobalStyles.col11}></View>
                 <View style={GlobalStyles.col1}>
-                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={openForm}>
+                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, styles.squared, { marginRight: 3 }]} onPress={openForm}>
                         <Icon name="plus" size={16} color="#fff" />
                     </Pressable>
                 </View>
             </View>
-            <View style={GlobalStyles.row}>
+            <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
                 <View style={GlobalStyles.col12}>
                     <FlatList
-                        data={images}
+                        data={drillings}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
-                            <View style={styles.item}>
-                                <Image source={{ uri: `${item.img}` }} style={styles.image} />
-                                <Text>Intervalo: {item.fgk_interval}</Text>
+                            <View style={[GlobalStyles.row, { paddingVertical: 3, paddingLeft: 3 }]}>
+                                <View style={[GlobalStyles.col4]}>
+                                    <Text>{item.title}</Text>
+                                </View>
+                                <View style={GlobalStyles.col6}>
+                                    <Text>{language == "pt-BR" ? "Data" : "Date"}: {item.title}</Text>
+                                </View>
+                                <View style={[GlobalStyles.col1, { paddingLeft: 1, alignItems: "flex-end" }]}>
+                                    {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                    <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, styles.squared]} onPress={openForm}>
+                                        <Icon name="trash" size={16} color="red" />
+                                    </Pressable>
+                                </View>
                             </View>
                         )}
                         ListEmptyComponent={() => (
@@ -130,7 +140,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                                 <Text>Nenhuma imagem encontrada.</Text>
                             </View>
                         )}
-                         style={{ marginBottom: 130}}
+                        style={{ marginBottom: 170 }}
                     />
                 </View>
             </View>
@@ -175,6 +185,10 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         borderRadius: 6,
     },
+    squared: {
+        width: 32,
+        height: 32
+    }
 });
 
 export default DynamicList;

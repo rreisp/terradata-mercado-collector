@@ -1,4 +1,4 @@
-import { CrudService } from '@/services/crud-service';
+import { CrudService } from '@/services/crud.service';
 
 export async function createDrillingsTable(): Promise<void> {
   try {
@@ -8,8 +8,8 @@ export async function createDrillingsTable(): Promise<void> {
       easting INTEGER NOT NULL,
       northing INTEGER NOT NULL,
       elevation NUMERIC NOT NULL,
-      mining_rights TEXT,
-      surface_owner TEXT,
+      tenement TEXT,
+      landowner TEXT,
       start_date TEXT,
       end_date TEXT,
       interrupted INTEGER,
@@ -35,6 +35,9 @@ export async function createImagesTable(): Promise<void> {
 }
 
 export async function initDatabase(): Promise<void> {
+    // await CrudService.drop("drillings");
+    // await CrudService.drop("images");
+
     await createDrillingsTable();
     await new Promise(resolve => setTimeout(resolve, 100));
     await createImagesTable();

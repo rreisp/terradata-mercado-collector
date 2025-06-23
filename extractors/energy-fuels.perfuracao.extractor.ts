@@ -1,23 +1,55 @@
 // default-extractor.ts
 import { Extractor } from "@/types/extractor";
-import { CrudService } from "@/services/crud-service";
+import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
-import { enviarBancoPorEmail } from "@/services/email-service";
+import { enviarBancoPorEmail } from "@/services/email.service";
+import { exportarBancoComSAF } from "@/services/file-copy.service";
 
 export class EnergyFuelsDrillingExtractor implements Extractor {
+    // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         console.warn('Extract Info');
 
+        // informação básica da perfuração        
         const drilling = this.extractDrillingInfo(info);
-        // console.log(drilling);
+        console.log(drilling);
+        await this.saveDrilling(drilling);
+        await exportarBancoComSAF();
 
-        // enviarBancoPorEmail();
 
-        // Exemplo de extração adicional:
-        const drillingIntervals = this.extractDrillingIntervalInfo(info);
+        const lastDrillingId = await CrudService.lastInsertId();
+        console.log(lastDrillingId);
+
+        // informação dos intervalos
+        // const drillingIntervals = this.extractDrillingIntervalInfo(info);
+        // console.log(drillingIntervals);
+
+        //informação da litologia de cada intervalo
         // const lithologies = this.extractIntervalsLithologyInfo(info);
-        // const photos = this.extractPhotosInfo(info);
-        // await this.save(photos);
+
+        // imagens de cada intervalo
+        // for (let i = 0; i < drillingIntervals.length; i++) {
+        //     const photos = this.extractPhotosInfo(i, info);
+        //     await this.savePhotos(i + 1, photos);
+        // }
+
+        // await enviarBancoPorEmail();
+    }
+
+    // -----------------------------------------------------------
+    private async saveDrilling(data: any) {
+        await CrudService.insert('drillings', {
+            title: data.title,
+            easting: data.easting,
+            northing: data.northing,
+            elevation: data.elevation,
+            tenement: data.tenement,
+            landowner: data.landowner,
+            start_date: data.start_date,
+            end_date: data.end_date,
+            interrupted: data.interrupted,
+            interruption_reason: data.interruption_reason
+        });
     }
 
     private async createImage(data: ImageRecord): Promise<void> {
@@ -27,27 +59,32 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         });
     }
 
-    private async save(photos: string[]) {
+    private async savePhotos(index: number, photos: string[]) {
         for (const photo of photos) {
             await this.createImage({
-                fgk_interval: 1,
+                fgk_interval: index,
                 img: photo
             });
         }
     }
 
     private extractDrillingInfo(info: any) {
-        return {
-            drilling_id: info.perfuracao_id,
-            easting: info.easting,
-            northing: info.northing,
-            elevation: info.elevation,
-            tenement: info.tenement,
-            landowner: info.landowner,
-            start_date: info.ef_dates.start,
-            end_date: info.ef_dates.end,
-            reason: info.reason
-        };
+        try {
+            return {
+                title: info.title,
+                easting: info.easting,
+                northing: info.northing,
+                elevation: info.elevation,
+                tenement: info.tenement,
+                landowner: info.landowner,
+                start_date: info.ef_dates.start,
+                end_date: info.ef_dates.end,
+                interrupted: info.interruption_reason?.length > 0 ? true : false,
+                interruption_reason: info.reason
+            }
+        } catch (ex) {
+            console.warn(ex);
+        }
     }
 
     private extractDrillingIntervalInfo(info: any) {
@@ -74,7 +111,6 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
                 lithicFragments: info.ef_depth_test.lithicFragmentsPct[i],
                 hms: info.ef_depth_test.hms[i],
                 comments: info.ef_depth_test.comments[i],
-                photos: info.ef_depth_test.photos[i]
             });
         }
         return intervals;
@@ -84,7 +120,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         console.log(info.ef_depth_test.lithologies);
     }
 
-    private extractPhotosInfo(info: any) {
-        return info.photos;
+    private extractPhotosInfo(index: number, info: any) {
+        return info.ef_depth_test.photos[index];
     }
 }
