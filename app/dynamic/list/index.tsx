@@ -17,12 +17,22 @@ import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
 import SafeAreaContainer from "@/components/safe-container";
 import { CrudService } from "@/services/crud.service";
-import { ImageRecord } from "@/types/image-record";
 import { DrillingRecord } from "@/types/drilling-record";
 
 async function listDrillings(): Promise<DrillingRecord[]> {
     const drillings = await CrudService.list<DrillingRecord>('drillings');
     return drillings;
+}
+
+function formatDate(date: string, lang: string) {
+    const day = date.substring(0, 2);
+    const mth = date.substring(3, 5);
+    const year = date.substring(6, 10);
+    if (lang === "pt-BR") {
+        return day + "/" + mth + "/" + year;
+    } else {
+        return mth + "/" + day + "/" + year;
+    }
 }
 
 const DynamicList = ({ schemaId }: DynamicListProps) => {
@@ -92,11 +102,13 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
         <SafeAreaContainer isLoading={loading} scrollable={false}>
             <View style={GlobalStyles.row}>
                 <View style={GlobalStyles.col1}>
-                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton]} onPress={goBack}>
+                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
                         <Icon name="chevron-circle-left" size={16} color="#fff" />
                     </Pressable>
                 </View>
+                <View style={GlobalStyles.col11}></View>
             </View>
+
             <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col, styles.center]}>
                     <Image
@@ -106,10 +118,11 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                     <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
                 </View>
             </View>
+
             <View style={GlobalStyles.row}>
                 <View style={GlobalStyles.col11}></View>
-                <View style={GlobalStyles.col1}>
-                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, styles.squared, { marginRight: 3 }]} onPress={openForm}>
+                <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
+                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
                         <Icon name="plus" size={16} color="#fff" />
                     </Pressable>
                 </View>
@@ -120,16 +133,16 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                         data={drillings}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
-                            <View style={[GlobalStyles.row, { paddingVertical: 3, paddingLeft: 3 }]}>
+                            <View style={[GlobalStyles.row, { paddingVertical: 3}]}>
                                 <View style={[GlobalStyles.col4]}>
                                     <Text>{item.title}</Text>
                                 </View>
-                                <View style={GlobalStyles.col6}>
-                                    <Text>{language == "pt-BR" ? "Data" : "Date"}: {item.title}</Text>
+                                <View style={GlobalStyles.col7}>
+                                    <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
                                 </View>
-                                <View style={[GlobalStyles.col1, { paddingLeft: 1, alignItems: "flex-end" }]}>
+                                <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
                                     {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
-                                    <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, styles.squared]} onPress={openForm}>
+                                    <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={openForm}>
                                         <Icon name="trash" size={16} color="red" />
                                     </Pressable>
                                 </View>
@@ -184,10 +197,6 @@ const styles = StyleSheet.create({
         height: 150,
         marginBottom: 8,
         borderRadius: 6,
-    },
-    squared: {
-        width: 32,
-        height: 32
     }
 });
 

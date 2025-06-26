@@ -12,7 +12,6 @@ export async function createDrillingsTable(): Promise<void> {
       landowner TEXT,
       start_date TEXT,
       end_date TEXT,
-      interrupted INTEGER,
       interruption_reason TEXT
     `);
     console.log('Tabela drillings criada (ou já existia).');

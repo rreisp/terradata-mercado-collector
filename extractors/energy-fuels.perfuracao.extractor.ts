@@ -5,6 +5,14 @@ import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
 import { exportarBancoComSAF } from "@/services/file-copy.service";
 
+function formatDate(date: Date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+
 export class EnergyFuelsDrillingExtractor implements Extractor {
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
@@ -47,7 +55,6 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
             landowner: data.landowner,
             start_date: data.start_date,
             end_date: data.end_date,
-            interrupted: data.interrupted,
             interruption_reason: data.interruption_reason
         });
     }
@@ -77,9 +84,8 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
                 elevation: info.elevation,
                 tenement: info.tenement,
                 landowner: info.landowner,
-                start_date: info.ef_dates.start,
-                end_date: info.ef_dates.end,
-                interrupted: info.interruption_reason?.length > 0 ? true : false,
+                start_date: formatDate(info.ef_dates.start),
+                end_date: formatDate(info.ef_dates.end),
                 interruption_reason: info.reason
             }
         } catch (ex) {

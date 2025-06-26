@@ -41,17 +41,17 @@ const EF_DepthResearch = ({ parent }: { parent: string }) => {
     return (
         <View>
             {elements.length === 0 ? (
-                <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum intervalo adicionado.` : `No ranges added.`}</Text>
+                <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum segmento adicionado.` : `No segment added.`}</Text>
             ) : (
                 elements.map((el, index) => (
                     <View key={el.id}>
                         <Section index={index} el={el} size={elements.length} parent={parent} />
                         <View>
                             {index == elements.length - 1 &&
-                                <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton)]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
+                                <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), {marginVertical: 1}]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
                                     <View style={GlobalStyles.row}>
                                         <Icon name="trash" size={16} color="#fff" style={styles.icon} />
-                                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER INTERVALO ${index + 1}` : `REMOVE INTERVAL ${index + 1}`}</Text>
+                                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER SEGMENTO ${index + 1}` : `REMOVE SEGMENT ${index + 1}`}</Text>
                                     </View>
                                 </TouchableOpacity>
                             }
@@ -63,7 +63,7 @@ const EF_DepthResearch = ({ parent }: { parent: string }) => {
                 <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleAddElement}>
                     <View style={GlobalStyles.row}>
                         <Icon name="plus" size={16} color="#fff" style={styles.icon} />
-                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `ADICIONAR INTERVALO` : `ADD INTERVAL`}</Text>
+                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `ADICIONAR SEGMENTO` : `ADD SEGMENT`}</Text>
                     </View>
                 </TouchableOpacity>
             </View>

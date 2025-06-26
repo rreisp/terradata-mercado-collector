@@ -44,7 +44,7 @@ const Section = ({ el, index, size, parent }) => {
         <View style={styles.bordered}>
             <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={(index % 2 == 0 ? styles.sectionHeaderEven : styles.sectionHeaderOdd)}>
                 <View style={GlobalStyles.col3}>
-                    <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `INTERVALO ${index + 1}` : `INTERVAL ${index + 1}`}</Text>
+                    <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Segmento ${index + 1}` : `Segment ${index + 1}`}</Text>
                 </View>
                 <View style={GlobalStyles.col8}>
                     <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values?.[parent]?.depth?.[index]?.from}cm {language === 'pt-BR' ? `até` : `to`} {values?.[parent]?.depth?.[index]?.to || ''}cm</Text>
@@ -60,7 +60,7 @@ const Section = ({ el, index, size, parent }) => {
             <Collapsible collapsed={collapsed}>
                 <View key={el.id} style={styles.sectionContent}>
                     <View style={GlobalStyles.fieldContainer}>
-                        <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `FOTOS ${index + 1}` : `PHOTOS ${index + 1}`}</Text>
+                        <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fotos do segmento ${index + 1}` : `Photos from segment ${index + 1}`}:</Text>
                         <MultiCameraInput name={`${parent}.photos[${index}]`} />
                     </View>
                     <View style={GlobalStyles.row}>

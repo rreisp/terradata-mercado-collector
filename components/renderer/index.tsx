@@ -108,18 +108,14 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
             return (
                 <View key={field.id} style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
-                    <View>
-                        <EF_Coordinates />
-                    </View>
+                    <EF_Coordinates />
                 </View>
             );
         case "ef_dates":
             return (
                 <View key={field.id} style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
-                    <View>
-                        <EF_Dates parent={field.id} />
-                    </View>
+                    <EF_Dates parent={field.id} />
                 </View>
             );
         // Adicione outros componentes especiais aqui quando necessário

@@ -64,18 +64,18 @@ const EF_Litologia = ({ index, parent }) => {
             <FieldArray name={`${pathBase}[${index}]`}>
                 {({ push, remove }) => (
                     <>
-                        <View style={GlobalStyles.row}>
+                        <View style={[GlobalStyles.row, styles.row]}>
                             <View style={GlobalStyles.col11}>
                                 <Text style={styles.label}>
                                     {language === 'pt-BR' ? `Litologia` : `Lithology`}:
                                 </Text>
                             </View>
-                            <View style={GlobalStyles.col1}>
+                            <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
                                 <TouchableOpacity
                                     style={GlobalStyles.primaryButton}
                                     onPress={() => push({ de: '', ate: '', tipo: '' })}
                                 >
-                                    <Icon name="plus" size={16} color="#fff" style={styles.icon} />
+                                    <Icon name="plus" size={16} color="#fff" />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -132,12 +132,12 @@ const EF_Litologia = ({ index, parent }) => {
                                         </View>
                                     </View>
 
-                                    <View style={GlobalStyles.col1}>
+                                    <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
                                         <TouchableOpacity
-                                            style={GlobalStyles.warnButton}
+                                            style={[GlobalStyles.warnButton]}
                                             onPress={() => remove(subIndex)}
                                         >
-                                            <Icon name="trash" size={16} color="#fff" />
+                                            <Icon name="trash" size={16} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
         color: '#777',
         marginVertical: 4,
         marginLeft: 4,
-    },
+    }  
 });
 
 export default EF_Litologia;

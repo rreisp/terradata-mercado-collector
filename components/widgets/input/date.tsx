@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Platform, StyleSheet, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MaskInput, { Masks } from 'react-native-mask-input';
+import GlobalStyles from '../../../constants/styles';
 
 type DateInputProps = {
     value: Date | null;
@@ -48,7 +49,7 @@ const DateInput: React.FC<DateInputProps> = ({
                 <MaskInput
                     editable={false}
                     value={value ? formatDate(value, format) : ''}
-                    style={styles.input}
+                    style={GlobalStyles.input}
                     mask={
                         format === 'dd/MM/yyyy' ? Masks.DATE_DDMMYYYY :
                             format === 'MM/dd/yyyy' ? Masks.DATE_MMDDYYYY :
@@ -60,7 +61,7 @@ const DateInput: React.FC<DateInputProps> = ({
 
             {showPicker && (
                 <DateTimePicker
-                    value={value ? normalizeDate(value) : new Date()}
+                    value={value ? normalizeDate(value) : normalizeDate(new Date())}
                     mode="date"
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                     onChange={handleDateChange}

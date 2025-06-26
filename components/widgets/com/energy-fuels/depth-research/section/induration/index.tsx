@@ -32,7 +32,7 @@ const EF_Induration = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
-            <View style={GlobalStyles.pickerView}>
+            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.induration?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, itemValue)}

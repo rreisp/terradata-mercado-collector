@@ -8,7 +8,6 @@ import DateInput from '@/components/widgets/input/date';
 const EF_Dates = ({ parent }: { parent: string }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
     const valorInicial = '';
 

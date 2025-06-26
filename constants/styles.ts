@@ -60,12 +60,15 @@ export default StyleSheet.create({
         width: 300,
     },
     input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0 },
+    iconButton: {
+        width: 32,
+        height: 32
+    },
     primaryButton: {
         backgroundColor: '#007bff',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',
-        justifyContent: 'space-between',
         fontWeight: 'bold'
     },
     warnButton: {
@@ -83,7 +86,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         fontWeight: 'bold'
-    },    
+    },
     disabledInput: { backgroundColor: '#eee', borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0 },
     disabledButton: {
         backgroundColor: '#ccc',
@@ -99,8 +102,18 @@ export default StyleSheet.create({
         justifyContent: 'center', // alinha verticalmente
         alignItems: 'center',     // alinha horizontalmente
     },
-    picker: { borderWidth: 0, padding: 8 },
-    // picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7 },
+    leftAligned: {
+        flex: 1, // ocupa toda a tela
+        justifyContent: 'flex-start', // alinha verticalmente
+        alignItems: 'flex-start',     // alinha horizontalmente
+    },
+    rightAligned: {
+        flex: 1, // ocupa toda a tela
+        justifyContent: 'flex-end', // alinha verticalmente
+        alignItems: 'flex-end',     // alinha horizontalmente
+    },
+    // picker: { borderWidth: 0, padding: 8 },
+    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7 },
     pickerContainer: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
     section: {
         flexDirection: 'row',

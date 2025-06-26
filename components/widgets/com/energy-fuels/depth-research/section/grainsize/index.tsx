@@ -38,7 +38,7 @@ const EF_Grainsize = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
-            <View style={GlobalStyles.pickerView}>
+            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.grainsize?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, itemValue)}

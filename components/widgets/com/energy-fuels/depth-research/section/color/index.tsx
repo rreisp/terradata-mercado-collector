@@ -70,7 +70,7 @@ const EF_Color = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cor` : `Color`}:</Text>
-            <View style={GlobalStyles.pickerView}>
+            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.color?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.color[${index}]`, itemValue)}
