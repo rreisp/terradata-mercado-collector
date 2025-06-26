@@ -7,7 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const EF_Litologia = ({ index, parent }) => {
+const EF_Lithology = ({ index, parent, start, end}) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
 
@@ -57,8 +57,6 @@ const EF_Litologia = ({ index, parent }) => {
     }, [index, parent, setFieldValue, values]);
 
 
-    // console.log(values?.[parent].depth[index].from);
-
     return (
         <View style={styles.container}>
             <FieldArray name={`${pathBase}[${index}]`}>
@@ -70,9 +68,9 @@ const EF_Litologia = ({ index, parent }) => {
                                     {language === 'pt-BR' ? `Litologia` : `Lithology`}:
                                 </Text>
                             </View>
-                            <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
+                            <View style={[GlobalStyles.rightAligned]}>
                                 <TouchableOpacity
-                                    style={GlobalStyles.primaryButton}
+                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
                                     onPress={() => push({ de: '', ate: '', tipo: '' })}
                                 >
                                     <Icon name="plus" size={16} color="#fff" />
@@ -90,9 +88,9 @@ const EF_Litologia = ({ index, parent }) => {
                                     <View style={[GlobalStyles.col2, {flexDirection: 'row'}]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `De` : `From`}
-                                            value={lithologiesArray[subIndex]?.de || ''}
+                                            value={lithologiesArray[subIndex]?.from || (lithologiesArray[subIndex-1]?.to ? lithologiesArray[subIndex-1]?.to : start)}
                                             onChange={(text: String) =>
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].de`, text)
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].from`, text)
                                             }
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
@@ -102,16 +100,16 @@ const EF_Litologia = ({ index, parent }) => {
                                     <View style={[GlobalStyles.col2, {flexDirection: 'row'}]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `Até` : `To`}
-                                            value={lithologiesArray[subIndex]?.ate || '888'}
+                                            value={lithologiesArray[subIndex]?.to || end}
                                             onChange={(text : string) =>
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].ate`, text)
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].to`, text)
                                             }
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
                                         />
                                     </View>
 
-                                    <View style={GlobalStyles.col7}>
+                                    <View style={{flex: 1, marginRight: 3}}>
                                         <View style={GlobalStyles.pickerContainer}>
                                             <Picker
                                                 selectedValue={
@@ -132,9 +130,9 @@ const EF_Litologia = ({ index, parent }) => {
                                         </View>
                                     </View>
 
-                                    <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
+                                    <View>
                                         <TouchableOpacity
-                                            style={[GlobalStyles.warnButton]}
+                                            style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}
                                             onPress={() => remove(subIndex)}
                                         >
                                             <Icon name="trash" size={16} />
@@ -166,4 +164,4 @@ const styles = StyleSheet.create({
     }  
 });
 
-export default EF_Litologia;
+export default EF_Lithology;

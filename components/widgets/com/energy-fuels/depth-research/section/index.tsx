@@ -23,7 +23,7 @@ import EF_Shells from './shells';
 import EF_Sorting from './sorting';
 import EF_Volume from './volume';
 import EF_Wash from './wash';
-import EF_Litologia from './litologia';
+import EF_Lithology from './lithology';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MultiCameraInput } from '@/components/widgets/input/multi-camera';
 
@@ -298,9 +298,11 @@ const Section = ({ el, index, size, parent }) => {
                         </View>
                     </View>
 
-                    <EF_Litologia
+                    <EF_Lithology
                         index={index}
                         parent={parent}
+                        start={values?.[parent]?.depth?.[index]?.from}
+                        end={values?.[parent]?.depth?.[index]?.to}
                     // value={lithologies[index]}
                     // onChange={(val) => {
                     //     const novos = [...lithologies];
