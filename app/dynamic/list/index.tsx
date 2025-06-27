@@ -121,7 +121,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
 
             <View style={GlobalStyles.row}>
                 <View style={GlobalStyles.col11}></View>
-                <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
+                <View style={[GlobalStyles.col1, {marginLeft: 9}]}>
                     <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
                         <Icon name="plus" size={16} color="#fff" />
                     </Pressable>
@@ -134,13 +134,13 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
                             <View style={[GlobalStyles.row, { paddingVertical: 3}]}>
-                                <View style={[GlobalStyles.col4]}>
+                                <View style={GlobalStyles.col6}>
                                     <Text>{item.title}</Text>
                                 </View>
-                                <View style={GlobalStyles.col7}>
+                                <View style={GlobalStyles.col5}>
                                     <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
                                 </View>
-                                <View style={[GlobalStyles.col1, GlobalStyles.rightAligned]}>
+                                <View style={[GlobalStyles.col1, {marginRight: 1}]}>
                                     {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
                                     <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={openForm}>
                                         <Icon name="trash" size={16} color="red" />
@@ -150,7 +150,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                         )}
                         ListEmptyComponent={() => (
                             <View style={styles.center}>
-                                <Text>Nenhuma imagem encontrada.</Text>
+                                <Text>Nenhum registro encontrado.</Text>
                             </View>
                         )}
                         style={{ marginBottom: 170 }}
