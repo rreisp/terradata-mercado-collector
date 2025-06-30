@@ -24,7 +24,7 @@ const GeoPosition3D = ({ parent }: { parent: string }) => {
     }, [easting, northing, elevation, setFieldValue, parent]);
 
     return (
-        <View style={GlobalStyles.row}>
+        <View style={[GlobalStyles.row, {marginRight: 10}]}>
             <View style={GlobalStyles.col4}>
                 <Text style={GlobalStyles.label}>{language === 'pt-BR' ? "Coordenada Leste:" : "Easting:"}</Text>
                 <NumericInput

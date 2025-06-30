@@ -37,7 +37,7 @@ const EF_Clay = ({ index, parent }) => {
                         style={styles.checkbox}
                     />
                 </View>
-                <View style={[GlobalStyles.col11]}>
+                <View style={[GlobalStyles.col11, {paddingRight: 9}]}>
                     <NumericInput
                         value={values?.[parent]?.clayPct?.[index] || valorInicial}
                         onChange={(text) => setFieldValue(`${parent}.clayPct[${index}]`, text)} disabled={!isChecked}

@@ -37,7 +37,7 @@ const EF_Shells = ({ index, parent }) => {
                         style={styles.checkbox}
                     />
                 </View>
-                <View style={[GlobalStyles.col11]}>
+                <View style={[GlobalStyles.col11, {paddingRight: 9}]}>
                     <NumericInput 
                     value={values?.[parent]?.shellsPct?.[index] || valorInicial} 
                     onChange={(text) => setFieldValue(`${parent}.shellsPct[${index}]`, text)} disabled={!isChecked}                 

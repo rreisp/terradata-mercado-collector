@@ -32,7 +32,7 @@ const DateRangeInput = ({ parent }: { parent: string }) => {
 
     return (
         <>
-            <View style={GlobalStyles.row}>
+            <View style={[GlobalStyles.row, {marginRight: 7}]}>
                 <View style={GlobalStyles.col6}>
                     <Text style={GlobalStyles.label}>
                         {language === 'pt-BR' ? "Data de Início:" : "Start Date:"}

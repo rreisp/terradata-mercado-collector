@@ -132,7 +132,7 @@ const EF_Lithology = ({ index, parent, start, end}) => {
 
                                     <View>
                                         <TouchableOpacity
-                                            style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}
+                                            style={[GlobalStyles.warnButton, GlobalStyles.iconButton, {marginTop: 2}]}
                                             onPress={() => remove(subIndex)}
                                         >
                                             <Icon name="trash" size={16} />
