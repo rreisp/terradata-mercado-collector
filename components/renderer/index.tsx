@@ -8,21 +8,16 @@ import NumericInput from "../widgets/input/numeric";
 import EF_DepthResearch from "../widgets/com/energy-fuels/depth-research";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Checkbox } from "expo-checkbox";
-import { Field } from "@/types/field";
-import EF_Coordinates from "../widgets/com/energy-fuels/depth-research/coordinates";
-import EF_Dates from "../widgets/com/energy-fuels/depth-research/dates";
-
-interface FieldRendererProps {
-    field: Field;
-    formik: {
-        value: any;
-        onChange: (fieldId: string, value: any) => void;
-    };
-}
+import { FieldRendererProps } from "@/types/field-renderer-props";
+import DateRangeInput from "../widgets/input/date-range";
+import GeoPosition3D from "../widgets/input/geo-position-3d";
 
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
     const { language } = useLanguage();
     const { value, onChange } = formik;
+
+    const error = formik.errors?.[field.id];
+    const touched = formik.touched?.[field.id];
 
     switch (field.type) {
         case "photo":
@@ -65,6 +60,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
                         style={GlobalStyles.input}
                         secureTextEntry={field.type === "password"}
                     />
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
             );
         case "checkbox":
@@ -104,18 +100,16 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
                     </View>
                 </View>
             );
-        case "ef_coordinates":
+        case "coordinate_3d":
             return (
                 <View key={field.id} style={GlobalStyles.fieldContainer}>
-                    <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
-                    <EF_Coordinates />
+                    <GeoPosition3D parent={field.id} />
                 </View>
             );
-        case "ef_dates":
+        case "date_range":
             return (
                 <View key={field.id} style={GlobalStyles.fieldContainer}>
-                    <Text style={GlobalStyles.label}>{(field.label ? field.label[language] : "")}</Text>
-                    <EF_Dates parent={field.id} />
+                    <DateRangeInput parent={field.id} />
                 </View>
             );
         // Adicione outros componentes especiais aqui quando necessário

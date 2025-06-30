@@ -79,9 +79,9 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         try {
             return {
                 title: info.title,
-                easting: info.easting,
-                northing: info.northing,
-                elevation: info.elevation,
+                easting: info.ef_coordinates.easting,
+                northing: info.ef_coordinates.northing,
+                elevation: info.ef_coordinates.elevation,
                 tenement: info.tenement,
                 landowner: info.landowner,
                 start_date: formatDate(info.ef_dates.start),

@@ -72,33 +72,76 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
         row.columns.forEach(({ field }) => {
             initialValues[field.id] = "";
 
-            let validator: Yup.AnySchema = Yup.string();
+            let validator: Yup.AnySchema;
 
-            if (field.required) {
-                validator = validator.required("Campo obrigatório");
-            }
+            // Validação especial para campos do tipo intervalo de datas (como ef_dates)
+            switch (field.type) {
+                case 'coordinate_3d':
+                    validator = Yup.object({
+                        easting: Yup.number()
+                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
+                            .typeError(language == "pt-BR" ? "Coordenada inválida" : "Invalid coordinate"),
+                        northing: Yup.number()
+                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
+                            .typeError(language == "pt-BR" ? "Coordenada inválida" : "Invalid coordinate"),
+                        elevation: Yup.number()
+                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
+                            .typeError(language == "pt-BR" ? "Elevação inválida" : "Invalid elevation"),                            
+                    });
 
-            if (field.validations?.min_length) {
-                validator = validator.min(
-                    field.validations.min_length,
-                    field.validations.messages?.min_length
-                );
-            }
+                    if (field.required) {
+                        validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
+                    }
+                    break;                
+                case 'date_range':
+                    validator = Yup.object({
+                        start: Yup.date()
+                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
+                            .typeError(language == "pt-BR" ? "Data inválida" : "Invalid date"),
+                        end: Yup.date()
+                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
+                            .typeError(language == "pt-BR" ? "Data inválida" : "Invalid date"),
+                    });
 
-            if (field.validations?.max_length) {
-                validator = validator.max(
-                    field.validations.max_length,
-                    field.validations.messages?.max_length
-                );
-            }
+                    if (field.required) {
+                        validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
+                    }
+                    break;
+                default:
+                    // Default para outros campos
+                    validator = Yup.string();
 
-            if (field.type === "email") {
-                validator = Yup.string().email(field.validations?.messages?.email || (language === "pt-BR" ? "E-mail inválido" : "Invalid e-mail"));
+                    if (field.required) {
+                        validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
+                    }
+
+                    if (field.validations?.min_length) {
+                        validator = validator.min(
+                            field.validations.min_length,
+                            field.validations.messages?.min_length
+                        );
+                    }
+
+                    if (field.validations?.max_length) {
+                        validator = validator.max(
+                            field.validations.max_length,
+                            field.validations.messages?.max_length
+                        );
+                    }
+
+                    if (field.type === "email") {
+                        validator = Yup.string().email(
+                            field.validations?.messages?.email ||
+                            (language === "pt-BR" ? "E-mail inválido" : "Invalid e-mail")
+                        );
+                    }
+                    break;
             }
 
             validationShape[field.id] = validator;
         })
     );
+
 
     const renderField = (field: Field, formik: FormikHelpers) => {
         return (
@@ -111,7 +154,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
         <SafeAreaContainer>
             <Formik
                 initialValues={initialValues}
-                // validationSchema={Yup.object(validationShape)}
+                validationSchema={Yup.object(validationShape)}
                 onSubmit={(values) => {
                     extract(values);
                     // console.log(values);
@@ -141,7 +184,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
             //         .finally(() => setSubmitting(false));
             // }}
             >
-                {({ handleSubmit, isSubmitting, values, setFieldValue }) => (
+                {({ handleSubmit, validateForm, isSubmitting, values, setFieldValue, setFieldTouched, errors, touched }) => (
                     <>
                         <View style={GlobalStyles.row}>
                             <View style={GlobalStyles.col1}>
@@ -164,13 +207,29 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
                                 {row.columns.map(({ field }) =>
                                     renderField(field, {
                                         value: values[field.id],
-                                        onChange: (id, val) => setFieldValue(id, val),
+                                        onChange: (id, val) => {
+                                            setFieldTouched(id, true);
+                                            setFieldValue(id, val);
+                                        },
+                                        errors,
+                                        touched,
+                                        setFieldTouched
                                     })
                                 )}
                             </View>
                         ))}
                         <View>
-                            <TouchableOpacity style={GlobalStyles.primaryButton} onPress={handleSubmit}>
+                            <TouchableOpacity style={GlobalStyles.primaryButton}
+                                onPress={async () => {
+                                    const errors = await validateForm();
+
+                                    if (Object.keys(errors).length > 0) {
+                                        console.log("Erros de validação:", errors);
+                                    } else {
+                                        handleSubmit(); // dispara o onSubmit se estiver válido
+                                    }
+                                }}
+                            >
                                 <View style={GlobalStyles.row}>
                                     <Icon name="save" size={16} color="#fff" style={styles.icon} />
                                     <Text style={styles.buttonText}>{language === 'pt-BR' ? `SALVAR` : `SAVE`}</Text>

@@ -122,4 +122,9 @@ export default StyleSheet.create({
     checkbox: {
         marginRight: 8,
     },
+    errorText: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 4,
+    },
 });
