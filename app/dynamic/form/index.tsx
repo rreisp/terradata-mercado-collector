@@ -19,6 +19,7 @@ import { FormikHelpers } from "@/types/formik-helpers";
 import FieldRenderer from "@/components/renderer";
 import SafeAreaContainer from "@/components/safe-container";
 import { DynamicFormProps } from "@/types/dynamic-form-props";
+import { FieldValidator } from "@/components/validator";
 
 const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const { language } = useLanguage();
@@ -72,71 +73,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
         row.columns.forEach(({ field }) => {
             initialValues[field.id] = "";
 
-            let validator: Yup.AnySchema;
-
-            // Validação especial para campos do tipo intervalo de datas (como ef_dates)
-            switch (field.type) {
-                case 'coordinate_3d':
-                    validator = Yup.object({
-                        easting: Yup.number()
-                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                            .typeError(language == "pt-BR" ? "Coordenada inválida" : "Invalid coordinate"),
-                        northing: Yup.number()
-                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                            .typeError(language == "pt-BR" ? "Coordenada inválida" : "Invalid coordinate"),
-                        elevation: Yup.number()
-                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                            .typeError(language == "pt-BR" ? "Elevação inválida" : "Invalid elevation"),                            
-                    });
-
-                    if (field.required) {
-                        validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
-                    }
-                    break;                
-                case 'date_range':
-                    validator = Yup.object({
-                        start: Yup.date()
-                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                            .typeError(language == "pt-BR" ? "Data inválida" : "Invalid date"),
-                        end: Yup.date()
-                            .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                            .typeError(language == "pt-BR" ? "Data inválida" : "Invalid date"),
-                    });
-
-                    if (field.required) {
-                        validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
-                    }
-                    break;
-                default:
-                    // Default para outros campos
-                    validator = Yup.string();
-
-                    if (field.required) {
-                        validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
-                    }
-
-                    if (field.validations?.min_length) {
-                        validator = validator.min(
-                            field.validations.min_length,
-                            field.validations.messages?.min_length
-                        );
-                    }
-
-                    if (field.validations?.max_length) {
-                        validator = validator.max(
-                            field.validations.max_length,
-                            field.validations.messages?.max_length
-                        );
-                    }
-
-                    if (field.type === "email") {
-                        validator = Yup.string().email(
-                            field.validations?.messages?.email ||
-                            (language === "pt-BR" ? "E-mail inválido" : "Invalid e-mail")
-                        );
-                    }
-                    break;
-            }
+            let validator: Yup.AnySchema = getValidatorInstance(field, language);
 
             validationShape[field.id] = validator;
         })
@@ -277,3 +214,24 @@ const styles = StyleSheet.create({
 });
 
 export default DynamicForm;
+
+function getValidatorInstance(field: Field, language: string) {
+    let validator: Yup.AnySchema;
+
+    // Validação especial para campos do tipo intervalo de datas (como ef_dates)
+    switch (field.type) {
+        case 'coordinate_3d':
+            validator = FieldValidator.coordinate_3d(field, language);
+            break;
+        case 'date_range':
+            validator = FieldValidator.date_range(field, language);
+            break;
+        case 'ef_depth_research':
+            validator = FieldValidator.ef_depth_research(field, language);
+            break;            
+        default:
+            validator = FieldValidator.default(field, language);
+            break;
+    }
+    return validator;
+}
