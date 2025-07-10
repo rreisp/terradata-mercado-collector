@@ -52,7 +52,7 @@
       "columns": [
         {
           "field": {
-            "id": "perfuracao_id",
+            "id": "title",
             "label": {
               "pt-BR": "Perfuração ID:",
               "en-US": "Drilling ID:"
@@ -80,7 +80,7 @@
         {
           "field": {
             "id": "ef_coordinates",
-            "type": "ef_coordinates"
+            "type": "coordinate_3d"
           },
           "size": {
             "xs": 12,
@@ -147,7 +147,7 @@
         {
           "field": {
             "id": "ef_dates",
-            "type": "ef_dates"
+            "type": "date_range"
           },
           "size": {
             "xs": 12,

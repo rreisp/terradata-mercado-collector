@@ -32,7 +32,7 @@ const EF_Moisture = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Umidade` : `Moisture`}:</Text>
-            <View style={GlobalStyles.pickerView}>
+            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.moisture?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.moisture[${index}]`, itemValue)}

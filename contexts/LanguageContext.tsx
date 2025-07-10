@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
 
 // Define os idiomas disponíveis
-type Language = 'pt' | 'en';
+type Language = 'pt-BR' | 'en-US';
 
 // Define o formato do contexto
 interface LanguageContextType {

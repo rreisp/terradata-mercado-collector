@@ -38,7 +38,7 @@ const EF_Micah = ({ index, parent }) => {
                         style={styles.checkbox}
                     />
                 </View>
-                <View style={[GlobalStyles.col11]}>
+                <View style={[GlobalStyles.col11, {paddingRight: 9}]}>
                     <NumericInput 
                     value={values?.[parent]?.micahPct?.[index] || valorInicial} 
                     onChange={(text) => setFieldValue(`${parent}.micahPct[${index}]`, text)} disabled={!isChecked}                 
@@ -54,8 +54,7 @@ const styles = StyleSheet.create({
     container: { marginTop: 5 },
     checkbox: {
         flexDirection: 'row',
-    },
-    left: {
-        paddingLeft: 3
+        marginRight: 5,
+        paddingTop: 1
     },
 });

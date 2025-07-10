@@ -7,10 +7,10 @@ import NumericInput from '@/components/widgets/input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_Clay = ({ index, parent }) => {
-    const { language } = useLanguage();    
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     const [isChecked, setIsChecked] = useState(false);
-    
+
     const valorInicial = 0;
 
     useEffect(() => {
@@ -37,11 +37,11 @@ const EF_Clay = ({ index, parent }) => {
                         style={styles.checkbox}
                     />
                 </View>
-                <View style={[GlobalStyles.col11]}>
-                    <NumericInput 
-                    value={values?.[parent]?.clayPct?.[index] || valorInicial} 
-                    onChange={(text) => setFieldValue(`${parent}.clayPct[${index}]`, text)} disabled={!isChecked}                 
-                     />
+                <View style={[GlobalStyles.col11, {paddingRight: 9}]}>
+                    <NumericInput
+                        value={values?.[parent]?.clayPct?.[index] || valorInicial}
+                        onChange={(text) => setFieldValue(`${parent}.clayPct[${index}]`, text)} disabled={!isChecked}
+                    />
                 </View>
             </View>
         </View>
@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
     container: { marginTop: 5 },
     checkbox: {
         flexDirection: 'row',
+        marginRight: 5,
+        paddingTop: 1
     },
-    left: {
-        paddingLeft: 3
-    }
 });

@@ -23,8 +23,9 @@ import EF_Shells from './shells';
 import EF_Sorting from './sorting';
 import EF_Volume from './volume';
 import EF_Wash from './wash';
-import EF_Litologia from './litologia';
+import EF_Lithology from './lithology';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { MultiCameraInput } from '@/components/widgets/input/multi-camera';
 
 const Section = ({ el, index, size, parent }) => {
     const { language } = useLanguage();
@@ -43,7 +44,7 @@ const Section = ({ el, index, size, parent }) => {
         <View style={styles.bordered}>
             <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={(index % 2 == 0 ? styles.sectionHeaderEven : styles.sectionHeaderOdd)}>
                 <View style={GlobalStyles.col3}>
-                    <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `INTERVALO ${index + 1}` : `INTERVAL ${index + 1}`}</Text>
+                    <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Segmento ${index + 1}` : `Segment ${index + 1}`}</Text>
                 </View>
                 <View style={GlobalStyles.col8}>
                     <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values?.[parent]?.depth?.[index]?.from}cm {language === 'pt-BR' ? `até` : `to`} {values?.[parent]?.depth?.[index]?.to || ''}cm</Text>
@@ -58,6 +59,10 @@ const Section = ({ el, index, size, parent }) => {
             </TouchableOpacity>
             <Collapsible collapsed={collapsed}>
                 <View key={el.id} style={styles.sectionContent}>
+                    <View style={GlobalStyles.fieldContainer}>
+                        <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fotos do segmento ${index + 1}` : `Photos from segment ${index + 1}`}:</Text>
+                        <MultiCameraInput name={`${parent}.photos[${index}]`} />
+                    </View>
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Depth
@@ -293,9 +298,11 @@ const Section = ({ el, index, size, parent }) => {
                         </View>
                     </View>
 
-                    <EF_Litologia
+                    <EF_Lithology
                         index={index}
                         parent={parent}
+                        start={values?.[parent]?.depth?.[index]?.from}
+                        end={values?.[parent]?.depth?.[index]?.to}
                     // value={lithologies[index]}
                     // onChange={(val) => {
                     //     const novos = [...lithologies];
