@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.terradata.capturewise"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,7 +45,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "b48d5b7e-d8f5-42cf-a97d-a18e2c41cb84"
+        "projectId": "1404efca-f924-456d-a036-8a9973dc1b78"
       }
     }
   }

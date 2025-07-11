@@ -1,8 +1,29 @@
 import * as SQLite from 'expo-sqlite';
+import { Alert } from 'react-native';
 
 const db = SQLite.openDatabaseSync('app.db');
 
 type Params = (string | number | null)[];
+
+/**
+ * Log detalhado de erro no console
+ */
+function logDetailedError(context: string, sql?: string, params?: Params, error?: any) {
+    console.error(`[SQLite ERROR] ${context}`, {
+        sql,
+        params,
+        name: error?.name ?? 'Erro desconhecido',
+        message: error?.message ?? 'Sem mensagem de erro',
+        stack: error?.stack ?? 'Sem stack trace',
+    });
+}
+
+/**
+ * Formata uma mensagem amigável para exibição (por exemplo, em Alert)
+ */
+function formatErrorMessage(context: string, error: any): string {
+    return `${context}\n\nDetalhes: ${error?.message ?? 'Erro desconhecido'}`;
+}
 
 export class CrudService {
     static async executeSql<T = any>(sql: string, params: Params = []): Promise<T[]> {
@@ -12,7 +33,8 @@ export class CrudService {
                 results = await db.getAllAsync<T>(sql, params);
             });
         } catch (error) {
-            console.error(`Erro ao executar SQL: ${sql} - Params: ${JSON.stringify(params)}`, error);
+            logDetailedError('Erro ao executar SQL', sql, params, error);
+            Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar consulta', error));
             throw error;
         }
         return results;
@@ -24,7 +46,8 @@ export class CrudService {
                 await db.runAsync(sql, params);
             });
         } catch (error) {
-            console.error(`Erro ao executar query: ${sql} - Params: ${JSON.stringify(params)}`, error);
+            logDetailedError('Erro ao executar query', sql, params, error);
+            Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar query', error));
             throw error;
         }
     }
@@ -34,7 +57,8 @@ export class CrudService {
         try {
             await this.runQuery(sql);
         } catch (error) {
-            console.error(`Erro ao criar tabela ${tableName}:`, error);
+            logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao criar a tabela ${tableName}`, error));
             throw error;
         }
     }
@@ -48,7 +72,8 @@ export class CrudService {
         try {
             await this.runQuery(sql, values);
         } catch (error) {
-            console.error(`Erro ao inserir em ${tableName} - Dados: ${JSON.stringify(data)}`, error);
+            logDetailedError(`Erro ao inserir em ${tableName}`, sql, values, error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao inserir dados em ${tableName}`, error));
             throw error;
         }
     }
@@ -67,7 +92,8 @@ export class CrudService {
         try {
             await this.runQuery(sql, [...values, ...whereParams]);
         } catch (error) {
-            console.error(`Erro ao atualizar ${tableName} - Dados: ${JSON.stringify(data)} - Where: ${where}`, error);
+            logDetailedError(`Erro ao atualizar ${tableName}`, sql, [...values, ...whereParams], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao atualizar dados em ${tableName}`, error));
             throw error;
         }
     }
@@ -77,7 +103,8 @@ export class CrudService {
         try {
             await this.runQuery(sql, whereParams);
         } catch (error) {
-            console.error(`Erro ao deletar de ${tableName} - Where: ${where} - Params: ${JSON.stringify(whereParams)}`, error);
+            logDetailedError(`Erro ao deletar de ${tableName}`, sql, whereParams, error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao deletar dados de ${tableName}`, error));
             throw error;
         }
     }
@@ -87,7 +114,8 @@ export class CrudService {
         try {
             return await this.executeSql<T>(sql);
         } catch (error) {
-            console.error(`Erro ao listar dados de ${tableName}:`, error);
+            logDetailedError(`Erro ao listar dados de ${tableName}`, sql, [], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao listar dados de ${tableName}`, error));
             throw error;
         }
     }
@@ -97,7 +125,8 @@ export class CrudService {
         try {
             return await this.executeSql<T>(sql, [id]);
         } catch (error) {
-            console.error(`Erro ao buscar ID ${id} na tabela ${tableName}:`, error);
+            logDetailedError(`Erro ao buscar ID ${id} em ${tableName}`, sql, [id], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao buscar ID em ${tableName}`, error));
             throw error;
         }
     }
@@ -107,21 +136,22 @@ export class CrudService {
             await this.runQuery(`DELETE FROM ${tableName}`);
             await this.runQuery(`DELETE FROM sqlite_sequence WHERE name = ?`, [tableName]);
         } catch (error) {
-            console.error(`Erro ao limpar a tabela ${tableName}:`, error);
+            logDetailedError(`Erro ao limpar tabela ${tableName}`, undefined, [tableName], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao limpar dados de ${tableName}`, error));
             throw error;
         }
     }
 
     static async drop(tableName: string): Promise<void> {
+        const sql = `DROP TABLE IF EXISTS ${tableName}`;
         try {
-            console.log(`Apagando tabela ${tableName}...`);
-            await this.runQuery(`DROP TABLE IF EXISTS ${tableName}`);
-            console.log(`Tabela ${tableName} apagada com sucesso.`);
+            await this.runQuery(sql);
         } catch (error) {
-            console.error(`Erro ao apagar a tabela ${tableName}:`, error);
+            logDetailedError(`Erro ao apagar tabela ${tableName}`, sql, [], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao apagar a tabela ${tableName}`, error));
             throw error;
         }
-    }    
+    }
 
     static async lastInsertId(): Promise<number> {
         const sql = 'SELECT last_insert_rowid() AS id';
@@ -129,7 +159,8 @@ export class CrudService {
             const result = await this.executeSql<{ id: number }>(sql);
             return result[0]?.id ?? 0;
         } catch (error) {
-            console.error(`Erro ao obter last_insert_rowid:`, error);
+            logDetailedError('Erro ao obter last_insert_rowid', sql, [], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao obter ID do último registro inserido`, error));
             throw error;
         }
     }
@@ -139,7 +170,8 @@ export class CrudService {
             const dbPath = (SQLite as any).getDatabaseFileLocation('app.db');
             console.log('Caminho absoluto do banco de dados:', dbPath);
         } catch (error) {
-            console.error(`Erro ao obter localização do banco de dados:`, error);
+            logDetailedError('Erro ao obter caminho do banco de dados', undefined, [], error);
+            Alert.alert('Erro', formatErrorMessage('Erro ao obter caminho do banco de dados', error));
             throw error;
         }
     }

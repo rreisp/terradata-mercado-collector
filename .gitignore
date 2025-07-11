@@ -171,3 +171,10 @@ yarn-error.*
 *.tsbuildinfo
 
 .idea/
+
+# generated platform dependent code folders
+android/
+ios/
+
+# any generated binary
+*.apk
