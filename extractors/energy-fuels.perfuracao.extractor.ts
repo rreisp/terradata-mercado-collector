@@ -4,6 +4,8 @@ import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
 import { exportarBancoComSAF } from "@/services/file-copy.service";
+import { Alert } from 'react-native';
+import { useNavigation } from "expo-router";
 
 function formatDate(date: Date) {
     const day = String(date.getDate()).padStart(2, '0');
@@ -14,6 +16,7 @@ function formatDate(date: Date) {
 
 
 export class EnergyFuelsDrillingExtractor implements Extractor {
+    private navigation = useNavigation();
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         console.warn('Extract Info');
@@ -22,11 +25,16 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         const drilling = this.extractDrillingInfo(info);
         console.log(drilling);
         await this.saveDrilling(drilling);
-        await exportarBancoComSAF();
+        // await exportarBancoComSAF();
 
 
         const lastDrillingId = await CrudService.lastInsertId();
-        console.log(lastDrillingId);
+        console.log('opa ' + lastDrillingId);
+
+        console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
+        Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
+
+        this.navigation.navigate('loader/list/index', { formId: 'energy-fuels.perfuracao' });
 
         // informação dos intervalos
         // const drillingIntervals = this.extractDrillingIntervalInfo(info);

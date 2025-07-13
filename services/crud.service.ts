@@ -42,9 +42,9 @@ export class CrudService {
 
     static async runQuery(sql: string, params: Params = []): Promise<void> {
         try {
-            await db.withTransactionAsync(async () => {
+            // await db.withTransactionAsync(async () => {
                 await db.runAsync(sql, params);
-            });
+            // });
         } catch (error) {
             logDetailedError('Erro ao executar query', sql, params, error);
             Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar query', error));
@@ -55,7 +55,8 @@ export class CrudService {
     static async createTable(tableName: string, columns: string): Promise<void> {
         const sql = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns})`;
         try {
-            await this.runQuery(sql);
+            await db.runAsync(sql); // sem transação
+            // await this.runQuery(sql);
         } catch (error) {
             logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao criar a tabela ${tableName}`, error));
@@ -175,4 +176,12 @@ export class CrudService {
             throw error;
         }
     }
+
+    static async execAsyncBegin(){
+        db.execAsync('BEGIN');
+    }
+
+    static async execAsyncCommit(){
+        db.execAsync('COMMIT');
+    }    
 }

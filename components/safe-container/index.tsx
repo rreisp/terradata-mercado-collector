@@ -17,7 +17,7 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
     scrollable = true,
 }) => {
     const insets = useSafeAreaInsets();
-    
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {isLoading ? (
@@ -32,7 +32,12 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
                     {children}
                 </ScrollView>
             ) : (
-                <View style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+                // <View style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
+                //     {children}
+                // </View>
+                <View
+                    style={[GlobalStyles.container, styles.fill]}
+                >
                     {children}
                 </View>
             )}
@@ -43,6 +48,7 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
 const styles = StyleSheet.create({
     fill: {
         flex: 1,
+        padding: 3
     },
 });
 

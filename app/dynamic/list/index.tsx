@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View, Text, Button, Image, StyleSheet, Pressable, FlatList } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '../../../constants/styles';
@@ -18,6 +18,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Impor
 import SafeAreaContainer from "@/components/safe-container";
 import { CrudService } from "@/services/crud.service";
 import { DrillingRecord } from "@/types/drilling-record";
+import { Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 async function listDrillings(): Promise<DrillingRecord[]> {
     const drillings = await CrudService.list<DrillingRecord>('drillings');
@@ -35,6 +37,19 @@ function formatDate(date: string, lang: string) {
     }
 }
 
+export async function handleDelete(id: number): Promise<void> {
+    Alert.alert('Remover item', `ID do item: ${id}`);
+    try {
+        await CrudService.delete('drillings', 'id = ?', [id]);
+        console.log(`Registro com ID ${id} removido com sucesso.`);
+        Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
+    } catch (error) {
+        console.error('Erro ao remover o registro:', error);
+        // O tratamento de erro já está dentro do CrudService.delete
+    }
+}
+
+
 const DynamicList = ({ schemaId }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
@@ -46,6 +61,22 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     // const [images, setImages] = useState<ImageRecord[]>([]);
     const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
+
+    useFocusEffect(
+        useCallback(() => {
+            async function fetchDrillingInfo() {
+                try {
+                    const data = await listDrillings();
+                    setDrillings(data);
+                } catch (error) {
+                    console.error('Erro ao carregar registros:', error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+            fetchDrillingInfo();
+        }, [])
+    );
 
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), values.delay);
@@ -74,21 +105,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
         }
     }, [schemaId]);
 
-    useEffect(() => {
-        async function fetchImages() {
-            try {
-                const data = await listDrillings();
-                setDrillings(data);
-            } catch (error) {
-                console.error('Erro ao carregar imagens:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchImages();
-    }, []);
-
     const goBack = () => {
         navigation.navigate('tools/index', { formId: schemaId });
     };
@@ -99,62 +115,71 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     };
 
     return (
-        <SafeAreaContainer isLoading={loading} scrollable={false}>
-            <View style={GlobalStyles.row}>
-                <View style={GlobalStyles.col1}>
-                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
-                        <Icon name="chevron-circle-left" size={16} color="#fff" />
-                    </Pressable>
+        <SafeAreaContainer scrollable={false}>
+            <View style={{ flex: 1 }}>
+                <View style={[GlobalStyles.row]}>
+                    <View style={GlobalStyles.col12}>
+                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
+                            <Icon name="chevron-circle-left" size={16} color="#fff" />
+                        </Pressable>
+                    </View>
+                    <View style={GlobalStyles.col11}></View>
                 </View>
-                <View style={GlobalStyles.col11}></View>
-            </View>
 
-            <View style={GlobalStyles.row}>
-                <View style={[GlobalStyles.col, styles.center]}>
-                    <Image
-                        source={require('../../../assets/images/EnergyFuels-Logo.png')}
-                        style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
-                    />
-                    <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
+                <View style={[GlobalStyles.row]}>
+                    <View style={[GlobalStyles.col12, styles.center]}>
+                        <Image
+                            source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                            style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
+                        />
+                        <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
+                    </View>
                 </View>
-            </View>
 
-            <View style={GlobalStyles.row}>
-                <View style={GlobalStyles.col11}></View>
-                <View style={[GlobalStyles.col1, {marginLeft: 9}]}>
-                    <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
-                        <Icon name="plus" size={16} color="#fff" />
-                    </Pressable>
+                <View style={GlobalStyles.row}>
+                    <View style={GlobalStyles.col10}></View>
+                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", paddingRight: 7 }]}>
+                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
+                            <Icon name="plus" size={16} color="#fff" />
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
-            <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                <View style={GlobalStyles.col12}>
-                    <FlatList
-                        data={drillings}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <View style={[GlobalStyles.row, { paddingVertical: 3}]}>
-                                <View style={GlobalStyles.col6}>
-                                    <Text>{item.title}</Text>
+
+                <View style={[GlobalStyles.row, { flex: 1 }]}>
+                    <View style={[GlobalStyles.col12, { flex: 1 }]}>
+                        <FlatList
+                            data={drillings}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={({ item }) => (
+                                <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
+                                    <View style={GlobalStyles.col5}>
+                                        <Text>{item.title}</Text>
+                                    </View>
+                                    <View style={GlobalStyles.col5}>
+                                        <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
+                                    </View>
+                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
+                                        {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
+                                            <Icon name="save" size={16} color="white" />
+                                        </Pressable>
+                                    </View>
+                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
+                                        {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>
+                                            <Icon name="trash" size={16} color="red" />
+                                        </Pressable>
+                                    </View>
                                 </View>
-                                <View style={GlobalStyles.col5}>
-                                    <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
+                            )}
+                            ListEmptyComponent={() => (
+                                <View style={styles.center}>
+                                    <Text>Nenhum registro encontrado.</Text>
                                 </View>
-                                <View style={[GlobalStyles.col1, {marginRight: 1}]}>
-                                    {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
-                                    <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={openForm}>
-                                        <Icon name="trash" size={16} color="red" />
-                                    </Pressable>
-                                </View>
-                            </View>
-                        )}
-                        ListEmptyComponent={() => (
-                            <View style={styles.center}>
-                                <Text>Nenhum registro encontrado.</Text>
-                            </View>
-                        )}
-                        style={{ marginBottom: 170 }}
-                    />
+                            )}
+                            style={{ paddingRight: 14, flex: 1}}
+                        />
+                    </View>
                 </View>
             </View>
             <Modal isVisible={modalVisible}>
@@ -173,31 +198,11 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
     },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        flex: 1,
-        alignItems: 'center'
-    },
     center: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    item: {
-        marginVertical: 8,
-        marginHorizontal: 16,
-        backgroundColor: '#eee',
-        padding: 10,
-        borderRadius: 6,
-        alignItems: 'center',
-    },
-    image: {
-        width: 200,
-        height: 150,
-        marginBottom: 8,
-        borderRadius: 6,
-    }
 });
 
 export default DynamicList;

@@ -63,7 +63,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     }, [schemaId]);
 
     const openList = () => {
-        navigation.navigate('loader/list/index', { formId: schemaId });
+        navigation.navigate('loader/list/index', { schemaId: schemaId });
     };
 
     const initialValues: { [key: string]: any } = {};
@@ -228,7 +228,7 @@ function getValidatorInstance(field: Field, language: string) {
             break;
         case 'ef_depth_research':
             validator = FieldValidator.ef_depth_research(field, language);
-            break;            
+            break;
         default:
             validator = FieldValidator.default(field, language);
             break;
