@@ -34,7 +34,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
 
-        this.navigation.navigate('loader/list/index', { formId: 'energy-fuels.perfuracao' });
+        this.navigation.navigate('loader/list/index', { schemadId: 'energy-fuels.perfuracao' });
 
         // informação dos intervalos
         // const drillingIntervals = this.extractDrillingIntervalInfo(info);

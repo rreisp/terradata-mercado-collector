@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable } from "react-native";
+import { useCallback, useState } from "react";
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable, Alert } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import GlobalStyles from '../../../constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -30,39 +30,74 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     const [modalContent, setModalContent] = useState("");
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), values.delay);
-        if (isOnline) {
-            const loadSchema = async () => {
-                try {
-                    const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
-                    const data = await res.json();
-                    setFormSchema(data);
-                } catch (err) {
-                    console.error("Erro ao carregar schema:", err);
-                } finally {
-                    clearTimeout(timer);
-                }
-            };
+    useFocusEffect(
+        useCallback(() => {
+            const timer = setTimeout(() => setLoading(false), values.delay);
+            if (isOnline) {
+                const loadSchema = async () => {
+                    try {
+                        const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
+                        const data = await res.json();
+                        setFormSchema(data);
+                    } catch (err) {
+                        console.error("Erro ao carregar schema:", err);
+                    } finally {
+                        clearTimeout(timer);
+                    }
+                };
 
-            // Executa a função e depois continua
-            loadSchema();
-        } else {
-            let schema = null;
-            switch (schemaId) {
-                case 'cw.dialeto.cadastro':
-                    schema = CadastroSchema;
-                    break;
-                case 'energy-fuels.perfuracao':
-                    schema = PerfuracaoSchema;
-                    break;
+                // Executa a função e depois continua
+                loadSchema();
+            } else {
+                let schema = null;
+                switch (schemaId) {
+                    case 'cw.dialeto.cadastro':
+                        schema = CadastroSchema;
+                        break;
+                    case 'energy-fuels.perfuracao':
+                        schema = PerfuracaoSchema;
+                        break;
+                }
+                setFormSchema(schema);
+                return () => clearTimeout(timer);
             }
-            setFormSchema(schema);
-            return () => clearTimeout(timer);
-        }
-    }, [schemaId]);
+        }, [])
+    );
+
+    // useEffect(() => {
+    //     const timer = setTimeout(() => setLoading(false), values.delay);
+    //     if (isOnline) {
+    //         const loadSchema = async () => {
+    //             try {
+    //                 const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
+    //                 const data = await res.json();
+    //                 setFormSchema(data);
+    //             } catch (err) {
+    //                 console.error("Erro ao carregar schema:", err);
+    //             } finally {
+    //                 clearTimeout(timer);
+    //             }
+    //         };
+
+    //         // Executa a função e depois continua
+    //         loadSchema();
+    //     } else {
+    //         let schema = null;
+    //         switch (schemaId) {
+    //             case 'cw.dialeto.cadastro':
+    //                 schema = CadastroSchema;
+    //                 break;
+    //             case 'energy-fuels.perfuracao':
+    //                 schema = PerfuracaoSchema;
+    //                 break;
+    //         }
+    //         setFormSchema(schema);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [schemaId]);
 
     const openList = () => {
+        Alert.alert('xembla'+ schemaId);
         navigation.navigate('loader/list/index', { schemaId: schemaId });
     };
 

@@ -8,17 +8,17 @@ import { View } from 'react-native';
 const FormLoader = () => {
     const extractor: Extractor = new EnergyFuelsDrillingExtractor();
 
-    const formIdParam = useLocalSearchParams().formId;
-    const formId = typeof formIdParam === 'string'
-        ? formIdParam
-        : Array.isArray(formIdParam)
-            ? formIdParam[0]
-            : String(formIdParam);
+    const schemaIdParam = useLocalSearchParams().schemaId;
+    const schemaId = typeof schemaIdParam === 'string'
+        ? schemaIdParam
+        : Array.isArray(schemaIdParam)
+            ? schemaIdParam[0]
+            : String(schemaIdParam);
 
     return (
         <OperationModeProvider>
             <View style={{ flex: 1}}>
-                <DynamicForm schemaId={formId} extract={extractor.extract.bind(extractor)} />
+                <DynamicForm schemaId={schemaId} extract={extractor.extract.bind(extractor)} />
             </View>
         </OperationModeProvider>
     );

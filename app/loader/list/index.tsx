@@ -4,13 +4,13 @@ import { OperationModeProvider } from "@/contexts/OperationModeContext";
 import { View } from "react-native";
 
 const ListLoader = () => {
-    const formIdParam = useLocalSearchParams().formId;
-    const formId = Array.isArray(formIdParam) ? formIdParam[0] : formIdParam;
+    const schemaIdParam = useLocalSearchParams().schemaId;
+    const schemaId = Array.isArray(schemaIdParam) ? schemaIdParam[0] : schemaIdParam;
 
     return (
         <OperationModeProvider>
             <View style={{ flex: 1}}>
-                <DynamicList schemaId={formId} />
+                <DynamicList schemaId={schemaId} />
             </View>
         </OperationModeProvider>
     );

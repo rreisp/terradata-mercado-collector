@@ -37,19 +37,6 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-export async function handleDelete(id: number): Promise<void> {
-    Alert.alert('Remover item', `ID do item: ${id}`);
-    try {
-        await CrudService.delete('drillings', 'id = ?', [id]);
-        console.log(`Registro com ID ${id} removido com sucesso.`);
-        Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
-    } catch (error) {
-        console.error('Erro ao remover o registro:', error);
-        // O tratamento de erro já está dentro do CrudService.delete
-    }
-}
-
-
 const DynamicList = ({ schemaId }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
@@ -62,23 +49,20 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useFocusEffect(
-        useCallback(() => {
-            async function fetchDrillingInfo() {
-                try {
-                    const data = await listDrillings();
-                    setDrillings(data);
-                } catch (error) {
-                    console.error('Erro ao carregar registros:', error);
-                } finally {
-                    setLoading(false);
-                }
-            }
-            fetchDrillingInfo();
-        }, [])
-    );
+    async function handleDelete(id: number): Promise<void> {
+        Alert.alert('Remover item', `ID do item: ${id}`);
+        try {
+            await CrudService.delete('drillings', 'id = ?', [id]);
+            setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== id));
+            console.log(`Registro com ID ${id} removido com sucesso.`);
+            Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
+        } catch (error) {
+            console.error('Erro ao remover o registro:', error);
+            // O tratamento de erro já está dentro do CrudService.delete
+        }
+    }
 
-    useEffect(() => {
+    async function loadSchema(schemaId: string) {
         const timer = setTimeout(() => setLoading(false), values.delay);
         // Icon.loadFont();
         if (isOnline) {
@@ -103,15 +87,60 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
             const timer = setTimeout(() => setLoading(false), values.delay);
             return () => clearTimeout(timer);
         }
-    }, [schemaId]);
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            async function fetchDrillingInfo() {
+                try {
+                    const data = await listDrillings();
+                    setDrillings(data);
+                } catch (error) {
+                    console.error('Erro ao carregar registros:', error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+            Alert.alert("op" + schemaId);
+            loadSchema(schemaId);
+            fetchDrillingInfo();
+        }, [])
+    );
+
+    // useEffect(() => {
+    //     const timer = setTimeout(() => setLoading(false), values.delay);
+    //     // Icon.loadFont();
+    //     if (isOnline) {
+    //         fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
+    //             .then((res) => res.json())
+    //             .then((data) => {
+    //                 setFormSchema(data);
+    //                 return () => clearTimeout(timer);
+    //             })
+    //             .catch((err) => console.error("Erro ao carregar schema:", err));
+    //     } else {
+    //         let schema = null;
+    //         switch (schemaId) {
+    //             case 'cw.dialeto.cadastro':
+    //                 schema = CadastroSchema;
+    //                 break;
+    //             case 'energy-fuels.perfuracao':
+    //                 schema = PerfuracaoSchema;
+    //                 break;
+    //         }
+    //         setFormSchema(schema);
+    //         const timer = setTimeout(() => setLoading(false), values.delay);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [schemaId]);
 
     const goBack = () => {
-        navigation.navigate('tools/index', { formId: schemaId });
+        navigation.navigate('tools/index', { schemaId: schemaId });
     };
 
     const openForm = () => {
         console.warn('schemaId:', schemaId, 'typeof:', typeof schemaId);
-        navigation.navigate('loader/form/index', { formId: schemaId });
+        navigation.navigate('loader/form/index', { schemaId: schemaId });
     };
 
     return (
@@ -177,7 +206,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                                     <Text>Nenhum registro encontrado.</Text>
                                 </View>
                             )}
-                            style={{ paddingRight: 14, flex: 1}}
+                            style={{ paddingRight: 14, flex: 1 }}
                         />
                     </View>
                 </View>

@@ -115,7 +115,7 @@ const Tools = () => {
                                 onValueChange={(itemValue, itemIndex) => {
                                     setSelectedForm(itemValue);
                                     if (itemValue) {
-                                        navigation.navigate('loader/list/index', { formId: itemValue });
+                                        navigation.navigate('loader/list/index', { schemaId: itemValue });
                                     }
                                 }}
                                 style={styles.picker}
