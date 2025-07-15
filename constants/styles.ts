@@ -59,7 +59,7 @@ export default StyleSheet.create({
     logo: {
         width: 300,
     },
-    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, flex: 1, marginHorizontal: 1, marginBottom: 0 },
+    input: { borderWidth: 1, borderRadius: 5, borderColor: '#ccc', padding: 8, marginHorizontal: 1, marginBottom: 0 },
     iconButton: {
         width: 32,
         height: 32

@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 5,
     },
     sectionContent: {
-        padding: 3,
+        padding: 0,
         backgroundColor: '#fefefe',
     },
     right: {
