@@ -50,6 +50,7 @@ const NumericInput = ({
 
         if (isNaN(num) || num < min || num > max) {
             onChange(''); // limpa se inválido ou fora dos limites
+            // TODO: emitir mensagem ou algo melhor
         }
     };
 
@@ -75,10 +76,10 @@ const NumericInput = ({
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        flex: 1
     },
     inputDisabled: {
-        backgroundColor: '#eee',
-        color: '#888',
+        backgroundColor: '#eee'
     },
 });
 

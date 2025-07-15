@@ -215,7 +215,7 @@ const Section = ({ el, index, size, parent }) => {
                     </View>
 
                     <View style={GlobalStyles.row}>
-                        <View style={GlobalStyles.col}>
+                        <View style={[GlobalStyles.col]}>
                             <EF_Clay
                                 index={index}
                                 parent={parent}
