@@ -9,7 +9,7 @@ const EF_Clay = ({ index, parent }) => {
 
     const fieldPath = `${parent}.clayPct[${index}]`;
     const valorPadrao = "";
-    const sugestaoInicial = "0,51";
+    const sugestaoInicial = "0,5";
 
     const [currentValue, setCurrentValue] = useState(values?.[parent]?.clayPct?.[index] ?? valorPadrao);
     const [isChecked, setIsChecked] = useState(parseFloat(currentValue.replace(',', '.')) > 0);

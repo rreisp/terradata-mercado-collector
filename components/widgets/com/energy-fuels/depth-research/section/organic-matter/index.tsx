@@ -1,67 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
-import Checkbox from 'expo-checkbox';
-import GlobalStyles from '../../../../../../../constants/styles';
-import { Picker } from '@react-native-picker/picker';
-import NumericInput from '@/components/widgets/input/numeric';
+import ConditionalNumericInput from '@/components/widgets/input/conditional-numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const EF_OrganicMatter = ({ index, parent }) => {
-    const { language } = useLanguage();    
+    const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const [isChecked, setIsChecked] = useState(false);
 
-    const valorInicial = 0;
+    const fieldPath = `${parent}.organicMatterPct[${index}]`;
+    const valorPadrao = "";
+    const sugestaoInicial = "0,5";
+
+    const [currentValue, setCurrentValue] = useState(values?.[parent]?.organicMatterPct?.[index] ?? valorPadrao);
+    const [isChecked, setIsChecked] = useState(parseFloat(currentValue.replace(',', '.')) > 0);
 
     useEffect(() => {
-        if (!values?.[parent]?.organicMatterPct || !values?.[parent]?.organicMatterPct[index]) {
-            setFieldValue(`${parent}.organicMatterPct[${index}]`, valorInicial);
+        setFieldValue(fieldPath, valorPadrao);
+        setCurrentValue(valorPadrao);
+    }, []);
+
+    const handleCheckChange = (checked: boolean) => {
+        setIsChecked(checked);
+
+        if (checked) {
+            setFieldValue(fieldPath, sugestaoInicial);
+            setCurrentValue(sugestaoInicial);
+        } else {
+            setFieldValue(fieldPath, undefined);
+            setCurrentValue(valorPadrao);
         }
-    }, [index, values?.[parent]?.organicMatterPct, setFieldValue, valorInicial]);
+    };
+
+    const handleValueChange = (val: string) => {
+        setFieldValue(fieldPath, val);
+        setCurrentValue(val);
+    };
 
     return (
-        <View style={styles.container}>
-            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Matéria Orgânica:` : `Organic Matter:`}</Text>
-
-            <View style={GlobalStyles.row}>
-                <View style={[GlobalStyles.col1, styles.checkbox]}>
-                    <Checkbox
-                        value={isChecked}
-                        onValueChange={() => {
-                            !isChecked ?
-                                setFieldValue(`${parent}.organicMatterPct[${index}]`, "0,5") :
-                                setFieldValue(`${parent}.organicMatterPct[${index}]`, "0");
-                            setIsChecked(!isChecked);
-                        }}
-                        color={isChecked ? '#4630EB' : undefined}
-                        style={styles.checkbox}
-                    />
-                </View>
-                <View style={[GlobalStyles.col11, {paddingRight: 9}]}>
-                    <NumericInput 
-                    value={values?.[parent]?.organicMatterPct?.[index] || valorInicial} 
-                    onChange={(text) => setFieldValue(`${parent}.organicMatterPct[${index}]`, text)} disabled={!isChecked}                 
-                     />
-                </View>
-            </View>
-        </View>
+        <ConditionalNumericInput
+            label={language === 'pt-BR' ? 'Matéria Orgânica:' : 'Organic Matter:'}
+            value={currentValue}
+            defaultValue={sugestaoInicial}
+            onChange={handleValueChange}
+            checked={isChecked}
+            onCheckChange={handleCheckChange}
+            step={0.01}
+            min={0}
+            max={100}
+        />
     );
 };
-export default EF_OrganicMatter;
 
-const styles = StyleSheet.create({
-    container: { marginTop: 5 },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 8,
-        marginHorizontal: 2,
-    },
-    checkbox: {
-        flexDirection: 'row',
-        marginRight: 5,
-        paddingTop: 1
-    },
-});
+export default EF_OrganicMatter;
