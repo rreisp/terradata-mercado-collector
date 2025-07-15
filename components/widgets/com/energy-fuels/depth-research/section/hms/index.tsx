@@ -6,20 +6,24 @@ import NumericInput from '@/components/widgets/input/numeric';
 const EF_HMS = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const valorInicial = 0;
+    const [val, setVal] = useState(values?.[parent]?.hms?.[index] || valorInicial);
+
+    const handleChange = (text: string) => {
+        setFieldValue(`${parent}.hms[${index}]`, text);
+        setVal(text);
+    };
 
     useEffect(() => {
-        if (!values?.[parent]?.hms || !values?.[parent]?.hms[index]) {
-            setFieldValue(`${parent}.hms[${index}]`, valorInicial);
-        }
-    }, [index, values?.[parent]?.hms, setFieldValue, valorInicial]);
+        setFieldValue(`${parent}.hms[${index}]`, val);
+    }, [index, values?.[parent]?.hms, setFieldValue]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>%HMS:</Text>
             <View>
-                <NumericInput step={0.1}
-                    value={values?.[parent]?.hms?.[index] || valorInicial}
-                    onChange={(text) => setFieldValue(`${parent}.hms[${index}]`, text)} />
+                <NumericInput step={0.01} min={0} max={100}
+                    value={val}
+                    onChange={handleChange} />
             </View>
         </View>
     );

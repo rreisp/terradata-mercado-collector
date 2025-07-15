@@ -58,7 +58,7 @@ const ConditionalNumericInput: React.FC<Props> = ({
                         style={styles.checkbox}
                     />
                 </View>
-                <View style={[GlobalStyles.col11, { paddingRight: 9, flex: 1 }]}>
+                <View style={[GlobalStyles.col11, { flex: 1 }]}>
                     <NumericInput
                         value={val}
                         onChange={handleChange}
