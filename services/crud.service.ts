@@ -33,8 +33,8 @@ export class CrudService {
                 results = await db.getAllAsync<T>(sql, params);
             });
         } catch (error) {
-            logDetailedError('Erro ao executar SQL', sql, params, error);
-            Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar consulta', error));
+            //logDetailedError('Erro ao executar SQL', sql, params, error);
+            Alert.alert('Erro de banco de dados', formatErrorMessage("Falha ao executar consulta '"+ sql +"'", error));
             throw error;
         }
         return results;
@@ -43,10 +43,10 @@ export class CrudService {
     static async runQuery(sql: string, params: Params = []): Promise<void> {
         try {
             // await db.withTransactionAsync(async () => {
-                await db.runAsync(sql, params);
+            await db.runAsync(sql, params);
             // });
         } catch (error) {
-            logDetailedError('Erro ao executar query', sql, params, error);
+            //logDetailedError('Erro ao executar query', sql, params, error);
             Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar query', error));
             throw error;
         }
@@ -58,7 +58,7 @@ export class CrudService {
             await db.runAsync(sql); // sem transação
             // await this.runQuery(sql);
         } catch (error) {
-            logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
+            //logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao criar a tabela ${tableName}`, error));
             throw error;
         }
@@ -71,9 +71,10 @@ export class CrudService {
 
         const sql = `INSERT INTO ${tableName} (${keys.join(',')}) VALUES (${placeholders})`;
         try {
-            await this.runQuery(sql, values);
+            // await this.runQuery(sql, values);
+            await this.executeSql(sql, values);
         } catch (error) {
-            logDetailedError(`Erro ao inserir em ${tableName}`, sql, values, error);
+            //logDetailedError(`Erro ao inserir em ${tableName}`, sql, values, error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao inserir dados em ${tableName}`, error));
             throw error;
         }
@@ -93,7 +94,7 @@ export class CrudService {
         try {
             await this.runQuery(sql, [...values, ...whereParams]);
         } catch (error) {
-            logDetailedError(`Erro ao atualizar ${tableName}`, sql, [...values, ...whereParams], error);
+            //logDetailedError(`Erro ao atualizar ${tableName}`, sql, [...values, ...whereParams], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao atualizar dados em ${tableName}`, error));
             throw error;
         }
@@ -104,29 +105,70 @@ export class CrudService {
         try {
             await this.runQuery(sql, whereParams);
         } catch (error) {
-            logDetailedError(`Erro ao deletar de ${tableName}`, sql, whereParams, error);
+            //logDetailedError(`Erro ao deletar de ${tableName}`, sql, whereParams, error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao deletar dados de ${tableName}`, error));
             throw error;
         }
     }
 
-    static async list<T>(tableName: string): Promise<T[]> {
-        const sql = `SELECT * FROM ${tableName}`;
+    // static async list<T>(
+    //     tableName: string,
+    //     where?: string,
+    //     whereParams: any[] = []
+    // ): Promise<T[]> {
+    //     // Validação opcional de nome de tabela, se necessário
+    //     // if (!this.allowedTables.includes(tableName)) { ... }
+
+    //     let sql = `SELECT * FROM ${tableName}`;
+    //     if (where) {
+    //         sql += ` WHERE ${where}`;
+    //     }
+    //     console.warn(sql);
+
+    //     try {
+    //         return await this.executeSql<T>(sql, whereParams);
+    //     } catch (error) {
+    //         //logDetailedError(`Erro ao listar dados de ${tableName}`, sql, whereParams, error);
+    //         Alert.alert('Erro', formatErrorMessage(`Erro ao listar dados de ${tableName}`, error));
+    //         throw error;
+    //     }
+    // }
+
+    static async list<T>(
+        tableName: string,
+        where: string[] = [],
+        whereParams: any[] = []
+    ): Promise<T[]> {
+        let sql = `SELECT * FROM ${tableName}`;
+
+        let i = 0;
+        if (where.length > 0) sql += ' WHERE ';
+        where.forEach(element => {
+            sql += `${element.replace('?', whereParams[i])} AND`;
+            i++;
+        });
+        if (i > 0) sql = sql.substring(0, sql.length - 3);
+
+        // console.warn('Params:', whereParams);
+
         try {
             return await this.executeSql<T>(sql);
         } catch (error) {
-            logDetailedError(`Erro ao listar dados de ${tableName}`, sql, [], error);
-            Alert.alert('Erro', formatErrorMessage(`Erro ao listar dados de ${tableName}`, error));
+            console.warn('SQL:', sql);
+            //logDetailedError(`Erro ao listar dados de ${tableName}`, sql, whereParams, error);
+            // Alert.alert('Erro', formatErrorMessage(`Erro ao listar dados de ${tableName}`, error));
             throw error;
         }
     }
+
+
 
     static async findById<T>(tableName: string, id: number): Promise<T[]> {
         const sql = `SELECT * FROM ${tableName} WHERE id = ?`;
         try {
             return await this.executeSql<T>(sql, [id]);
         } catch (error) {
-            logDetailedError(`Erro ao buscar ID ${id} em ${tableName}`, sql, [id], error);
+            //logDetailedError(`Erro ao buscar ID ${id} em ${tableName}`, sql, [id], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao buscar ID em ${tableName}`, error));
             throw error;
         }
@@ -137,7 +179,7 @@ export class CrudService {
             await this.runQuery(`DELETE FROM ${tableName}`);
             await this.runQuery(`DELETE FROM sqlite_sequence WHERE name = ?`, [tableName]);
         } catch (error) {
-            logDetailedError(`Erro ao limpar tabela ${tableName}`, undefined, [tableName], error);
+            //logDetailedError(`Erro ao limpar tabela ${tableName}`, undefined, [tableName], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao limpar dados de ${tableName}`, error));
             throw error;
         }
@@ -148,7 +190,7 @@ export class CrudService {
         try {
             await this.runQuery(sql);
         } catch (error) {
-            logDetailedError(`Erro ao apagar tabela ${tableName}`, sql, [], error);
+            //logDetailedError(`Erro ao apagar tabela ${tableName}`, sql, [], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao apagar a tabela ${tableName}`, error));
             throw error;
         }
@@ -160,7 +202,7 @@ export class CrudService {
             const result = await this.executeSql<{ id: number }>(sql);
             return result[0]?.id ?? 0;
         } catch (error) {
-            logDetailedError('Erro ao obter last_insert_rowid', sql, [], error);
+            //logDetailedError('Erro ao obter last_insert_rowid', sql, [], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao obter ID do último registro inserido`, error));
             throw error;
         }
@@ -171,17 +213,17 @@ export class CrudService {
             const dbPath = (SQLite as any).getDatabaseFileLocation('app.db');
             console.log('Caminho absoluto do banco de dados:', dbPath);
         } catch (error) {
-            logDetailedError('Erro ao obter caminho do banco de dados', undefined, [], error);
+            //logDetailedError('Erro ao obter caminho do banco de dados', undefined, [], error);
             Alert.alert('Erro', formatErrorMessage('Erro ao obter caminho do banco de dados', error));
             throw error;
         }
     }
 
-    static async execAsyncBegin(){
+    static async execAsyncBegin() {
         db.execAsync('BEGIN');
     }
 
-    static async execAsyncCommit(){
+    static async execAsyncCommit() {
         db.execAsync('COMMIT');
-    }    
+    }
 }

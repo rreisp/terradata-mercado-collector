@@ -17,7 +17,7 @@ const FormLoader = () => {
 
     return (
         <OperationModeProvider>
-            <View style={{ flex: 1}}>
+            <View style={{ flex: 1 }}>
                 <DynamicForm schemaId={schemaId} extract={extractor.extract.bind(extractor)} />
             </View>
         </OperationModeProvider>

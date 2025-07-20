@@ -1,5 +1,6 @@
 import { CrudService } from '@/services/crud.service';
 
+// -------------------------------------------------------------------
 export async function createDrillingsTable(): Promise<void> {
   try {
     await CrudService.createTable('drillings', `
@@ -20,24 +21,84 @@ export async function createDrillingsTable(): Promise<void> {
   }
 }
 
-export async function createImagesTable(): Promise<void> {
-    try {
-        await CrudService.createTable('images', `
+// -------------------------------------------------------------------
+export async function createSegmentsTable(): Promise<void> {
+  try {
+    await CrudService.createTable('segments', `
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      fgk_interval INTEGER,
-      img TEXT
+      fgk_drilling INTEGER NOT NULL,
+      depth_from NUMERIC NOT NULL,
+      depth_to NUMERIC NOT NULL,
+      recovery NUMERIC NOT NULL,
+      fgk_moisture INTEGER NOT NULL,
+      volume NUMERIC NOT NULL,
+      fgk_hardness INTEGER NOT NULL,
+      fgk_wash INTEGER NOT NULL,
+      fgk_color INTEGER NOT NULL,
+      fgk_induration INTEGER NOT NULL,
+      fgk_grainsize INTEGER NOT NULL,
+      fgk_sorting INTEGER NOT NULL,
+      fgk_roundness INTEGER NOT NULL,
+      clay NUMERIC NOT NULL,
+      micah NUMERIC NOT NULL,
+      shells NUMERIC NOT NULL,
+      organic_matter NUMERIC NOT NULL,
+      lithic_fragments NUMERIC NOT NULL,
+      hms NUMERIC NOT NULL,
+      comments TEXT,
+      FOREIGN KEY (fgk_drilling) REFERENCES drillings(id)
     `);
-        console.log('Tabela images criada (ou já existia).');
-    } catch (error) {
-        console.error('Erro ao criar a tabela images:', error);
-    }
+    console.log('Tabela segments criada (ou já existia).');
+  } catch (error) {
+    console.error('Erro ao criar a tabela segments:', error);
+  }
 }
 
-export async function initDatabase(): Promise<void> {
-    // await CrudService.drop("drillings");
-    // await CrudService.drop("images");
+// -------------------------------------------------------------------
+export async function createImagesTable(): Promise<void> {
+  try {
+    await CrudService.createTable('images', `
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      fgk_segment INTEGER,
+      img TEXT,
+      FOREIGN KEY (fgk_segment) REFERENCES segments(id)      
+    `);
+    console.log('Tabela images criada (ou já existia).');
+  } catch (error) {
+    console.error('Erro ao criar a tabela images:', error);
+  }
+}
 
-    await createDrillingsTable();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await createImagesTable();
+// -------------------------------------------------------------------
+export async function createLithologiesTable(): Promise<void> {
+  try {
+    await CrudService.createTable('lithologies', `
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      fgk_segment INTEGER NOT NULL,
+      depth_from NUMERIC NOT NULL,
+      depth_to NUMERIC NOT NULL,
+      fgk_lithology_type INTEGER NOT NULL,
+      FOREIGN KEY (fgk_segment) REFERENCES segments(id)
+    `);
+    console.log('Tabela lithologies criada (ou já existia).');
+  } catch (error) {
+    console.error('Erro ao criar a tabela lithologies:', error);
+  }
+}
+
+
+// -------------------------------------------------------------------
+export async function initDatabase(): Promise<void> {
+  // await CrudService.drop("drillings");
+  // await CrudService.drop("segments");
+  // await CrudService.drop("images");
+  // await CrudService.drop("lithologies");
+
+  await createDrillingsTable();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  await createSegmentsTable();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  await createImagesTable();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  await createLithologiesTable();
 }

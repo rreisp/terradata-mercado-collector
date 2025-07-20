@@ -6,6 +6,7 @@ import { enviarBancoPorEmail } from "@/services/email.service";
 import { exportarBancoComSAF } from "@/services/file-copy.service";
 import { Alert } from 'react-native';
 import { useNavigation } from "expo-router";
+import { LithologyRecord } from "@/types/lithology-record";
 
 function formatDate(date: Date) {
     const day = String(date.getDate()).padStart(2, '0');
@@ -19,22 +20,36 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
     private navigation = useNavigation();
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
-        console.warn('Extract Info');
+        // console.warn('Extract Info');
 
         // informação básica da perfuração        
         const drilling = this.extractDrillingInfo(info);
-        console.log(drilling);
+        // console.log(drilling);
         await this.saveDrilling(drilling);
-        // await exportarBancoComSAF();
-
 
         const lastDrillingId = await CrudService.lastInsertId();
-        console.log('opa ' + lastDrillingId);
 
-        console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
+        // informação dos segmentos    
+        const segments = this.extractSegmentsInfo(info);
+        // console.log(segments);
+        const segmentsIds = await this.saveSegments(lastDrillingId, segments);
+
+        // imagens de cada segmento
+        for (let i = 0; i < segments.length; i++) {
+            const photos = this.extractPhotosInfo(i, info);
+            await this.savePhotos(segmentsIds[i], photos);
+        }
+
+        // litologias de cada segmento        
+        for (let i = 0; i < segments.length; i++) {
+            const lithos = this.extractLithologiesInfo(i, info);
+            await this.saveLithologies(segmentsIds[i], lithos);
+        }
+
+        // console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
 
-        this.navigation.navigate('loader/list/index', { schemadId: 'energy-fuels.perfuracao' });
+        this.navigation.navigate('loader/list/index', { schemaId: 'energy-fuels.perfuracao' });
 
         // informação dos intervalos
         // const drillingIntervals = this.extractDrillingIntervalInfo(info);
@@ -43,13 +58,9 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         //informação da litologia de cada intervalo
         // const lithologies = this.extractIntervalsLithologyInfo(info);
 
-        // imagens de cada intervalo
-        // for (let i = 0; i < drillingIntervals.length; i++) {
-        //     const photos = this.extractPhotosInfo(i, info);
-        //     await this.savePhotos(i + 1, photos);
-        // }
 
-        // await enviarBancoPorEmail();
+
+
     }
 
     // -----------------------------------------------------------
@@ -67,18 +78,72 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         });
     }
 
+    // -----------------------------------------------------------
+    private async saveSegments(drilling_id: number, data_array: any[]) {
+        // console.warn(data_array[0]);
+        let lastInsertIds = [];
+        for (const data of data_array) {
+            await CrudService.insert('segments', {
+                fgk_drilling: drilling_id,
+                depth_from: data.depthFrom,
+                depth_to: data.depthTo,
+                recovery: data.recovery,
+                fgk_moisture: data.moisture,
+                volume: data.volume,
+                fgk_hardness: data.hardness,
+                fgk_wash: data.wash,
+                fgk_color: data.color,
+                fgk_induration: data.induration,
+                fgk_grainsize: data.grainsize,
+                fgk_sorting: data.sorting,
+                fgk_roundness: data.roundness,
+                clay: data.clay,
+                micah: data.micah,
+                shells: data.shells,
+                organic_matter: data.organicMatter,
+                lithic_fragments: data.lithicFragments,
+                hms: data.hms,
+                comments: data.comments
+            });
+            const lastId: number = await CrudService.lastInsertId();
+            lastInsertIds.push(lastId);
+        }
+        return lastInsertIds;
+    }
+
+
     private async createImage(data: ImageRecord): Promise<void> {
         await CrudService.insert('images', {
-            fgk_interval: data.fgk_interval,
+            fgk_segment: data.fgk_segment,
             img: data.img,
+        });
+    }
+
+    private async createLithology(data: LithologyRecord): Promise<void> {
+        await CrudService.insert('lithologies', {
+            fgk_segment: data.fgk_segment,
+            depth_from: data.depth_from,
+            depth_to: data.depth_to,
+            fgk_lithology_type: data.fgk_lithology_type
         });
     }
 
     private async savePhotos(index: number, photos: string[]) {
         for (const photo of photos) {
             await this.createImage({
-                fgk_interval: index,
+                fgk_segment: index,
                 img: photo
+            });
+        }
+    }
+
+    private async saveLithologies(index: number, lithologies: LithologyRecord[]) {
+        for (const lithology of lithologies) {
+            await this.createLithology({
+                fgk_segment: index,
+                depth_from: lithology.depth_from,
+                depth_to: lithology.depth_to,
+                fgk_lithology_type: lithology.fgk_lithology_type
             });
         }
     }
@@ -101,7 +166,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         }
     }
 
-    private extractDrillingIntervalInfo(info: any) {
+    private extractSegmentsInfo(info: any) {
         const size = info.ef_depth_test.depth?.length || 0;
         let intervals = [];
         for (let i = 0; i < size; i++) {
@@ -130,8 +195,8 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         return intervals;
     }
 
-    private extractIntervalsLithologyInfo(info: any) {
-        console.log(info.ef_depth_test.lithologies);
+    private extractLithologiesInfo(info: any) {
+        return info.ef_depth_test.lithologies;
     }
 
     private extractPhotosInfo(index: number, info: any) {

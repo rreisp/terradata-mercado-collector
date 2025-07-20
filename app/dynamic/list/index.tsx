@@ -49,6 +49,19 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
+    // async function drillingSegments(drilling_id: number) {
+    //     try {
+    //          const allDrillingSegments = await CrudService.list('segments', ['fgk_drilling = ?'], [drilling_id]);
+    //         // console.warn(allDrillingSegments);
+    //         // console.log(drilling_id);
+    //         return allDrillingSegments.length;
+    //         // return JSON.stringify([]);
+    //     } catch (error) {
+    //         console.error('Erro ao listar o registro:', error);
+    //         return [];
+    //     }
+    // }
+
     async function handleDelete(id: number): Promise<void> {
         Alert.alert('Remover item', `ID do item: ${id}`);
         try {
@@ -107,39 +120,11 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
         }, [])
     );
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => setLoading(false), values.delay);
-    //     // Icon.loadFont();
-    //     if (isOnline) {
-    //         fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
-    //             .then((res) => res.json())
-    //             .then((data) => {
-    //                 setFormSchema(data);
-    //                 return () => clearTimeout(timer);
-    //             })
-    //             .catch((err) => console.error("Erro ao carregar schema:", err));
-    //     } else {
-    //         let schema = null;
-    //         switch (schemaId) {
-    //             case 'cw.dialeto.cadastro':
-    //                 schema = CadastroSchema;
-    //                 break;
-    //             case 'energy-fuels.perfuracao':
-    //                 schema = PerfuracaoSchema;
-    //                 break;
-    //         }
-    //         setFormSchema(schema);
-    //         const timer = setTimeout(() => setLoading(false), values.delay);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [schemaId]);
-
     const goBack = () => {
         navigation.navigate('tools/index', { schemaId: schemaId });
     };
 
     const openForm = () => {
-        console.warn('schemaId:', schemaId, 'typeof:', typeof schemaId);
         navigation.navigate('loader/form/index', { schemaId: schemaId });
     };
 
@@ -178,10 +163,13 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                     <View style={[GlobalStyles.col12, { flex: 1 }]}>
                         <FlatList
                             data={drillings}
-                            keyExtractor={(item) => item.id.toString()}
+                            keyExtractor={(item) => item.id!.toString()}
                             renderItem={({ item }) => (
                                 <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                                    <View style={GlobalStyles.col5}>
+                                    <View style={GlobalStyles.col1}>
+                                        <Text>{item.id}</Text>
+                                    </View>
+                                    <View style={GlobalStyles.col4}>
                                         <Text>{item.title}</Text>
                                     </View>
                                     <View style={GlobalStyles.col5}>

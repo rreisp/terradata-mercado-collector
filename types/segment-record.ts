@@ -1,0 +1,23 @@
+export type SegmentRecord = {
+    id?: number;
+    fgk_drilling: number;
+    depth_from: number;
+    depth_to: number;
+    recovery: number;
+    fgk_moisture: number;
+    volume: number;
+    fgk_hardness: number;
+    fgk_wash: number;
+    fgk_color: number;
+    fgk_induration: number;
+    fgk_grainsize: number;
+    fgk_sorting: number;
+    fgk_roundness: number;
+    clay: number;
+    micah: number;
+    shells: number;
+    organic_matter: number;
+    lithic_fragments: number;
+    hms: number;
+    comments: string;
+};
