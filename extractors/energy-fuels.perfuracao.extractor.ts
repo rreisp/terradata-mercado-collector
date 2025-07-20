@@ -41,26 +41,15 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         }
 
         // litologias de cada segmento        
-        for (let i = 0; i < segments.length; i++) {
-            const lithos = this.extractLithologiesInfo(i, info);
-            await this.saveLithologies(segmentsIds[i], lithos);
-        }
+        // for (let i = 0; i < segments.length; i++) {
+        //     const lithos = this.extractLithologiesInfo(i, info);
+        //     await this.saveLithologies(segmentsIds[i], lithos);
+        // }
 
-        // console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
+        console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
 
         this.navigation.navigate('loader/list/index', { schemaId: 'energy-fuels.perfuracao' });
-
-        // informação dos intervalos
-        // const drillingIntervals = this.extractDrillingIntervalInfo(info);
-        // console.log(drillingIntervals);
-
-        //informação da litologia de cada intervalo
-        // const lithologies = this.extractIntervalsLithologyInfo(info);
-
-
-
-
     }
 
     // -----------------------------------------------------------

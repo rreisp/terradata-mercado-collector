@@ -114,7 +114,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                     setLoading(false);
                 }
             }
-            Alert.alert("op" + schemaId);
             loadSchema(schemaId);
             fetchDrillingInfo();
         }, [])
