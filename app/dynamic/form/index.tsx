@@ -127,8 +127,9 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={Yup.object(validationShape)}
-                onSubmit={(values) => {
+                onSubmit={(values, { resetForm }) => {
                     extract(values);
+                    // resetForm();
                     // console.log(values);
                 }}
             // onSubmit={(values) => {

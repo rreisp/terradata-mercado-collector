@@ -16,6 +16,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/config-plugins": "10.1.2",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^4.0.0",
     "@react-native-community/checkbox": "^0.5.17",
@@ -30,6 +31,7 @@
     "expo-blur": "~14.1.4",
     "expo-checkbox": "~4.1.4",
     "expo-constants": "~17.1.6",
+    "expo-dev-client": "~5.2.4",
     "expo-font": "~13.3.1",
     "expo-haptics": "~14.1.4",
     "expo-image-picker": "^16.1.4",
@@ -37,7 +39,7 @@
     "expo-mail-composer": "~14.1.4",
     "expo-router": "~5.0.6",
     "expo-splash-screen": "^0.30.9",
-    "expo-sqlite": "~15.2.12",
+    "expo-sqlite": "~15.2.14",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "^0.4.5",
     "expo-system-ui": "~5.0.7",
@@ -62,6 +64,7 @@
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
     "react-super-responsive-table": "^6.0.2",
+    "wa-sqlite": "^1.0.0",
     "yup": "^1.6.1",
     "zod": "^3.25.51",
     "zustand": "^5.0.3"

@@ -43,7 +43,7 @@ const NumericInput = ({
     };
 
     const handleBlur = () => {
-        console.log(value);
+        // console.log(value);
         if (!value) return;
 
         const normalized = value.replace(',', '.');

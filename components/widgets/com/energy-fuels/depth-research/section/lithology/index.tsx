@@ -7,7 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const EF_Lithology = ({ index, parent, start, end}) => {
+const EF_Lithology = ({ index, parent, start, end }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
 
@@ -40,7 +40,7 @@ const EF_Lithology = ({ index, parent, start, end}) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString();
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1;
 
     const pathBase = `${parent}.lithologies`;
 
@@ -71,7 +71,7 @@ const EF_Lithology = ({ index, parent, start, end}) => {
                             <View style={[GlobalStyles.rightAligned]}>
                                 <TouchableOpacity
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
-                                    onPress={() => push({ de: '', ate: '', tipo: '' })}
+                                    onPress={() => push({ depth_from: '', depth_to: '', lithology_type: '' })}
                                 >
                                     <Icon name="plus" size={16} color="#fff" />
                                 </TouchableOpacity>
@@ -85,31 +85,31 @@ const EF_Lithology = ({ index, parent, start, end}) => {
                         ) : (
                             lithologiesArray.map((_, subIndex: number) => (
                                 <View key={subIndex} style={[GlobalStyles.row, styles.row]}>
-                                    <View style={[GlobalStyles.col2, {flexDirection: 'row'}]}>
+                                    <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `De` : `From`}
-                                            value={lithologiesArray[subIndex]?.from || (lithologiesArray[subIndex-1]?.to ? lithologiesArray[subIndex-1]?.to : start)}
+                                            value={lithologiesArray[subIndex]?.depth_from || (lithologiesArray[subIndex - 1]?.depth_to ? lithologiesArray[subIndex - 1]?.depth_to : start)}
                                             onChange={(text: String) =>
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].from`, text)
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].depth_from`, text)
                                             }
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
                                         />
                                     </View>
 
-                                    <View style={[GlobalStyles.col2, {flexDirection: 'row'}]}>
+                                    <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `Até` : `To`}
-                                            value={lithologiesArray[subIndex]?.to || end}
-                                            onChange={(text : string) =>
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].to`, text)
+                                            value={lithologiesArray[subIndex]?.depth_to || end}
+                                            onChange={(text: string) =>
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].depth_to`, text)
                                             }
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
                                         />
                                     </View>
 
-                                    <View style={{flex: 1, marginRight: 3}}>
+                                    <View style={{ flex: 1, marginRight: 3 }}>
                                         <View style={GlobalStyles.pickerContainer}>
                                             <Picker
                                                 selectedValue={
@@ -117,8 +117,8 @@ const EF_Lithology = ({ index, parent, start, end}) => {
                                                 }
                                                 onValueChange={(itemValue) =>
                                                     setFieldValue(
-                                                        `${pathBase}[${index}][${subIndex}].tipo`,
-                                                        itemValue
+                                                        `${pathBase}[${index}][${subIndex}].lithology_type`,
+                                                        opcoes[language].indexOf(itemValue) + 1
                                                     )
                                                 }
                                                 style={GlobalStyles.picker}
@@ -132,7 +132,7 @@ const EF_Lithology = ({ index, parent, start, end}) => {
 
                                     <View>
                                         <TouchableOpacity
-                                            style={[GlobalStyles.warnButton, GlobalStyles.iconButton, {marginTop: 2}]}
+                                            style={[GlobalStyles.warnButton, GlobalStyles.iconButton, { marginTop: 2 }]}
                                             onPress={() => remove(subIndex)}
                                         >
                                             <Icon name="trash" size={16} />
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
         color: '#777',
         marginVertical: 4,
         marginLeft: 4,
-    }  
+    }
 });
 
 export default EF_Lithology;

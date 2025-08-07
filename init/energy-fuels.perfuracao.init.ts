@@ -59,7 +59,7 @@ export async function createImagesTable(): Promise<void> {
   try {
     await CrudService.createTable('images', `
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      fgk_segment INTEGER,
+      fgk_segment INTEGER NOT NULL,
       img TEXT,
       FOREIGN KEY (fgk_segment) REFERENCES segments(id)      
     `);

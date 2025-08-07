@@ -40,16 +40,27 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
             await this.savePhotos(segmentsIds[i], photos);
         }
 
+        // console.log(segments.length);
+        // console.log(info.ef_depth_test.lithologies);
+        // console.log(info.ef_depth_test.lithologies);
+
         // litologias de cada segmento        
-        // for (let i = 0; i < segments.length; i++) {
-        //     const lithos = this.extractLithologiesInfo(i, info);
-        //     await this.saveLithologies(segmentsIds[i], lithos);
-        // }
+        for (let i = 0; i < segments.length; i++) {
+            const lithos = this.extractLithologiesInfo(segmentsIds[i], info.ef_depth_test.lithologies[i]);
+            console.warn(lithos);
+            await this.saveLithologies(segmentsIds[i], lithos);
+        }
 
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
 
-        this.navigation.navigate('loader/list/index', { schemaId: 'energy-fuels.perfuracao' });
+        enviarBancoPorEmail();
+        try {
+            this.navigation.navigate('loader/list/index', { schemaId: 'energy-fuels.perfuracao' });
+        }
+        catch(ex){
+            console.warn(ex);
+        }
     }
 
     // -----------------------------------------------------------
@@ -184,8 +195,17 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         return intervals;
     }
 
-    private extractLithologiesInfo(info: any) {
-        return info.ef_depth_test.lithologies;
+    private extractLithologiesInfo(id: number, lithologies: any) {
+        let records = [];
+        lithologies.forEach((lithology, index) => {
+            records.push({
+                fgk_segment: id,
+                depth_from: lithology.depth_from,
+                depth_to: lithology.depth_to,
+                fgk_lithology_type: lithology.lithology_type
+            });
+        });
+        return records;
     }
 
     private extractPhotosInfo(index: number, info: any) {
