@@ -1,4 +1,4 @@
 export type DynamicFormProps = {
     schemaId: string;
-    extract: (values: any[]) => void;
+    extract: (values: any[]) => Promise<void>;
 };

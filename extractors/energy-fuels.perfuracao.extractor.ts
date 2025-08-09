@@ -54,7 +54,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
 
-        enviarBancoPorEmail();
+        // enviarBancoPorEmail();
         try {
             this.navigation.navigate('loader/list/index', { schemaId: 'energy-fuels.perfuracao' });
         }

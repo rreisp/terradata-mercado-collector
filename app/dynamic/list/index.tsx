@@ -104,6 +104,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
 
     useFocusEffect(
         useCallback(() => {
+            console.log('passou aqui no form');
             async function fetchDrillingInfo() {
                 try {
                     const data = await listDrillings();

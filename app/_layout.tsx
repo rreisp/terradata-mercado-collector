@@ -38,19 +38,6 @@ export default function RootLayout() {
             options={{
               headerShown: false
             }} />
-
-          <Stack.Screen
-            name="dynamic/list/index"
-            options={{
-              headerShown: false
-            }} />
-
-          <Stack.Screen
-            name="dynamic/form/index"
-            options={{
-              headerShown: false
-            }} />
-
         </Stack>
       </QueryClientProvider>
     </LanguageProvider>

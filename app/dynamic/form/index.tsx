@@ -32,6 +32,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
 
     useFocusEffect(
         useCallback(() => {
+            console.log('passou aqui no form');
             const timer = setTimeout(() => setLoading(false), values.delay);
             if (isOnline) {
                 const loadSchema = async () => {
