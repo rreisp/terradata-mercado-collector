@@ -49,19 +49,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // async function drillingSegments(drilling_id: number) {
-    //     try {
-    //          const allDrillingSegments = await CrudService.list('segments', ['fgk_drilling = ?'], [drilling_id]);
-    //         // console.warn(allDrillingSegments);
-    //         // console.log(drilling_id);
-    //         return allDrillingSegments.length;
-    //         // return JSON.stringify([]);
-    //     } catch (error) {
-    //         console.error('Erro ao listar o registro:', error);
-    //         return [];
-    //     }
-    // }
-
     async function handleDelete(id: number): Promise<void> {
         Alert.alert('Remover item', `ID do item: ${id}`);
         try {
@@ -104,7 +91,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('passou aqui no form');
+            console.log('DynamicList passou aqui no list');
             async function fetchDrillingInfo() {
                 try {
                     const data = await listDrillings();

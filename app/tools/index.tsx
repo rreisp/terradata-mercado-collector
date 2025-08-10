@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from "@/types/root-stack-param-list";
 import GlobalStyles from '../../constants/styles';
 import { useLanguage } from '../../contexts/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se quiser usar a versão 5
@@ -18,14 +16,14 @@ type Form = {
     title: string;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/list/index'>;
+// type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/list/index'>;
 
 const Tools = () => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const [availableForms, setAvailableForms] = useState<Form[]>([]);
     const [selectedForm, setSelectedForm] = useState<string | undefined>();
-    const navigation = useNavigation<NavigationProp>();
+    const navigation = useNavigation();
     const [loading, setLoading] = useState(true);
 
     const tools_text = {
@@ -41,22 +39,6 @@ const Tools = () => {
     const goBack = () => {
         navigation.navigate('index');
     };
-
-    // useEffect(() => {
-    //     const fetchFormConfig = async () => {
-    //         try {
-    //             const response = await fetch('https://capturewise.terradata.com.br/list-json.php');
-    //             const json = await response.json();
-    //             setAvailableForms(json);
-    //         } catch (error) {
-    //             console.error('Erro ao buscar configurações dos formulários:', error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchFormConfig();
-    // }, []);
 
     useEffect(() => {
         Icon.loadFont();

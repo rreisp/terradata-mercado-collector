@@ -32,7 +32,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('passou aqui no form');
+            console.log('DynamicForm passou aqui no form');
             const timer = setTimeout(() => setLoading(false), values.delay);
             if (isOnline) {
                 const loadSchema = async () => {
@@ -65,41 +65,8 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
         }, [])
     );
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => setLoading(false), values.delay);
-    //     if (isOnline) {
-    //         const loadSchema = async () => {
-    //             try {
-    //                 const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
-    //                 const data = await res.json();
-    //                 setFormSchema(data);
-    //             } catch (err) {
-    //                 console.error("Erro ao carregar schema:", err);
-    //             } finally {
-    //                 clearTimeout(timer);
-    //             }
-    //         };
-
-    //         // Executa a função e depois continua
-    //         loadSchema();
-    //     } else {
-    //         let schema = null;
-    //         switch (schemaId) {
-    //             case 'cw.dialeto.cadastro':
-    //                 schema = CadastroSchema;
-    //                 break;
-    //             case 'energy-fuels.perfuracao':
-    //                 schema = PerfuracaoSchema;
-    //                 break;
-    //         }
-    //         setFormSchema(schema);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [schemaId]);
-
     const openList = () => {
-        Alert.alert('xembla'+ schemaId);
-        navigation.navigate('loader/list/index', { schemaId: schemaId });
+        // navigation.navigate('loader/list/index', { schemaId: schemaId });
     };
 
     const initialValues: { [key: string]: any } = {};

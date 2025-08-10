@@ -6,14 +6,18 @@ import { EnergyFuelsDrillingExtractor } from '@/extractors/energy-fuels.perfurac
 import { View } from 'react-native';
 
 const FormLoader = () => {
+    const schemaIdParam = useLocalSearchParams().schemaId;
+    const schemaId = Array.isArray(schemaIdParam) ? schemaIdParam[0] : schemaIdParam;
+    console.log('FormLoader ' + schemaIdParam);
     const extractor: Extractor = new EnergyFuelsDrillingExtractor();
 
-    const schemaIdParam = useLocalSearchParams().schemaId;
-    const schemaId = typeof schemaIdParam === 'string'
-        ? schemaIdParam
-        : Array.isArray(schemaIdParam)
-            ? schemaIdParam[0]
-            : String(schemaIdParam);
+    // const schemaIdParam = useLocalSearchParams().schemaId;
+    // const schemaId = typeof schemaIdParam === 'string'
+    //     ? schemaIdParam
+    //     : Array.isArray(schemaIdParam)
+    //         ? schemaIdParam[0]
+    //         : String(schemaIdParam);
+    // console.log(schemaIdParam);
 
     return (
         <OperationModeProvider>
