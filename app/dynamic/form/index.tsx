@@ -66,7 +66,8 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     );
 
     const openList = () => {
-        navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
+        // navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
+        navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
     };
 
     const initialValues: { [key: string]: any } = {};
@@ -97,8 +98,8 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
                 validationSchema={Yup.object(validationShape)}
                 onSubmit={async (values, { resetForm }) => {
                     await extract(values);
-                    console.log('aqui');
-                    navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
+                    // navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
+                    navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
                     // resetForm();
                     // console.log(values);
                 }}

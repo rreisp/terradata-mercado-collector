@@ -108,11 +108,13 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     );
 
     const goBack = () => {
-        navigation.navigateDeprecated('tools/index');
+        // navigation.navigateDeprecated('tools/index');
+        navigation.navigate('tools/index', {}, { pop: true });
     };
 
     const openForm = () => {
-        navigation.navigateDeprecated('loader/form/index', { schemaId: schemaId });
+        // navigation.navigateDeprecated('loader/form/index', { schemaId: schemaId });
+        navigation.navigate('loader/form/index', { schemaId }, { pop: true });
     };
 
     return (

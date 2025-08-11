@@ -37,7 +37,8 @@ const Tools = () => {
     };
 
     const goBack = () => {
-        navigation.navigateDeprecated('index');
+        // navigation.navigateDeprecated('index');
+        navigation.navigate('index', {}, { pop: true });        
     };
 
     useEffect(() => {
@@ -97,7 +98,8 @@ const Tools = () => {
                                 onValueChange={(itemValue, itemIndex) => {
                                     setSelectedForm(itemValue);
                                     if (itemValue) {
-                                        navigation.navigateDeprecated('loader/list/index', { schemaId: itemValue });
+                                        // navigation.navigateDeprecated('loader/list/index', { schemaId: itemValue });
+                                        navigation.navigate('loader/list/index', { schemaId: itemValue }, { pop: true });
                                     }
                                 }}
                                 style={styles.picker}
