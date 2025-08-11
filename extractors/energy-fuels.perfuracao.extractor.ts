@@ -5,7 +5,6 @@ import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
 import { exportarBancoComSAF } from "@/services/file-copy.service";
 import { Alert } from 'react-native';
-import { useNavigation } from "expo-router";
 import { LithologyRecord } from "@/types/lithology-record";
 
 function formatDate(date: Date) {
@@ -15,9 +14,7 @@ function formatDate(date: Date) {
     return `${day}-${month}-${year}`;
 }
 
-
 export class EnergyFuelsDrillingExtractor implements Extractor {
-    private navigation = useNavigation();
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         // console.warn('Extract Info');
@@ -40,27 +37,14 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
             await this.savePhotos(segmentsIds[i], photos);
         }
 
-        // console.log(segments.length);
-        // console.log(info.ef_depth_test.lithologies);
-        // console.log(info.ef_depth_test.lithologies);
-
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
             const lithos = this.extractLithologiesInfo(segmentsIds[i], info.ef_depth_test.lithologies[i]);
-            console.warn(lithos);
             await this.saveLithologies(segmentsIds[i], lithos);
         }
 
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
-
-        // enviarBancoPorEmail();
-        try {
-            this.navigation.navigate('loader/list/index', { schemaId: 'energy-fuels.perfuracao' });
-        }
-        catch(ex){
-            console.warn(ex);
-        }
     }
 
     // -----------------------------------------------------------

@@ -37,7 +37,7 @@ const Tools = () => {
     };
 
     const goBack = () => {
-        navigation.navigate('index');
+        navigation.navigateDeprecated('index');
     };
 
     useEffect(() => {
@@ -97,7 +97,7 @@ const Tools = () => {
                                 onValueChange={(itemValue, itemIndex) => {
                                     setSelectedForm(itemValue);
                                     if (itemValue) {
-                                        navigation.navigate('loader/list/index', { schemaId: itemValue });
+                                        navigation.navigateDeprecated('loader/list/index', { schemaId: itemValue });
                                     }
                                 }}
                                 style={styles.picker}

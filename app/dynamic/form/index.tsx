@@ -66,7 +66,7 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
     );
 
     const openList = () => {
-        // navigation.navigate('loader/list/index', { schemaId: schemaId });
+        navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
     };
 
     const initialValues: { [key: string]: any } = {};
@@ -95,8 +95,10 @@ const DynamicForm = ({ schemaId, extract }: DynamicFormProps) => {
             <Formik
                 initialValues={initialValues}
                 validationSchema={Yup.object(validationShape)}
-                onSubmit={(values, { resetForm }) => {
-                    extract(values);
+                onSubmit={async (values, { resetForm }) => {
+                    await extract(values);
+                    console.log('aqui');
+                    navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
                     // resetForm();
                     // console.log(values);
                 }}
