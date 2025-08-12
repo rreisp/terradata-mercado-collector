@@ -6,7 +6,6 @@ import { View } from "react-native";
 const ListLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;
     const schemaId = Array.isArray(schemaIdParam) ? schemaIdParam[0] : schemaIdParam;
-    console.log('ListLoader ' + schemaIdParam);
 
     return (
         <OperationModeProvider>

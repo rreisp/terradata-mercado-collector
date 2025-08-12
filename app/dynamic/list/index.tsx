@@ -49,19 +49,6 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
-    async function handleDelete(id: number): Promise<void> {
-        Alert.alert('Remover item', `ID do item: ${id}`);
-        try {
-            await CrudService.delete('drillings', 'id = ?', [id]);
-            setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== id));
-            console.log(`Registro com ID ${id} removido com sucesso.`);
-            Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
-        } catch (error) {
-            console.error('Erro ao remover o registro:', error);
-            // O tratamento de erro já está dentro do CrudService.delete
-        }
-    }
-
     async function loadSchema(schemaId: string) {
         const timer = setTimeout(() => setLoading(false), values.delay);
         // Icon.loadFont();
@@ -89,9 +76,32 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
         }
     }
 
+    async function handleDelete(id: number): Promise<void> {
+        Alert.alert('Remover item', `ID do item: ${id}`);
+        try {
+            await CrudService.delete('drillings', 'id = ?', [id]);
+            setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== id));
+            console.log(`Registro com ID ${id} removido com sucesso.`);
+            Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
+        } catch (error) {
+            console.error('Erro ao removerx o registro:', error);
+            // O tratamento de erro já está dentro do CrudService.delete
+        }
+    }
+
+    async function handleExport(table: string, ids: number[]): Promise<void> {
+        try {
+            await CrudService.exportToCsv(table, ids);
+            // console.log(`Registro com ID ${id} removido com sucesso.`);
+            // Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
+        } catch (error) {
+            console.error('Erro ao remover o registro:', error);
+            // O tratamento de erro já está dentro do CrudService.delete
+        }
+    }    
+
     useFocusEffect(
         useCallback(() => {
-            console.log('DynamicList passou aqui no list');
             async function fetchDrillingInfo() {
                 try {
                     const data = await listDrillings();
@@ -166,7 +176,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                                     </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport(item.id)}>
                                             <Icon name="save" size={16} color="white" />
                                         </Pressable>
                                     </View>

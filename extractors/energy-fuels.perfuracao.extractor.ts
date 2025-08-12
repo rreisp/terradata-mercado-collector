@@ -184,9 +184,9 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         lithologies.forEach((lithology, index) => {
             records.push({
                 fgk_segment: id,
-                depth_from: lithology.depth_from,
-                depth_to: lithology.depth_to,
-                fgk_lithology_type: lithology.lithology_type
+                depth_from: lithology.from,
+                depth_to: lithology.to,
+                fgk_lithology_type: lithology.type
             });
         });
         return records;

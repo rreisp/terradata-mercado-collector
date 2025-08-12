@@ -32,13 +32,13 @@ const Section = ({ el, index, size, parent }) => {
     const [collapsed, setCollapsed] = useState(true);
     const { values, setFieldValue } = useFormikContext();
 
+    const DEFAULT_START = 0;
+    const DEFAULT_END = 100;
+
     useEffect(() => {
-        setFieldValue(`${parent}.depth[${index}].from`, (index == 0 ? 0 : values?.[parent]?.depth?.[index - 1].to));
-        setFieldValue(`${parent}.depth[${index}].to`, (index == 0 ? 100 : Number(values?.[parent]?.depth?.[index - 1].to) + 100));
+        setFieldValue(`${parent}.depth[${index}].from`, (index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to));
+        setFieldValue(`${parent}.depth[${index}].to`, (index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END)));
     }, []);
-
-
-    // setFieldValue(`${index}.depth[${index}].to`, (index == 0 ? 100 : values?.[parent]?.depth?.[index - 1].to) + 100));
 
     return (
         <View style={styles.bordered}>
@@ -49,7 +49,7 @@ const Section = ({ el, index, size, parent }) => {
                 <View style={GlobalStyles.col8}>
                     <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values?.[parent]?.depth?.[index]?.from}cm {language === 'pt-BR' ? `até` : `to`} {values?.[parent]?.depth?.[index]?.to || ''}cm</Text>
                 </View>
-                <View style={GlobalStyles.col1, styles.right}>
+                <View style={[GlobalStyles.col1, styles.right]}>
                     <Icon
                         name={collapsed ? 'chevron-down' : 'chevron-up'}
                         size={16}
@@ -301,8 +301,8 @@ const Section = ({ el, index, size, parent }) => {
                     <EF_Lithology
                         index={index}
                         parent={parent}
-                        start={values?.[parent]?.depth?.[index]?.from}
-                        end={values?.[parent]?.depth?.[index]?.to}
+                        start={(index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to)}
+                        end={(index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END))}
                     // value={lithologies[index]}
                     // onChange={(val) => {
                     //     const novos = [...lithologies];

@@ -15,7 +15,7 @@ export async function createDrillingsTable(): Promise<void> {
       end_date TEXT,
       interruption_reason TEXT
     `);
-    console.log('Tabela drillings criada (ou já existia).');
+    // console.log('Tabela drillings criada (ou já existia).');
   } catch (error) {
     console.error('Erro ao criar a tabela drillings:', error);
   }
@@ -48,7 +48,7 @@ export async function createSegmentsTable(): Promise<void> {
       comments TEXT,
       FOREIGN KEY (fgk_drilling) REFERENCES drillings(id)
     `);
-    console.log('Tabela segments criada (ou já existia).');
+    // console.log('Tabela segments criada (ou já existia).');
   } catch (error) {
     console.error('Erro ao criar a tabela segments:', error);
   }
@@ -63,7 +63,7 @@ export async function createImagesTable(): Promise<void> {
       img TEXT,
       FOREIGN KEY (fgk_segment) REFERENCES segments(id)      
     `);
-    console.log('Tabela images criada (ou já existia).');
+    // console.log('Tabela images criada (ou já existia).');
   } catch (error) {
     console.error('Erro ao criar a tabela images:', error);
   }
@@ -80,7 +80,7 @@ export async function createLithologiesTable(): Promise<void> {
       fgk_lithology_type INTEGER NOT NULL,
       FOREIGN KEY (fgk_segment) REFERENCES segments(id)
     `);
-    console.log('Tabela lithologies criada (ou já existia).');
+    // console.log('Tabela lithologies criada (ou já existia).');
   } catch (error) {
     console.error('Erro ao criar a tabela lithologies:', error);
   }

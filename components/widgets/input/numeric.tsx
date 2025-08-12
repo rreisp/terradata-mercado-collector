@@ -43,15 +43,16 @@ const NumericInput = ({
     };
 
     const handleBlur = () => {
-        // console.log(value);
         if (!value) return;
 
-        const normalized = value.replace(',', '.');
+        const normalized = (""+ value).replace(',', '.');
         const num = parseFloat(normalized);
 
         if (isNaN(num) || num < min || num > max) {
             onChange(''); // limpa se inválido ou fora dos limites
             // TODO: emitir mensagem ou algo melhor
+        } else {
+            onChange(value);
         }
     };
 

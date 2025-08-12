@@ -34,7 +34,7 @@ export class CrudService {
             });
         } catch (error) {
             //logDetailedError('Erro ao executar SQL', sql, params, error);
-            Alert.alert('Erro de banco de dados', formatErrorMessage("Falha ao executar consulta '"+ sql +"'", error));
+            Alert.alert('Erro de banco de dados', formatErrorMessage("Falha ao executar consulta '" + sql + "'", error));
             throw error;
         }
         return results;
@@ -219,11 +219,49 @@ export class CrudService {
         }
     }
 
-    static async execAsyncBegin() {
-        db.execAsync('BEGIN');
-    }
+    static async exportToCsv(table: string, ids: number[]): Promise<string> {
+        if (!ids.length) {
+            throw new Error("A lista de IDs não pode estar vazia.");
+        }
 
-    static async execAsyncCommit() {
-        db.execAsync('COMMIT');
+        // Monta placeholders para a query
+        const placeholders = ids.map(() => '?').join(',');
+
+        const sql = `SELECT * FROM ${table} WHERE id IN (${placeholders})`;
+        try {
+            const rows = await this.executeSql<Record<string, any>>(sql, ids);
+            if (!rows.length) {
+                throw new Error("Nenhum registro encontrado para os IDs fornecidos.");
+            }
+
+            // Cabeçalho do CSV
+            const header = Object.keys(rows[0]).join(';');
+
+            // Função para formatar cada valor
+            const formatValue = (value: any) => {
+                if (typeof value === 'number') {
+                    // Substitui ponto por vírgula para decimais
+                    return value.toString().replace('.', ',');
+                }
+                if (value === null || value === undefined) {
+                    return '';
+                }
+                // Escapa aspas e separadores
+                return `"${String(value).replace(/"/g, '""')}"`;
+            };
+
+            // Linhas do CSV
+            const lines = rows.map(row =>
+                Object.values(row).map(formatValue).join(';')
+            );
+
+            // Retorna CSV como string
+            return [header, ...lines].join('\n');
+
+        } catch (error) {
+            logDetailedError(`Erro ao exportar para CSV da tabela ${table}`, sql, ids, error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao exportar dados de ${table} para CSV`, error));
+            throw error;
+        }
     }
 }

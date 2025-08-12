@@ -30,29 +30,33 @@ const EF_Depth = ({ index, editable, parent }) => {
             <Text style={GlobalStyles.label}>
                 {language === 'pt-BR' ? 'Profundidade' : 'Depth'} (cm):
             </Text>
-            <View style={GlobalStyles.row}>
-                <TextInput
-                    style={{
-                        ...GlobalStyles.input,
-                        ...GlobalStyles.disabledInput
-                    }}
-                    placeholder={language === 'pt-BR' ? 'De' : 'From'}
-                    keyboardType="numeric"
-                    value={String(currentFrom ?? '')}
-                    onChangeText={(text) => setFieldValue(`${parent}.depth[${index}].from`, text)}
-                    editable={false}
-                />
-                <TextInput
-                    style={{
-                        ...GlobalStyles.input,
-                        ...(editable ? {} : GlobalStyles.disabledInput)
-                    }}
-                    placeholder={language === 'pt-BR' ? 'Até' : 'To'}
-                    keyboardType="numeric"
-                    value={String(currentTo ?? '')}
-                    onChangeText={(text) => setFieldValue(`${parent}.depth[${index}].to`, text)}
-                    editable={editable}
-                />
+            <View style={[GlobalStyles.row, { marginRight: 5}]}>
+                <View style={[GlobalStyles.col6]}>
+                    <TextInput
+                        style={{
+                            ...GlobalStyles.input,
+                            ...GlobalStyles.disabledInput
+                        }}
+                        placeholder={language === 'pt-BR' ? 'De' : 'From'}
+                        keyboardType="numeric"
+                        value={String(currentFrom ?? '')}
+                        onChangeText={(text) => setFieldValue(`${parent}.depth[${index}].from`, text)}
+                        editable={false}
+                    />
+                </View>
+                <View style={GlobalStyles.col6}>
+                    <TextInput
+                        style={{
+                            ...GlobalStyles.input,
+                            ...(editable ? {} : GlobalStyles.disabledInput)
+                        }}
+                        placeholder={language === 'pt-BR' ? 'Até' : 'To'}
+                        keyboardType="numeric"
+                        value={String(currentTo ?? '')}
+                        onChangeText={(text) => setFieldValue(`${parent}.depth[${index}].to`, text)}
+                        editable={editable}
+                    />
+                </View>
             </View>
         </View>
     );
