@@ -37,7 +37,7 @@ const EF_Sorting = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade granulométrica` : `Sorting`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.sorting?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, opcoes[language].indexOf(itemValue) + 1)}

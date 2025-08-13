@@ -33,7 +33,7 @@ const EF_Roundness = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Esfericidade` : `Roundness`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.roundness?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.roundness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}

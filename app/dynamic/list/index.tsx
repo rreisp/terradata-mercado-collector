@@ -89,6 +89,11 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
         }
     }
 
+    async function handleEdit(id: number): Promise<void> {
+        Alert.alert('Editar item', `ID do item: ${id}`);
+
+    }    
+
     async function handleExport(table: string, ids: number[]): Promise<void> {
         try {
             await CrudService.exportToCsv(table, ids);
@@ -171,7 +176,7 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                                     <View style={GlobalStyles.col4}>
                                         <Text>{item.title}</Text>
                                     </View>
-                                    <View style={GlobalStyles.col5}>
+                                    <View style={GlobalStyles.col4}>
                                         <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
                                     </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
@@ -180,6 +185,12 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
                                             <Icon name="save" size={16} color="white" />
                                         </Pressable>
                                     </View>
+                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
+                                        {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleEdit(item.id)}>
+                                            <Icon name="edit" size={16} color="white" />
+                                        </Pressable>
+                                    </View>                                    
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>

@@ -37,7 +37,7 @@ const EF_Hardness = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.hardness?.[index] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
