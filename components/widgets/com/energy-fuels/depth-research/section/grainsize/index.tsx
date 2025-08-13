@@ -27,7 +27,8 @@ const EF_Grainsize = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
 
     useEffect(() => {
         if (!values?.[parent]?.grainsize || !values?.[parent]?.grainsize[index]) {
@@ -41,7 +42,7 @@ const EF_Grainsize = ({ index, parent }) => {
             <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.grainsize?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

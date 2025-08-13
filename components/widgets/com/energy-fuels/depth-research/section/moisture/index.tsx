@@ -21,7 +21,9 @@ const EF_Moisture = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    //const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+
 
     useEffect(() => {
         if (!values?.[parent]?.moisture || !values?.[parent]?.moisture[index]) {
@@ -32,10 +34,10 @@ const EF_Moisture = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Umidade` : `Moisture`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.moisture?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.moisture[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.moisture[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

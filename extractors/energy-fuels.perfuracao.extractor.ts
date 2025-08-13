@@ -28,7 +28,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
 
         // informação dos segmentos    
         const segments = this.extractSegmentsInfo(info);
-        // console.log(segments);
+        console.log(segments[0]);
         const segmentsIds = await this.saveSegments(lastDrillingId, segments);
 
         // imagens de cada segmento

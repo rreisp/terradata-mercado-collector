@@ -25,7 +25,8 @@ const EF_Hardness = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
 
     useEffect(() => {
         if (!values?.[parent]?.hardness || !values?.[parent]?.hardness[index]) {
@@ -39,7 +40,7 @@ const EF_Hardness = ({ index, parent }) => {
             <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.hardness?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

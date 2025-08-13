@@ -25,7 +25,8 @@ const EF_Sorting = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
 
     useEffect(() => {
         if (!values?.[parent]?.sorting || !values?.[parent]?.sorting[index]) {
@@ -39,7 +40,7 @@ const EF_Sorting = ({ index, parent }) => {
             <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.sorting?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

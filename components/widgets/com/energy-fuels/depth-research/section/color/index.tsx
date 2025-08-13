@@ -59,7 +59,8 @@ const EF_Color = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
 
     useEffect(() => {
         if (!values?.[parent]?.color || !values?.[parent]?.color[index]) {
@@ -70,10 +71,10 @@ const EF_Color = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cor` : `Color`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.color?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.color[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.color[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

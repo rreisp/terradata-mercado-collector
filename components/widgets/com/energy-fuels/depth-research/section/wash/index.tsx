@@ -23,7 +23,8 @@ const EF_Wash = ({ index, parent }) => {
         ]
     };
     
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
 
     useEffect(() => {
         if (!values?.[parent]?.wash || !values?.[parent]?.wash[index]) {
@@ -34,10 +35,10 @@ const EF_Wash = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.wash?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

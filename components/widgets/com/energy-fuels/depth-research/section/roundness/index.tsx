@@ -21,8 +21,9 @@ const EF_Roundness = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    
     useEffect(() => {
         if (!values?.[parent]?.roundness || !values?.[parent]?.roundness[index]) {
             setFieldValue(`${parent}.roundness[${index}]`, valorInicial);
@@ -35,7 +36,7 @@ const EF_Roundness = ({ index, parent }) => {
             <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.roundness?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.roundness[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.roundness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (

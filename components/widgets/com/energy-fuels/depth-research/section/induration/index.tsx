@@ -21,7 +21,8 @@ const EF_Induration = ({ index, parent }) => {
         ]
     };
 
-    const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
 
     useEffect(() => {
         if (!values?.[parent]?.induration || !values?.[parent]?.induration[index]) {
@@ -35,7 +36,7 @@ const EF_Induration = ({ index, parent }) => {
             <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.induration?.[index] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, itemValue)}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
                     {opcoes[language].map((val) => (
