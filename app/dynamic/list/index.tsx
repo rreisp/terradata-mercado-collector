@@ -37,7 +37,7 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-const DynamicList = ({ schemaId }: DynamicListProps) => {
+const DynamicList = ({ schemaId, load }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -90,8 +90,8 @@ const DynamicList = ({ schemaId }: DynamicListProps) => {
     }
 
     async function handleEdit(id: number): Promise<void> {
-        Alert.alert('Editar item', `ID do item: ${id}`);
-
+        // Alert.alert('Editar item', `ID do item: ${id}`);
+        navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
     }    
 
     async function handleExport(table: string, ids: number[]): Promise<void> {

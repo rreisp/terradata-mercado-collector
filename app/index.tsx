@@ -7,7 +7,7 @@ import CountryFlag from "react-native-country-flag";
 import { useLanguage } from '../contexts/LanguageContext';
 import { useEffect, useState } from "react";
 import SafeAreaContainer from "@/components/safe-container";
-import { initDatabase } from "@/init/energy-fuels.perfuracao.init";
+import { initDatabase } from "@/app-instance/init/energy-fuels.perfuracao.init";
 
 export default function Index() {
   const { setLanguage } = useLanguage();
