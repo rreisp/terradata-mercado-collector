@@ -28,14 +28,14 @@ const EF_Roundness = ({ index, parent }) => {
         if (!values?.[parent]?.roundness || !values?.[parent]?.roundness[index]) {
             setFieldValue(`${parent}.roundness[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.roundness, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Esfericidade` : `Roundness`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.roundness?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.roundness?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.roundness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

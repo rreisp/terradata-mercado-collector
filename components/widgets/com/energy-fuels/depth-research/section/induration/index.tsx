@@ -28,14 +28,14 @@ const EF_Induration = ({ index, parent }) => {
         if (!values?.[parent]?.induration || !values?.[parent]?.induration[index]) {
             setFieldValue(`${parent}.induration[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.induration, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.induration?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.induration?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

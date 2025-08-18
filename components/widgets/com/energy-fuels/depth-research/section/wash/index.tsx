@@ -30,14 +30,14 @@ const EF_Wash = ({ index, parent }) => {
         if (!values?.[parent]?.wash || !values?.[parent]?.wash[index]) {
             setFieldValue(`${parent}.wash[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.wash, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.wash?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.wash?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

@@ -1,16 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Alert, Platform } from 'react-native';
 import Section from './section';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, se quiser usar a versão 5
 import GlobalStyles from '../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useFormikContext } from 'formik';
 
 const EF_DepthResearch = ({ parent }: { parent: string }) => {
     const { language } = useLanguage();
+    const { values, setFieldValue } = useFormikContext();
+    // const [elements, setElements] = useState<{ id: number }[]>(values?.[parent]?.depth ?? []);
     const [elements, setElements] = useState<{ id: number }[]>([]);
+
+    useEffect(() => {
+        setElements(values?.[parent]?.segmentIds.map(id => ({ id })));
+    }, []);
 
     const handleAddElement = () => {
         const id = Date.now();
+        if(!elements){
+            setElements([]);
+        }
         setElements(prev => [...prev, { id }]);
     };
 
@@ -21,7 +31,7 @@ const EF_DepthResearch = ({ parent }: { parent: string }) => {
                 setElements(prev => prev.filter((_, i) => i !== index));
             }
         };
-        const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o intervalo?` : `Are you sure you want to remove the range?`);
+        const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o segmento?` : `Are you sure you want to remove the segment?`);
         if (Platform.OS === 'web') {
             const confirmed = window.confirm(msg);
             if (confirmed) confirmAndRemove();
@@ -40,7 +50,7 @@ const EF_DepthResearch = ({ parent }: { parent: string }) => {
 
     return (
         <View>
-            {elements.length === 0 ? (
+            {!elements || elements.length === 0 ? (
                 <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum segmento adicionado.` : `No segment added.`}</Text>
             ) : (
                 elements.map((el, index) => (
@@ -48,7 +58,7 @@ const EF_DepthResearch = ({ parent }: { parent: string }) => {
                         <Section index={index} el={el} size={elements.length} parent={parent} />
                         <View>
                             {index == elements.length - 1 &&
-                                <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), {marginVertical: 1}]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
+                                <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
                                     <View style={GlobalStyles.row}>
                                         <Icon name="trash" size={16} color="#fff" style={styles.icon} />
                                         <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER SEGMENTO ${index + 1}` : `REMOVE SEGMENT ${index + 1}`}</Text>

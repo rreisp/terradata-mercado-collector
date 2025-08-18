@@ -32,14 +32,14 @@ const EF_Hardness = ({ index, parent }) => {
         if (!values?.[parent]?.hardness || !values?.[parent]?.hardness[index]) {
             setFieldValue(`${parent}.hardness[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.hardness, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.hardness?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.hardness?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

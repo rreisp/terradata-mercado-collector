@@ -67,13 +67,10 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load }: DynamicFormP
                 setFormSchema(schema);
             }
 
-            // TODO
             if (editMode) {
-                console.log('XAPRA ' + editMode);
-                console.log(schemaId, itemId);
                 const handleLoad = async () => {
                     const v = await load(schemaId, itemId);
-                    setInitialValues(v);
+                    setInitialValues(v);             
 
                     formSchema?.rows.forEach(row =>
                         row.columns.forEach(({ field }) => {

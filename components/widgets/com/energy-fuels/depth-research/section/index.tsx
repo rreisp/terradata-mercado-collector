@@ -36,8 +36,15 @@ const Section = ({ el, index, size, parent }) => {
     const DEFAULT_END = 100;
 
     useEffect(() => {
-        setFieldValue(`${parent}.depth[${index}].from`, (index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to));
-        setFieldValue(`${parent}.depth[${index}].to`, (index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END)));
+        setFieldValue(`${parent}.depth[${index}].from`, (
+            values?.[parent]?.depth?.[index] ?
+                values?.[parent]?.depth?.[index].from :
+                (values?.[parent]?.depth?.[index - 1] && values?.[parent]?.depth?.[index - 1].to ? values?.[parent]?.depth?.[index - 1].to : DEFAULT_START)
+        ));
+        setFieldValue(`${parent}.depth[${index}].to`, (
+            values?.[parent]?.depth?.[index] ?
+                values?.[parent]?.depth?.[index].to : (values?.[parent]?.depth?.[index] ? Number(values?.[parent]?.depth?.[index].from) + DEFAULT_END : (index + 1) * DEFAULT_END)
+        ));
     }, []);
 
     return (
@@ -69,12 +76,6 @@ const Section = ({ el, index, size, parent }) => {
                                 index={index}
                                 editable={index === size - 1}
                                 parent={parent}
-                            // value={depths[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...depths];
-                            //     novos[index] = val;
-                            //     setDepths(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -84,24 +85,12 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_RunCoreRecovery
                                 index={index}
                                 parent={parent}
-                            // value={runCoreRecovery[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...runCoreRecovery];
-                            //     novos[index] = val;
-                            //     setRunCoreRecovery(novos);
-                            // }}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Moisture
                                 index={index}
                                 parent={parent}
-                            // value={volume[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...volume];
-                            //     novos[index] = val;
-                            //     setVolume(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -111,24 +100,12 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Volume
                                 index={index}
                                 parent={parent}
-                            // value={volume[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...volume];
-                            //     novos[index] = val;
-                            //     setVolume(novos);
-                            // }}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Hardness
                                 index={index}
                                 parent={parent}
-                            // value={hardness[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...hardness];
-                            //     novos[index] = val;
-                            //     setHardness(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -138,24 +115,12 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Wash
                                 index={index}
                                 parent={parent}
-                            // value={wash[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...wash];
-                            //     novos[index] = val;
-                            //     setWash(novos);
-                            // }}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Color
                                 index={index}
                                 parent={parent}
-                            // value={wash[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...wash];
-                            //     novos[index] = val;
-                            //     setWash(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -165,24 +130,12 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Induration
                                 index={index}
                                 parent={parent}
-                            // value={induration[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...induration];
-                            //     novos[index] = val;
-                            //     setInduration(novos);
-                            // }}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Grainsize
                                 index={index}
                                 parent={parent}
-                            // value={grainsize[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...grainsize];
-                            //     novos[index] = val;
-                            //     setGrainsize(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -192,24 +145,12 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Sorting
                                 index={index}
                                 parent={parent}
-                            // value={sorting[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...sorting];
-                            //     novos[index] = val;
-                            //     setSorting(novos);
-                            // }}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Roundness
                                 index={index}
                                 parent={parent}
-                            // value={roundness[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...roundness];
-                            //     novos[index] = val;
-                            //     setRoundness(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -219,12 +160,6 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Clay
                                 index={index}
                                 parent={parent}
-                            // value={clay[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...clay];
-                            //     novos[index] = val;
-                            //     setClay(novos);
-                            // }}
                             />
                         </View>
 
@@ -232,12 +167,6 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Micah
                                 index={index}
                                 parent={parent}
-                            // value={clay[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...clay];
-                            //     novos[index] = val;
-                            //     setClay(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -247,12 +176,6 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_Shells
                                 index={index}
                                 parent={parent}
-                            // value={clay[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...clay];
-                            //     novos[index] = val;
-                            //     setClay(novos);
-                            // }}
                             />
                         </View>
 
@@ -260,12 +183,6 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_OrganicMatter
                                 index={index}
                                 parent={parent}
-                            // value={clay[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...clay];
-                            //     novos[index] = val;
-                            //     setClay(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -275,12 +192,6 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_LithicFragments
                                 index={index}
                                 parent={parent}
-                            // value={clay[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...clay];
-                            //     novos[index] = val;
-                            //     setClay(novos);
-                            // }}
                             />
                         </View>
 
@@ -288,12 +199,6 @@ const Section = ({ el, index, size, parent }) => {
                             <EF_HMS
                                 index={index}
                                 parent={parent}
-                            // value={hms[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...hms];
-                            //     novos[index] = val;
-                            //     setHms(novos);
-                            // }}
                             />
                         </View>
                     </View>
@@ -303,24 +208,12 @@ const Section = ({ el, index, size, parent }) => {
                         parent={parent}
                         start={(index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to)}
                         end={(index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END))}
-                    // value={lithologies[index]}
-                    // onChange={(val) => {
-                    //     const novos = [...lithologies];
-                    //     novos[index] = val;
-                    //     setlithologies(novos);
-                    // }}
                     />
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Notas
                                 index={index}
                                 parent={parent}
-                            // value={estruturaNotas[index]}
-                            // onChange={(val) => {
-                            //     const novos = [...estruturaNotas];
-                            //     novos[index] = val;
-                            //     setEstruturaNotas(novos);
-                            // }}
                             />
                         </View>
                     </View>

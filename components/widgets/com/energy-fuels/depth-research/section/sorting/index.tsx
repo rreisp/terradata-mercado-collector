@@ -32,14 +32,14 @@ const EF_Sorting = ({ index, parent }) => {
         if (!values?.[parent]?.sorting || !values?.[parent]?.sorting[index]) {
             setFieldValue(`${parent}.sorting[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.sorting, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade granulométrica` : `Sorting`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.sorting?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.sorting?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

@@ -31,9 +31,10 @@ export class CrudService {
         try {
             await db.withTransactionAsync(async () => {
                 results = await db.getAllAsync<T>(sql, params);
+                // console.log(results);
             });
         } catch (error) {
-            //logDetailedError('Erro ao executar SQL', sql, params, error);
+            logDetailedError('Erro ao executar SQL', sql, params, error);
             Alert.alert('Erro de banco de dados', formatErrorMessage("Falha ao executar consulta '" + sql + "'", error));
             throw error;
         }
@@ -46,7 +47,7 @@ export class CrudService {
             await db.runAsync(sql, params);
             // });
         } catch (error) {
-            //logDetailedError('Erro ao executar query', sql, params, error);
+            logDetailedError('Erro ao executar query', sql, params, error);
             Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar query', error));
             throw error;
         }
@@ -58,7 +59,7 @@ export class CrudService {
             await db.runAsync(sql); // sem transação
             // await this.runQuery(sql);
         } catch (error) {
-            //logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
+            logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao criar a tabela ${tableName}`, error));
             throw error;
         }
@@ -74,7 +75,7 @@ export class CrudService {
             // await this.runQuery(sql, values);
             await this.executeSql(sql, values);
         } catch (error) {
-            //logDetailedError(`Erro ao inserir em ${tableName}`, sql, values, error);
+            logDetailedError(`Erro ao inserir em ${tableName}`, sql, values, error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao inserir dados em ${tableName}`, error));
             throw error;
         }
@@ -94,7 +95,7 @@ export class CrudService {
         try {
             await this.runQuery(sql, [...values, ...whereParams]);
         } catch (error) {
-            //logDetailedError(`Erro ao atualizar ${tableName}`, sql, [...values, ...whereParams], error);
+            logDetailedError(`Erro ao atualizar ${tableName}`, sql, [...values, ...whereParams], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao atualizar dados em ${tableName}`, error));
             throw error;
         }
@@ -105,34 +106,12 @@ export class CrudService {
         try {
             await this.runQuery(sql, whereParams);
         } catch (error) {
-            //logDetailedError(`Erro ao deletar de ${tableName}`, sql, whereParams, error);
+            logDetailedError(`Erro ao deletar de ${tableName}`, sql, whereParams, error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao deletar dados de ${tableName}`, error));
             throw error;
         }
     }
 
-    // static async list<T>(
-    //     tableName: string,
-    //     where?: string,
-    //     whereParams: any[] = []
-    // ): Promise<T[]> {
-    //     // Validação opcional de nome de tabela, se necessário
-    //     // if (!this.allowedTables.includes(tableName)) { ... }
-
-    //     let sql = `SELECT * FROM ${tableName}`;
-    //     if (where) {
-    //         sql += ` WHERE ${where}`;
-    //     }
-    //     console.warn(sql);
-
-    //     try {
-    //         return await this.executeSql<T>(sql, whereParams);
-    //     } catch (error) {
-    //         //logDetailedError(`Erro ao listar dados de ${tableName}`, sql, whereParams, error);
-    //         Alert.alert('Erro', formatErrorMessage(`Erro ao listar dados de ${tableName}`, error));
-    //         throw error;
-    //     }
-    // }
 
     static async list<T>(
         tableName: string,
@@ -141,27 +120,35 @@ export class CrudService {
     ): Promise<T[]> {
         let sql = `SELECT * FROM ${tableName}`;
 
-        let i = 0;
-        if (where.length > 0) sql += ' WHERE ';
-        where.forEach(element => {
-            sql += `${element.replace('?', whereParams[i])} AND`;
-            i++;
-        });
-        if (i > 0) sql = sql.substring(0, sql.length - 3);
+        if (where.length > 0) {
+            sql += " WHERE ";
 
-        // console.warn('Params:', whereParams);
+            const conditions = where.map((condition) => {
+                // remove espaços extras
+                const trimmed = condition.trim();
+
+                // se já contém operador válido, usa direto
+                if (/[=<>]|LIKE|IN/i.test(trimmed)) {
+                    // garante que o ? não está solto
+                    return trimmed.endsWith("?") ? trimmed : `${trimmed} ?`;
+                }
+
+                // senão, assume "="
+                return `${trimmed} = ?`;
+            });
+
+            sql += conditions.join(" AND ");
+        }
+
+        // console.log("SQL:", sql, "PARAMS:", whereParams);
 
         try {
-            return await this.executeSql<T>(sql);
+            return await this.executeSql<T>(sql, whereParams);
         } catch (error) {
-            console.warn('SQL:', sql);
-            //logDetailedError(`Erro ao listar dados de ${tableName}`, sql, whereParams, error);
-            // Alert.alert('Erro', formatErrorMessage(`Erro ao listar dados de ${tableName}`, error));
+            console.warn("SQL:", sql, "PARAMS:", whereParams);
             throw error;
         }
     }
-
-
 
     static async findById<T>(tableName: string, id: number): Promise<T[]> {
         const sql = `SELECT * FROM ${tableName} WHERE id = ?`;

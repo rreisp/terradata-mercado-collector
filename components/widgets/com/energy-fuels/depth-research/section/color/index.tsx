@@ -66,14 +66,14 @@ const EF_Color = ({ index, parent }) => {
         if (!values?.[parent]?.color || !values?.[parent]?.color[index]) {
             setFieldValue(`${parent}.color[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.color, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cor` : `Color`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.color?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.color?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.color[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

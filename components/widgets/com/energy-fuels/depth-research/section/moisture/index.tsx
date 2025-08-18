@@ -29,14 +29,14 @@ const EF_Moisture = ({ index, parent }) => {
         if (!values?.[parent]?.moisture || !values?.[parent]?.moisture[index]) {
             setFieldValue(`${parent}.moisture[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.moisture, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Umidade` : `Moisture`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.moisture?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.moisture?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.moisture[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

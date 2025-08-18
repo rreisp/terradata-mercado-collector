@@ -34,14 +34,14 @@ const EF_Grainsize = ({ index, parent }) => {
         if (!values?.[parent]?.grainsize || !values?.[parent]?.grainsize[index]) {
             setFieldValue(`${parent}.grainsize[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.grainsize, setFieldValue, valorInicial]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.grainsize?.[index] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.grainsize?.[index]-1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

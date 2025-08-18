@@ -128,7 +128,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                             onChange={
                                                 (text: string) => {
                                                     setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text));
-                                                    if (!isNaN(values?.[parent]?.lithologies?.[index][subIndex + 1].from)) {
+                                                    if (values?.[parent]?.lithologies?.[index][subIndex + 1] && !isNaN(values?.[parent]?.lithologies?.[index][subIndex + 1].from)) {
                                                         setFieldValue(`${pathBase}[${index}][${subIndex + 1}].from`, Number(text));
                                                     }
                                                 }

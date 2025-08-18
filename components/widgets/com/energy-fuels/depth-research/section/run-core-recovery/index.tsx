@@ -10,11 +10,11 @@ const EF_RunCoreRecovery = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const valorInicial = 100;
 
-    const currentValue = values?.[parent]?.runCoreRecovery?.[index];
+    const currentValue = values?.[parent]?.recovery?.[index];
 
     useEffect(() => {
         if (currentValue === undefined) {
-            setFieldValue(`${parent}.runCoreRecovery[${index}]`, valorInicial);
+            setFieldValue(`${parent}.recovery[${index}]`, valorInicial);
         }
     }, [currentValue, index, parent, setFieldValue]);
 
@@ -28,7 +28,7 @@ const EF_RunCoreRecovery = ({ index, parent }) => {
                     step={0.01}
                     value={currentValue ?? 0} // garante valor definido
                     onChange={(text) =>
-                        setFieldValue(`${parent}.runCoreRecovery[${index}]`, text)
+                        setFieldValue(`${parent}.recovery[${index}]`, text)
                     }
                 />
             </View>

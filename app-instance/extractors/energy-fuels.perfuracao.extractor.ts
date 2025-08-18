@@ -18,31 +18,36 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         // console.warn('Extract Info');
+        // console.log(info);
 
-        // informação básica da perfuração        
+        // informação básica da perfuração
+        // console.log("AQUI 1");
         const drilling = this.extractDrillingInfo(info);
+        // console.log("AQUI 2");
         // console.log(drilling);
         await this.saveDrilling(drilling);
+        // console.log("AQUI 3");
 
         const lastDrillingId = await CrudService.lastInsertId();
-
+        // console.log("AQUI 4");
         // informação dos segmentos    
         const segments = this.extractSegmentsInfo(info);
-        console.log(segments[0]);
+        // console.log("AQUI 5");
+        // console.log(segments[0]);
         const segmentsIds = await this.saveSegments(lastDrillingId, segments);
-
+        // console.log("AQUI 6");
         // imagens de cada segmento
         for (let i = 0; i < segments.length; i++) {
             const photos = this.extractPhotosInfo(i, info);
             await this.savePhotos(segmentsIds[i], photos);
         }
-
+        // console.log("AQUI 7");
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
             const lithos = this.extractLithologiesInfo(segmentsIds[i], info.ef_depth_test.lithologies[i]);
             await this.saveLithologies(segmentsIds[i], lithos);
         }
-
+        // console.log("AQUI 8");
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
     }
@@ -151,13 +156,13 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
     }
 
     private extractSegmentsInfo(info: any) {
-        const size = info.ef_depth_test.depth?.length || 0;
+        const size = info.ef_depth_test ? info.ef_depth_test.depth.length : 0;
         let intervals = [];
         for (let i = 0; i < size; i++) {
             intervals.push({
                 depthFrom: info.ef_depth_test.depth[i].from,
                 depthTo: info.ef_depth_test.depth[i].to,
-                recovery: info.ef_depth_test.runCoreRecovery[i],
+                recovery: info.ef_depth_test.recovery[i],
                 moisture: info.ef_depth_test.moisture[i],
                 volume: info.ef_depth_test.volume[i],
                 hardness: info.ef_depth_test.hardness[i],
