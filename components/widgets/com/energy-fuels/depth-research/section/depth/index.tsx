@@ -17,20 +17,32 @@ const EF_Depth = ({ index, editable, parent }) => {
         if (currentFrom === undefined) {
             setFieldValue(`${parent}.depth[${index}].from`, String(previousTo));
         }
-    }, [currentFrom, previousTo, index, parent, setFieldValue]);
+    }, []);
 
     useEffect(() => {
         if (currentTo === undefined) {
             setFieldValue(`${parent}.depth[${index}].to`, String(Number(previousTo) + 100));
         }
-    }, [currentTo, previousTo, index, parent, setFieldValue]);
+    }, []);
+
+    const handleChangeFrom = (text: string) => {
+        setFieldValue(`${parent}.depth[${index}].from`, text);
+    };
+
+    const handleChangeTo = (text: string) => {
+        setFieldValue(`${parent}.depth[${index}].to`, text);
+        const size = values?.[parent]?.lithologies[index].length || 0;
+        if (size > 0) {
+            setFieldValue(`${parent}.lithologies[${index}][${size - 1}].to`, text);
+        }
+    };
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>
                 {language === 'pt-BR' ? 'Profundidade' : 'Depth'} (cm):
             </Text>
-            <View style={[GlobalStyles.row, { marginRight: 5}]}>
+            <View style={[GlobalStyles.row, { marginRight: 5 }]}>
                 <View style={[GlobalStyles.col6]}>
                     <TextInput
                         style={{
@@ -40,7 +52,7 @@ const EF_Depth = ({ index, editable, parent }) => {
                         placeholder={language === 'pt-BR' ? 'De' : 'From'}
                         keyboardType="numeric"
                         value={String(currentFrom ?? '')}
-                        onChangeText={(text) => setFieldValue(`${parent}.depth[${index}].from`, text)}
+                        onChangeText={(text) => handleChangeFrom(text)}
                         editable={false}
                     />
                 </View>
@@ -53,7 +65,7 @@ const EF_Depth = ({ index, editable, parent }) => {
                         placeholder={language === 'pt-BR' ? 'Até' : 'To'}
                         keyboardType="numeric"
                         value={String(currentTo ?? '')}
-                        onChangeText={(text) => setFieldValue(`${parent}.depth[${index}].to`, text)}
+                        onChangeText={(text) => handleChangeTo(text)}
                         editable={editable}
                     />
                 </View>

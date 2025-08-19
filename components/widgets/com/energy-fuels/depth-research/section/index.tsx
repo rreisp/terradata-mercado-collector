@@ -35,18 +35,6 @@ const Section = ({ el, index, size, parent }) => {
     const DEFAULT_START = 0;
     const DEFAULT_END = 100;
 
-    useEffect(() => {
-        setFieldValue(`${parent}.depth[${index}].from`, (
-            values?.[parent]?.depth?.[index] ?
-                values?.[parent]?.depth?.[index].from :
-                (values?.[parent]?.depth?.[index - 1] && values?.[parent]?.depth?.[index - 1].to ? values?.[parent]?.depth?.[index - 1].to : DEFAULT_START)
-        ));
-        setFieldValue(`${parent}.depth[${index}].to`, (
-            values?.[parent]?.depth?.[index] ?
-                values?.[parent]?.depth?.[index].to : (values?.[parent]?.depth?.[index] ? Number(values?.[parent]?.depth?.[index].from) + DEFAULT_END : (index + 1) * DEFAULT_END)
-        ));
-    }, []);
-
     return (
         <View style={styles.bordered}>
             <TouchableOpacity onPress={() => setCollapsed(!collapsed)} style={(index % 2 == 0 ? styles.sectionHeaderEven : styles.sectionHeaderOdd)}>
@@ -203,12 +191,18 @@ const Section = ({ el, index, size, parent }) => {
                         </View>
                     </View>
 
-                    <EF_Lithology
-                        index={index}
-                        parent={parent}
-                        start={(index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to)}
-                        end={(index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END))}
-                    />
+                    <View style={GlobalStyles.row}>
+                        <View style={GlobalStyles.col}>
+                            <EF_Lithology
+                                index={index}
+                                parent={parent}
+                                start={(index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to)}
+                                end={(Number(values?.[parent]?.depth?.[index] ? values?.[parent]?.depth?.[index].to :
+                                    index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END)))}
+                            />
+                        </View>
+                    </View>
+
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Notas

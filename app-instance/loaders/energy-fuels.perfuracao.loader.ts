@@ -26,11 +26,9 @@ export class EnergyFuelsDrillingLoader implements Loader {
         let hms: number[] = [];
         let induration: number[] = [];
         let lithicFragmentsPct: number[] = [];
-        // lithologies: Array<LithologyRecord>
         let micahPct: number[] = [];
         let moisture: number[] = [];
         let organicMatterPct: number[] = [];
-        // let photos: number[] = [];
         let roundness: number[] = [];
         let recovery: number[] = [];
         let shellsPct: number[] = [];
@@ -38,8 +36,10 @@ export class EnergyFuelsDrillingLoader implements Loader {
         let volume: number[] = [];
         let wash: number[] = [];
 
-        segments.forEach(segment => {
-            // console.log(segment);
+        // let photos: number[] = [];
+        let lithologies: LithologyRecord[][] = [];
+
+        await Promise.all(segments.map(async (segment) => {
             segmentIds.push(segment.id);
             depth.push({ from: segment.depth_from, to: segment.depth_to });
 
@@ -60,7 +60,20 @@ export class EnergyFuelsDrillingLoader implements Loader {
             sorting.push(segment.fgk_sorting);
             volume.push(segment.volume);
             wash.push(segment.fgk_wash);
-        });
+
+            let segmentLithologies = await this.loadLithologies(segment.id!);
+            console.error(segmentLithologies);
+            const adaptLithologies = (arr: any[]) =>
+                segmentLithologies.map(item => ({
+                    from: item.depth_from,
+                    to: item.depth_to,
+                    type: item.fgk_lithology_type,
+                    id: item.id,
+                }));
+            lithologies.push(adaptLithologies(segmentLithologies));
+            // lithologies.push(...lithologiesArray);
+        }));
+
 
         return {
             "title": drilling.title,
@@ -95,7 +108,8 @@ export class EnergyFuelsDrillingLoader implements Loader {
                 shellsPct,
                 sorting,
                 volume,
-                wash
+                wash,
+                lithologies
             }
         };
     }
@@ -117,5 +131,14 @@ export class EnergyFuelsDrillingLoader implements Loader {
             [drillingId]
         ));
         return segments;
+    }
+
+    private async loadLithologies(segmentId: number) {
+        const lithologies = (await CrudService.list<LithologyRecord>(
+            "lithologies",
+            ["fgk_segment="],
+            [segmentId]
+        ));
+        return lithologies;
     }
 }

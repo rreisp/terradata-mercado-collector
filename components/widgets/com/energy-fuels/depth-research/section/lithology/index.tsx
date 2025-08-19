@@ -41,9 +41,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
     };
 
     const valorInicialTipo = opcoes[language].indexOf(opcoes[language][0]) + 1;
-
     const pathBase = `${parent}.lithologies`;
-
     const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
 
     // Garante que o array `${parent}.lithologies[index]` sempre exista
@@ -53,12 +51,29 @@ const EF_Lithology = ({ index, parent, start, end }) => {
             const updatedLithologies = [...currentLithologies];
             updatedLithologies[index] = [{ from: start, to: end, type: valorInicialTipo }];
             setFieldValue(pathBase, updatedLithologies);
-            setFieldValue(`${pathBase}[${index}][0].from`, start);
-            setFieldValue(`${pathBase}[${index}][0].to`, end);
-            setFieldValue(`${pathBase}[${index}][0].type`, valorInicialTipo);
         }
-    }, [index, parent, setFieldValue, values]);
+    }, []);
 
+    // Função para redistribuir todos os itens igualmente no intervalo
+    const redistribute = (totalElements: number, currentArray = []) => {
+        // pega o último "to" como limite superior se existir
+        const maxEnd =
+            currentArray.length > 0 && !isNaN(currentArray[currentArray.length - 1].to)
+                ? currentArray[currentArray.length - 1].to
+                : end;
+
+        const interval = (maxEnd - start) / totalElements;
+
+        return Array.from({ length: totalElements }, (_, i) => {
+            const fromValue = start + i * interval;
+            const toValue = i === totalElements - 1 ? maxEnd : start + (i + 1) * interval;
+            return {
+                from: Math.round(fromValue),
+                to: Math.round(toValue),
+                type: valorInicialTipo
+            };
+        });
+    };
 
     return (
         <View style={styles.container}>
@@ -75,26 +90,9 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                 <TouchableOpacity
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
                                     onPress={() => {
-                                        const lastItem = lithologiesArray[lithologiesArray.length - 1];
-                                        const fromValue = lastItem?.to || start;
-                                        const toValue = end;
-
-                                        const tipoValue = valorInicialTipo; // numérico
-
-                                        // Adiciona ao array
-                                        push({
-                                            from: fromValue,
-                                            to: toValue,
-                                            type: tipoValue
-                                        });
-
-                                        // Índice do novo item
-                                        const newIndex = lithologiesArray.length;
-
-                                        // Força atualização dos campos no Formik
-                                        setFieldValue(`${pathBase}[${index}][${newIndex}].from`, fromValue);
-                                        setFieldValue(`${pathBase}[${index}][${newIndex}].to`, toValue);
-                                        setFieldValue(`${pathBase}[${index}][${newIndex}].type`, tipoValue);
+                                        const totalElements = lithologiesArray.length + 1;
+                                        const newLithologies = redistribute(totalElements, lithologiesArray);
+                                        setFieldValue(`${pathBase}[${index}]`, newLithologies);
                                     }}
                                 >
                                     <Icon name="plus" size={16} color="#fff" />
@@ -107,13 +105,13 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                 {language === 'pt-BR' ? `Nenhum item adicionado` : `No item found`}.
                             </Text>
                         ) : (
-                            lithologiesArray.map((_, subIndex: number) => (
+                            lithologiesArray.map((item, subIndex: number) => (
                                 <View key={subIndex} style={[GlobalStyles.row, styles.row]}>
                                     <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `De` : `From`}
-                                            value={lithologiesArray[subIndex]?.from || (lithologiesArray[subIndex - 1]?.to ? lithologiesArray[subIndex - 1]?.to : start)}
-                                            onChange={(text: String) =>
+                                            value={item.from}
+                                            onChange={(text: string) =>
                                                 setFieldValue(`${pathBase}[${index}][${subIndex}].from`, Number(text))
                                             }
                                             step={1}
@@ -124,14 +122,9 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                     <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `Até` : `To`}
-                                            value={lithologiesArray[subIndex]?.to || end}
-                                            onChange={
-                                                (text: string) => {
-                                                    setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text));
-                                                    if (values?.[parent]?.lithologies?.[index][subIndex + 1] && !isNaN(values?.[parent]?.lithologies?.[index][subIndex + 1].from)) {
-                                                        setFieldValue(`${pathBase}[${index}][${subIndex + 1}].from`, Number(text));
-                                                    }
-                                                }
+                                            value={item.to}
+                                            onChange={(text: string) =>
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text))
                                             }
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
@@ -141,9 +134,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                     <View style={{ flex: 1, marginRight: 3 }}>
                                         <View style={GlobalStyles.pickerContainer}>
                                             <Picker
-                                                selectedValue={
-                                                    lithologiesArray[subIndex]?.tipo || valorInicialTipo
-                                                }
+                                                selectedValue={opcoes[language][(item.type ?? valorInicialTipo) - 1]}
                                                 onValueChange={(itemValue) =>
                                                     setFieldValue(
                                                         `${pathBase}[${index}][${subIndex}].type`,
@@ -162,7 +153,15 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                     <View>
                                         <TouchableOpacity
                                             style={[GlobalStyles.warnButton, GlobalStyles.iconButton, { marginTop: 2 }]}
-                                            onPress={() => remove(subIndex)}
+                                            onPress={() => {
+                                                const totalElements = lithologiesArray.length - 1;
+                                                if (totalElements > 0) {
+                                                    const newLithologies = redistribute(totalElements, lithologiesArray);
+                                                    setFieldValue(`${pathBase}[${index}]`, newLithologies);
+                                                } else {
+                                                    setFieldValue(`${pathBase}[${index}]`, []);
+                                                }
+                                            }}
                                         >
                                             <Icon name="trash" size={16} />
                                         </TouchableOpacity>
