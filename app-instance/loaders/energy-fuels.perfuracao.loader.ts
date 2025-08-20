@@ -39,7 +39,8 @@ export class EnergyFuelsDrillingLoader implements Loader {
         // let photos: number[] = [];
         let lithologies: LithologyRecord[][] = [];
 
-        await Promise.all(segments.map(async (segment) => {
+        // await Promise.all(segments.map(async (segment) => {
+        for (const segment of segments) {
             segmentIds.push(segment.id);
             depth.push({ from: segment.depth_from, to: segment.depth_to });
 
@@ -62,7 +63,7 @@ export class EnergyFuelsDrillingLoader implements Loader {
             wash.push(segment.fgk_wash);
 
             let segmentLithologies = await this.loadLithologies(segment.id!);
-            console.error(segmentLithologies);
+            // console.error(segmentLithologies);
             const adaptLithologies = (arr: any[]) =>
                 segmentLithologies.map(item => ({
                     from: item.depth_from,
@@ -72,7 +73,7 @@ export class EnergyFuelsDrillingLoader implements Loader {
                 }));
             lithologies.push(adaptLithologies(segmentLithologies));
             // lithologies.push(...lithologiesArray);
-        }));
+        }
 
 
         return {

@@ -8,19 +8,21 @@ const EF_Volume = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const valorInicial = 100;
 
+    const currentValue = values?.[parent]?.volume?.[index];
+
     useEffect(() => {
-        if (!values?.[parent]?.volume || !values?.[parent]?.volume[index]) {
+        if (currentValue === undefined) {
             setFieldValue(`${parent}.volume[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.volume, setFieldValue, valorInicial]);
+    }, [currentValue, index, parent, setFieldValue]);
 
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>Volume (m³):</Text>
             <View>
-                <NumericInput 
-                value={values?.[parent]?.volume?.[index] || valorInicial} 
-                onChange={(text) => setFieldValue(`${parent}.volume[${index}]`, text)} />         
+                <NumericInput
+                    value={currentValue ?? 0} // garante valor definido
+                    onChange={(text) => setFieldValue(`${parent}.volume[${index}]`, text)} />
             </View>
         </View>
     );

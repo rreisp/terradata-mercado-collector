@@ -65,8 +65,8 @@ const EF_Lithology = ({ index, parent, start, end }) => {
         const interval = (maxEnd - start) / totalElements;
 
         return Array.from({ length: totalElements }, (_, i) => {
-            const fromValue = start + i * interval;
-            const toValue = i === totalElements - 1 ? maxEnd : start + (i + 1) * interval;
+            const fromValue = Number(start) + (i * interval);
+            const toValue = i === totalElements - 1 ? maxEnd : Number(start) + (i + 1) * interval;
             return {
                 from: Math.round(fromValue),
                 to: Math.round(toValue),
@@ -111,9 +111,9 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `De` : `From`}
                                             value={item.from}
-                                            onChange={(text: string) =>
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].from`, Number(text))
-                                            }
+                                            onChange={(text: string) => {
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].from`, Number(text));
+                                            }}
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
                                         />
@@ -123,9 +123,12 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                         <NumericInput
                                             placeholder={language === 'pt-BR' ? `Até` : `To`}
                                             value={item.to}
-                                            onChange={(text: string) =>
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text))
-                                            }
+                                            onChange={(text: string) => {
+                                                setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text));
+                                                if (values?.[parent]?.lithologies?.[index][subIndex]) {
+                                                    setFieldValue(`${pathBase}[${index}][${subIndex+1}].from`, Number(text));
+                                                }
+                                            }}
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
                                         />
