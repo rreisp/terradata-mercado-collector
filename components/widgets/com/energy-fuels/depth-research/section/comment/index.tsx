@@ -13,7 +13,7 @@ const EF_Notas = ({ index, parent }) => {
         if (!values?.[parent]?.comment?.[index]) {
             setFieldValue(`${parent}.comments[${index}]`, valorInicial);
         }
-    }, [index, values?.[parent]?.comments?.[index], setFieldValue, valorInicial]);    
+    }, []);    
 
     return (
         <View style={styles.container}>
@@ -23,8 +23,8 @@ const EF_Notas = ({ index, parent }) => {
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
-                value={values?.[parent]?.comment?.[index] || valorInicial}
-                onChangeText={(text) => setFieldValue(`${parent}.comment[${index}]`, text)}
+                value={values?.[parent]?.comments?.[index] || valorInicial}
+                onChangeText={(text) => setFieldValue(`${parent}.comments[${index}]`, text)}
             />
         </View>
     );
