@@ -1,5 +1,6 @@
 import { CrudService } from "@/services/crud.service";
 import { DrillingRecord } from "@/types/drilling-record";
+import { ImageRecord } from "@/types/image-record";
 import { LithologyRecord } from "@/types/lithology-record";
 import { Loader } from "@/types/loader";
 import { SegmentRecord } from "@/types/segment-record";
@@ -13,7 +14,6 @@ export class EnergyFuelsDrillingLoader implements Loader {
     async load(schemaId: string, itemId: number): Promise<{ [key: string]: any }> {
         const drilling = await this.loadDrilling(itemId);
         const segments = await this.loadSegments(itemId);
-        // console.error(segments[0]);
 
         let segmentIds: (number | undefined)[] = [];
         let depth: { from: number, to: number }[] = [];
@@ -36,7 +36,7 @@ export class EnergyFuelsDrillingLoader implements Loader {
         let volume: number[] = [];
         let wash: number[] = [];
 
-        // let photos: number[] = [];
+        let photos: ImageRecord[][] = [];
         let lithologies: LithologyRecord[][] = [];
 
         // await Promise.all(segments.map(async (segment) => {
@@ -61,6 +61,9 @@ export class EnergyFuelsDrillingLoader implements Loader {
             sorting.push(segment.fgk_sorting);
             volume.push(segment.volume);
             wash.push(segment.fgk_wash);
+
+            let segmentImages = await this.loadImages(segment.id!);
+            photos.push(segmentImages);
 
             let segmentLithologies = await this.loadLithologies(segment.id!);
             // console.error(segmentLithologies);
@@ -110,7 +113,8 @@ export class EnergyFuelsDrillingLoader implements Loader {
                 sorting,
                 volume,
                 wash,
-                lithologies
+                lithologies,
+                photos
             }
         };
     }
@@ -141,5 +145,14 @@ export class EnergyFuelsDrillingLoader implements Loader {
             [segmentId]
         ));
         return lithologies;
+    }
+
+    private async loadImages(segmentId: number) {
+        const images = (await CrudService.list<ImageRecord>(
+            "images",
+            ["fgk_segment="],
+            [segmentId]
+        ));
+        return images;
     }
 }

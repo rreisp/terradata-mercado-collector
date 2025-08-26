@@ -38,6 +38,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         // console.log("AQUI 6");
         // imagens de cada segmento
         for (let i = 0; i < segments.length; i++) {
+            console.log();
             const photos = this.extractPhotosInfo(i, info);
             await this.savePhotos(segmentsIds[i], photos);
         }
@@ -151,7 +152,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
                 interruption_reason: info.reason
             }
         } catch (ex) {
-            console.warn(ex);
+            // console.warn(ex);
         }
     }
 
@@ -198,6 +199,6 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
     }
 
     private extractPhotosInfo(index: number, info: any) {
-        return info.ef_depth_test.photos[index];
+        return info.ef_depth_test.photos[index].map(item => item.img);
     }
 }

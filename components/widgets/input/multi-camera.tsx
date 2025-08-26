@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert, TouchableOpacity, ScrollView, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useField, useFormikContext } from 'formik';
 import { MaterialIcons } from '@expo/vector-icons'; // Para o ícone de remoção
+import { ImageRecord } from '@/types/image-record';
 
 type MultiCameraInputProps = {
     name: string;
@@ -11,7 +12,7 @@ type MultiCameraInputProps = {
 
 export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos }) => {
     const { setFieldValue } = useFormikContext();
-    const [field, meta] = useField<string[]>(name); // O campo agora é um array de strings (base64)
+    const [field, meta] = useField<ImageRecord[]>(name); // O campo agora é um array de strings (base64)
 
     // Certifica-se de que o valor inicial do campo seja um array
     React.useEffect(() => {
@@ -20,8 +21,8 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
         }
     }, [field.value, name, setFieldValue]);
 
+
     const handleLaunchCamera = async () => {
-        // Verifica se o limite máximo de fotos foi atingido, se especificado
         if (maxPhotos && field?.value?.length >= maxPhotos) {
             Alert.alert('Limite de Fotos', `Você atingiu o limite de ${maxPhotos} fotos.`);
             return;
@@ -35,9 +36,9 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1, // Qualidade um pouco menor para arrays de fotos
+            quality: 0.01,
             base64: true,
-            allowsMultipleSelection: false, // Tiramos uma por uma
+            allowsMultipleSelection: false,
         });
 
         if (result.canceled) return;
@@ -45,7 +46,13 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
         const photo = result.assets?.[0];
         if (photo?.base64) {
             const newPhotoUri = `data:image/jpeg;base64,${photo.base64}`;
-            setFieldValue(name, [...field.value, newPhotoUri]); // Adiciona a nova foto ao array
+            // 🔑 Garantir que seja salvo no formato { id, img }
+            const newRecord: ImageRecord = {
+                // id: Date.now().toString(),
+                img: newPhotoUri,
+            };
+
+            setFieldValue(name, [...field.value, newRecord]);
         }
     };
 
@@ -83,7 +90,7 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.previewContainer}>
                     {field.value.map((photoUri, index) => (
                         <View key={index} style={styles.imageWrapper}>
-                            <Image source={{ uri: photoUri }} style={styles.preview} />
+                            <Image id={`${photoUri.id}`} source={{ uri: photoUri.img }} style={styles.preview} />
                             <TouchableOpacity
                                 style={styles.removeButton}
                                 onPress={() => handleRemovePhoto(index)}
