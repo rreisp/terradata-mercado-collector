@@ -1,5 +1,5 @@
 // default-extractor.ts
-import { Extractor } from "@/types/extractor";
+import { DataExtractor } from "@/types/data-extractor";
 import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
@@ -14,47 +14,42 @@ function formatDate(date: Date) {
     return `${day}-${month}-${year}`;
 }
 
-export class EnergyFuelsDrillingExtractor implements Extractor {
+export class EnergyFuelsDrillingExtractor implements DataExtractor {
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         // console.warn('Extract Info');
         // console.log(info);
 
         // informação básica da perfuração
-        // console.log("AQUI 1");
         const drilling = this.extractDrillingInfo(info);
-        // console.log("AQUI 2");
         // console.log(drilling);
-        await this.saveDrilling(drilling);
-        // console.log("AQUI 3");
+        await this.createDrilling(drilling);
 
         const lastDrillingId = await CrudService.lastInsertId();
-        // console.log("AQUI 4");
+
         // informação dos segmentos    
         const segments = this.extractSegmentsInfo(info);
-        // console.log("AQUI 5");
         // console.log(segments[0]);
-        const segmentsIds = await this.saveSegments(lastDrillingId, segments);
-        // console.log("AQUI 6");
+        const segmentsIds = await this.createSegments(lastDrillingId, segments);
+
         // imagens de cada segmento
         for (let i = 0; i < segments.length; i++) {
-            console.log();
-            const photos = this.extractPhotosInfo(i, info);
-            await this.savePhotos(segmentsIds[i], photos);
+            const photos = this.extractImagesInfo(i, info);
+            await this.createImages(segmentsIds[i], photos);
         }
-        // console.log("AQUI 7");
+
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
             const lithos = this.extractLithologiesInfo(segmentsIds[i], info.ef_depth_test.lithologies[i]);
-            await this.saveLithologies(segmentsIds[i], lithos);
+            await this.createLithologies(segmentsIds[i], lithos);
         }
-        // console.log("AQUI 8");
+
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
     }
 
     // -----------------------------------------------------------
-    private async saveDrilling(data: any) {
+    private async createDrilling(data: any) {
         await CrudService.insert('drillings', {
             title: data.title,
             easting: data.easting,
@@ -69,7 +64,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
     }
 
     // -----------------------------------------------------------
-    private async saveSegments(drilling_id: number, data_array: any[]) {
+    private async createSegments(drilling_id: number, data_array: any[]) {
         // console.warn(data_array[0]);
         let lastInsertIds = [];
         for (const data of data_array) {
@@ -101,12 +96,20 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         return lastInsertIds;
     }
 
-
     private async createImage(data: ImageRecord): Promise<void> {
         await CrudService.insert('images', {
             fgk_segment: data.fgk_segment,
             img: data.img,
         });
+    }
+
+    private async createImages(index: number, photos: string[]) {
+        for (const photo of photos) {
+            await this.createImage({
+                fgk_segment: index,
+                img: photo
+            });
+        }
     }
 
     private async createLithology(data: LithologyRecord): Promise<void> {
@@ -118,16 +121,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         });
     }
 
-    private async savePhotos(index: number, photos: string[]) {
-        for (const photo of photos) {
-            await this.createImage({
-                fgk_segment: index,
-                img: photo
-            });
-        }
-    }
-
-    private async saveLithologies(index: number, lithologies: LithologyRecord[]) {
+    private async createLithologies(index: number, lithologies: LithologyRecord[]) {
         for (const lithology of lithologies) {
             await this.createLithology({
                 fgk_segment: index,
@@ -152,7 +146,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
                 interruption_reason: info.reason
             }
         } catch (ex) {
-            // console.warn(ex);
+            console.warn(ex);
         }
     }
 
@@ -198,7 +192,7 @@ export class EnergyFuelsDrillingExtractor implements Extractor {
         return records;
     }
 
-    private extractPhotosInfo(index: number, info: any) {
-        return info.ef_depth_test.photos[index].map(item => item.img);
+    private extractImagesInfo(index: number, info: any) {
+        return info.ef_depth_test.photos[index];
     }
 }

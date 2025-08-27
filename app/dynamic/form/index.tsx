@@ -23,7 +23,7 @@ import { FieldValidator } from "@/components/validator";
 import { ActivityIndicator } from "@react-native-material/core";
 import { colors } from "@/constants/colors";
 
-const DynamicForm = ({ schemaId, editMode, itemId, extract, load }: DynamicFormProps) => {
+const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: DynamicFormProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -70,7 +70,8 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load }: DynamicFormP
             if (editMode) {
                 const handleLoad = async () => {
                     const v = await load(schemaId, itemId);
-                    setInitialValues(v);             
+                    setInitialValues(v);
+                    console.log(initialValues);
 
                     formSchema?.rows.forEach(row =>
                         row.columns.forEach(({ field }) => {
@@ -127,18 +128,14 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load }: DynamicFormP
                     initialValues={initialValues}
                     validationSchema={Yup.object(validationShape)}
                     onSubmit={async (values, { resetForm }) => {
-                        await extract(values);
-                        // navigation.navigateDeprecated('loader/list/index', { schemaId: schemaId });
-                        navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
-                        // resetForm();
-                        // console.log(values);
-                    }}
-                // onSubmit={(values) => {
-                //     const mensagem = Object.entries(values)
-                //         .map(([chave, valor]) => `${chave}: ${valor}`)
-                //         .join('\n');
-                //     alert(mensagem);
-                // }}            
+                        if (!editMode) {
+                            await extract(values);
+                            navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
+                        } else {
+                            await update(values);
+                            navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
+                        }
+                    }}      
 
                 // onSubmit={(values, { setSubmitting }) => {
                 //     fetch(formSchema.url, {
