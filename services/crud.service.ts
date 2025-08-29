@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 
 const db = SQLite.openDatabaseSync('app.db');
 
-type Params = (string | number | null)[];
+type Params = (string | number | null | undefined)[];
 
 /**
  * Log detalhado de erro no console

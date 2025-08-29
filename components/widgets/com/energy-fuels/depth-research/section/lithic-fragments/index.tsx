@@ -15,8 +15,8 @@ const EF_LithicFragments = ({ index, parent }) => {
     const [isChecked, setIsChecked] = useState(parseFloat(currentValue.replace(',', '.')) > 0);
 
     useEffect(() => {
-        setFieldValue(fieldPath, valorPadrao);
-        setCurrentValue(valorPadrao);
+        setFieldValue(fieldPath, currentValue);
+        setCurrentValue(currentValue);
     }, []);
 
     const handleCheckChange = (checked: boolean) => {

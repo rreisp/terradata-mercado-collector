@@ -38,20 +38,24 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
         }));
         // console.log(segmentsWithId[0]);        
         await this.updateSegments(drilling!.id, segmentsWithId);
-        return;
 
         // imagens de cada segmento
-        for (let i = 0; i < segments.length; i++) {
-            const photos = this.extractImagesInfo(i, info);
-            await this.updateImages(segmentsIds[i], photos);
-        }
+        // for (let i = 0; i < segments.length; i++) {
+        //     const photos = this.extractImagesInfo(i, info);
+        //     await this.updateImages(segmentsIds[i], photos);
+        // }
 
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
-            const lithos = this.extractLithologiesInfo(segmentsIds[i], info.ef_depth_test.lithologies[i]);
-            await this.updateLithologies(segmentsIds[i], lithos);
+            const lithos = this.extractLithologiesInfo(segmentIds[i], info.ef_depth_test.lithologies[i]);
+            const lithosWithId = lithos.map((litho, index) => ({
+                ...litho,
+                id: segmentIds[index],
+            }));
+            await this.updateLithologies(segmentIds[i], lithos);
         }
 
+        return;
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
     }
@@ -127,12 +131,16 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
     }
 
     private async updateLithology(data: LithologyRecord): Promise<void> {
-        await CrudService.insert('lithologies', {
-            fgk_segment: data.fgk_segment,
-            depth_from: data.depth_from,
-            depth_to: data.depth_to,
-            fgk_lithology_type: data.fgk_lithology_type
-        });
+        await CrudService.update('lithologies',
+            {
+                fgk_segment: data.fgk_segment,
+                depth_from: data.depth_from,
+                depth_to: data.depth_to,
+                fgk_lithology_type: data.fgk_lithology_type
+            },
+            "id = ?",
+            [data.id]
+        );
     }
 
     private async updateLithologies(index: number, lithologies: LithologyRecord[]) {
