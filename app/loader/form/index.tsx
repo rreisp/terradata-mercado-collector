@@ -2,12 +2,12 @@ import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
 import { OperationModeProvider } from '@/contexts/OperationModeContext';
 import { View } from 'react-native';
-import { DataExtractor as DataExtractor } from '@/types/data-extractor';
-import { DataLoader } from '@/types/data-loader';
+import { DataLoader } from '@/types/loader';
+import { DataExtractor } from '@/types/extractor';
+import { DataUpdater } from '@/types/updater';
 import { EnergyFuelsDrillingExtractor } from '@/app-instance/extractors/energy-fuels.perfuracao.extractor';
-import { EnergyFuelsDrillingUpdater } from '@/app-instance/updaters/energy-fuels.perfuracao.updater';
 import { EnergyFuelsDrillingLoader } from "@/app-instance/loaders/energy-fuels.perfuracao.loader";
-import { DataUpdater } from "@/types/data-updater";
+import { EnergyFuelsDrillingUpdater } from "@/app-instance/updaters/energy-fuels.perfuracao.updater";
 
 const FormLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;
@@ -19,9 +19,9 @@ const FormLoader = () => {
     const itemIdParam = useLocalSearchParams().itemId;
     const itemId = Array.isArray(itemIdParam) ? itemIdParam[0] : itemIdParam;
 
-    const dataLoader: DataLoader = new EnergyFuelsDrillingLoader();
-    const dataExtractor: DataExtractor = new EnergyFuelsDrillingExtractor();
-    const dataUpdater: DataUpdater = new EnergyFuelsDrillingUpdater();
+    const loader: DataLoader = new EnergyFuelsDrillingLoader();
+    const extractor: DataExtractor = new EnergyFuelsDrillingExtractor();
+    const updater: DataUpdater = new EnergyFuelsDrillingUpdater();
 
     return (
         <OperationModeProvider>
@@ -30,9 +30,9 @@ const FormLoader = () => {
                     schemaId={schemaId}
                     editMode={editMode}
                     itemId={itemId}
-                    load={dataLoader.load.bind(dataLoader)}
-                    extract={dataExtractor.extract.bind(dataExtractor)}
-                    update={dataUpdater.update.bind(dataUpdater)}
+                    load={loader.load.bind(loader)}
+                    extract={extractor.extract.bind(extractor)}
+                    update={updater.update.bind(updater)}
                 />
             </View>
         </OperationModeProvider>

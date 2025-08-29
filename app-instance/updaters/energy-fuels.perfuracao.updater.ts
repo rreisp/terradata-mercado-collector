@@ -1,5 +1,5 @@
 // default-extractor.ts
-import { DataUpdater } from "@/types/data-updater";
+import { DataUpdater } from "@/types/updater";
 import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
@@ -25,14 +25,20 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
         // console.log(drilling);
         await this.updateDrilling(drilling);
 
-        const lastDrillingId = await CrudService.lastInsertId();
-        console.log(drilling!.id);
-        return;
+        // const lastDrillingId = await CrudService.lastInsertId();
+        // console.log(drilling!.id);
 
         // informação dos segmentos    
         const segments = this.extractSegmentsInfo(info);
+        const segmentIds = info.ef_depth_test.segmentIds;
         // console.log(segments[0]);
-        const segmentsIds = await this.updateSegments(lastDrillingId, segments);
+        const segmentsWithId = segments.map((segment, index) => ({
+            ...segment,
+            id: segmentIds[index],
+        }));
+        // console.log(segmentsWithId[0]);        
+        await this.updateSegments(drilling!.id, segmentsWithId);
+        return;
 
         // imagens de cada segmento
         for (let i = 0; i < segments.length; i++) {
@@ -71,34 +77,37 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
     // -----------------------------------------------------------
     private async updateSegments(drilling_id: number, data_array: any[]) {
         // console.warn(data_array[0]);
-        let lastInsertIds = [];
+        let ids = [];
         for (const data of data_array) {
-            await CrudService.insert('segments', {
-                fgk_drilling: drilling_id,
-                depth_from: data.depthFrom,
-                depth_to: data.depthTo,
-                recovery: data.recovery,
-                fgk_moisture: data.moisture,
-                volume: data.volume,
-                fgk_hardness: data.hardness,
-                fgk_wash: data.wash,
-                fgk_color: data.color,
-                fgk_induration: data.induration,
-                fgk_grainsize: data.grainsize,
-                fgk_sorting: data.sorting,
-                fgk_roundness: data.roundness,
-                clay: data.clay,
-                micah: data.micah,
-                shells: data.shells,
-                organic_matter: data.organicMatter,
-                lithic_fragments: data.lithicFragments,
-                hms: data.hms,
-                comments: data.comments
-            });
-            const lastId: number = await CrudService.lastInsertId();
-            lastInsertIds.push(lastId);
+            await CrudService.update('segments',
+                {
+                    fgk_drilling: drilling_id,
+                    depth_from: data.depthFrom,
+                    depth_to: data.depthTo,
+                    recovery: data.recovery,
+                    fgk_moisture: data.moisture,
+                    volume: data.volume,
+                    fgk_hardness: data.hardness,
+                    fgk_wash: data.wash,
+                    fgk_color: data.color,
+                    fgk_induration: data.induration,
+                    fgk_grainsize: data.grainsize,
+                    fgk_sorting: data.sorting,
+                    fgk_roundness: data.roundness,
+                    clay: data.clay,
+                    micah: data.micah,
+                    shells: data.shells,
+                    organic_matter: data.organicMatter,
+                    lithic_fragments: data.lithicFragments,
+                    hms: data.hms,
+                    comments: data.comments
+                },
+                "id = ?",
+                [data.id]
+            );
+            ids.push(data.id);
         }
-        return lastInsertIds;
+        return ids;
     }
 
     private async updateImage(data: ImageRecord): Promise<void> {

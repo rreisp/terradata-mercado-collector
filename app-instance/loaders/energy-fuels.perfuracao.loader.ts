@@ -2,7 +2,7 @@ import { CrudService } from "@/services/crud.service";
 import { DrillingRecord } from "@/types/drilling-record";
 import { ImageRecord } from "@/types/image-record";
 import { LithologyRecord } from "@/types/lithology-record";
-import { DataLoader } from "@/types/data-loader";
+import { DataLoader } from "@/types/loader";
 import { SegmentRecord } from "@/types/segment-record";
 
 function parseDate(dateStr: string): Date {

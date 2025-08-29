@@ -70,8 +70,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
             if (editMode) {
                 const handleLoad = async () => {
                     const v = await load(schemaId, itemId);
-                    setInitialValues(v);
-                    console.log(initialValues);
+                    setInitialValues(v);             
 
                     formSchema?.rows.forEach(row =>
                         row.columns.forEach(({ field }) => {

@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, s
 
 import EF_Clay from './clay';
 import EF_Color from './color';
-import EF_Notas from './comment';
+import EF_Notas from './comments';
 import EF_Depth from './depth';
 import EF_Grainsize from './grainsize';
 import EF_Hardness from './hardness';
