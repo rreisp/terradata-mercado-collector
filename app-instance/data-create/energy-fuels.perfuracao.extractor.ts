@@ -2,8 +2,6 @@
 import { DataExtractor } from "@/types/extractor";
 import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
-import { enviarBancoPorEmail } from "@/services/email.service";
-import { exportarBancoComSAF } from "@/services/file-copy.service";
 import { Alert } from 'react-native';
 import { LithologyRecord } from "@/types/lithology-record";
 
@@ -21,34 +19,31 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
         // console.log(info);
 
         // informação básica da perfuração
-        // console.log("AQUI 1");
         const drilling = this.extractDrillingInfo(info);
-        // console.log("AQUI 2");
+
         // console.log(drilling);
         await this.saveDrilling(drilling);
-        // console.log("AQUI 3");
 
         const lastDrillingId = await CrudService.lastInsertId();
-        // console.log("AQUI 4");
+
         // informação dos segmentos    
         const segments = this.extractSegmentsInfo(info);
-        // console.log("AQUI 5");
+
         // console.log(segments[0]);
         const segmentsIds = await this.saveSegments(lastDrillingId, segments);
-        // console.log("AQUI 6");
+
         // imagens de cada segmento
         for (let i = 0; i < segments.length; i++) {
             console.log();
             const photos = this.extractPhotosInfo(i, info);
             await this.savePhotos(segmentsIds[i], photos);
         }
-        // console.log("AQUI 7");
+
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
             const lithos = this.extractLithologiesInfo(segmentsIds[i], info.ef_depth_test.lithologies[i]);
             await this.saveLithologies(segmentsIds[i], lithos);
         }
-        // console.log("AQUI 8");
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
     }

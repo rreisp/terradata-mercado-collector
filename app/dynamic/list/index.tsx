@@ -18,7 +18,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Impor
 import SafeAreaContainer from "@/components/safe-container";
 import { CrudService } from "@/services/crud.service";
 import { DrillingRecord } from "@/types/drilling-record";
-import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 async function listDrillings(): Promise<DrillingRecord[]> {
@@ -37,7 +36,7 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-const DynamicList = ({ schemaId, load }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -76,23 +75,15 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
         }
     }
 
-    async function handleDelete(id: number): Promise<void> {
-        Alert.alert('Remover item', `ID do item: ${id}`);
-        try {
-            await CrudService.delete('drillings', 'id = ?', [id]);
-            setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== id));
-            console.log(`Registro com ID ${id} removido com sucesso.`);
-            Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
-        } catch (error) {
-            console.error('Erro ao removerx o registro:', error);
-            // O tratamento de erro já está dentro do CrudService.delete
-        }
+    async function handleDelete(rootItemId: number): Promise<void> {
+        onDelete(rootItemId);
+        setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== rootItemId));
     }
 
     async function handleEdit(id: number): Promise<void> {
         // Alert.alert('Editar item', `ID do item: ${id}`);
         navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
-    }    
+    }
 
     async function handleExport(table: string, ids: number[]): Promise<void> {
         try {
@@ -103,7 +94,7 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
             console.error('Erro ao remover o registro:', error);
             // O tratamento de erro já está dentro do CrudService.delete
         }
-    }    
+    }
 
     useFocusEffect(
         useCallback(() => {
@@ -190,7 +181,7 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleEdit(item.id)}>
                                             <Icon name="edit" size={16} color="white" />
                                         </Pressable>
-                                    </View>                                    
+                                    </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>

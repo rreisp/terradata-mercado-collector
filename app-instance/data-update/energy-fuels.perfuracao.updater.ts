@@ -1,5 +1,5 @@
 // default-extractor.ts
-import { DataUpdater } from "@/types/updater";
+import { DataUpdater } from "@/types/data-updater";
 import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
