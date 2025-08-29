@@ -39,22 +39,24 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
         // console.log(segmentsWithId[0]);        
         await this.updateSegments(drilling!.id, segmentsWithId);
 
+        
         // imagens de cada segmento
         // for (let i = 0; i < segments.length; i++) {
         //     const photos = this.extractImagesInfo(i, info);
         //     await this.updateImages(segmentsIds[i], photos);
         // }
-
+        
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
             const lithos = this.extractLithologiesInfo(segmentIds[i], info.ef_depth_test.lithologies[i]);
-            const lithosWithId = lithos.map((litho, index) => ({
-                ...litho,
-                id: segmentIds[index],
-            }));
+            // console.log(lithos);
+            // const lithologiesIds = info.ef_depth_test.segmentIds;
+            // // const lithosWithId = lithos.map((litho, index) => ({
+            // //     ...litho,
+            // //     id: segmentIds[index],
+            // // }));
             await this.updateLithologies(segmentIds[i], lithos);
         }
-
         return;
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
         Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
@@ -146,6 +148,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
     private async updateLithologies(index: number, lithologies: LithologyRecord[]) {
         for (const lithology of lithologies) {
             await this.updateLithology({
+                id: lithology.id,
                 fgk_segment: index,
                 depth_from: lithology.depth_from,
                 depth_to: lithology.depth_to,
@@ -175,9 +178,9 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
 
     private extractSegmentsInfo(info: any) {
         const size = info.ef_depth_test ? info.ef_depth_test.depth.length : 0;
-        let intervals = [];
+        let segments = [];
         for (let i = 0; i < size; i++) {
-            intervals.push({
+            segments.push({
                 depthFrom: info.ef_depth_test.depth[i].from,
                 depthTo: info.ef_depth_test.depth[i].to,
                 recovery: info.ef_depth_test.recovery[i],
@@ -199,20 +202,21 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
                 comments: info.ef_depth_test.comments[i],
             });
         }
-        return intervals;
+        return segments;
     }
 
     private extractLithologiesInfo(id: number, lithologies: any) {
-        let records = [];
+        let lithos = [];
         lithologies.forEach((lithology, index) => {
-            records.push({
+            lithos.push({
+                id: lithology.id,
                 fgk_segment: id,
                 depth_from: lithology.from,
                 depth_to: lithology.to,
                 fgk_lithology_type: lithology.type
             });
         });
-        return records;
+        return lithos;
     }
 
     private extractImagesInfo(index: number, info: any) {
