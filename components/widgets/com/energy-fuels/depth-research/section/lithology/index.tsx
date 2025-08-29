@@ -44,7 +44,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
     const pathBase = `${parent}.lithologies`;
     const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
 
-    // Garante que o array `${parent}.lithologies[index]` sempre exista
+    // garante que o array `${parent}.lithologies[index]` sempre exista
     useEffect(() => {
         const currentLithologies = values?.[parent]?.lithologies ?? [];
         if (!Array.isArray(currentLithologies[index])) {
@@ -53,27 +53,6 @@ const EF_Lithology = ({ index, parent, start, end }) => {
             setFieldValue(pathBase, updatedLithologies);
         }
     }, []);
-
-    // Função para redistribuir todos os itens igualmente no intervalo
-    const redistribute = (totalElements: number, currentArray = []) => {
-        // pega o último "to" como limite superior se existir
-        const maxEnd =
-            currentArray.length > 0 && !isNaN(currentArray[currentArray.length - 1].to)
-                ? currentArray[currentArray.length - 1].to
-                : end;
-
-        const interval = (maxEnd - start) / totalElements;
-
-        return Array.from({ length: totalElements }, (_, i) => {
-            const fromValue = Number(start) + (i * interval);
-            const toValue = i === totalElements - 1 ? maxEnd : Number(start) + (i + 1) * interval;
-            return {
-                from: Math.round(fromValue),
-                to: Math.round(toValue),
-                type: valorInicialTipo
-            };
-        });
-    };
 
     return (
         <View style={styles.container}>
@@ -90,9 +69,12 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                 <TouchableOpacity
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
                                     onPress={() => {
-                                        const totalElements = lithologiesArray.length + 1;
-                                        const newLithologies = redistribute(totalElements, lithologiesArray);
-                                        setFieldValue(`${pathBase}[${index}]`, newLithologies);
+                                        // adiciona um novo item vazio sem alterar os anteriores
+                                        push({
+                                            from: null,
+                                            to: null,
+                                            type: valorInicialTipo
+                                        });
                                     }}
                                 >
                                     <Icon name="plus" size={16} color="#fff" />
@@ -125,8 +107,8 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                             value={item.to}
                                             onChange={(text: string) => {
                                                 setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text));
-                                                if (values?.[parent]?.lithologies?.[index][subIndex]) {
-                                                    setFieldValue(`${pathBase}[${index}][${subIndex+1}].from`, Number(text));
+                                                if (values?.[parent]?.lithologies?.[index][subIndex + 1]) {
+                                                    setFieldValue(`${pathBase}[${index}][${subIndex + 1}].from`, Number(text));
                                                 }
                                             }}
                                             step={1}
@@ -156,15 +138,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                     <View>
                                         <TouchableOpacity
                                             style={[GlobalStyles.warnButton, GlobalStyles.iconButton, { marginTop: 2 }]}
-                                            onPress={() => {
-                                                const totalElements = lithologiesArray.length - 1;
-                                                if (totalElements > 0) {
-                                                    const newLithologies = redistribute(totalElements, lithologiesArray);
-                                                    setFieldValue(`${pathBase}[${index}]`, newLithologies);
-                                                } else {
-                                                    setFieldValue(`${pathBase}[${index}]`, []);
-                                                }
-                                            }}
+                                            onPress={() => remove(subIndex)}
                                         >
                                             <Icon name="trash" size={16} />
                                         </TouchableOpacity>
