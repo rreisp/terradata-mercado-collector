@@ -11,8 +11,8 @@ import { useOperationMode } from "@/contexts/OperationModeContext";
 import { FormSchema } from "@/types/form-schema";
 import { DynamicListProps } from "@/types/dynamic-list-props";
 
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
-import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
+import PerfuracaoSchema from '../../../app-instance/schemas/energy-fuels.perfuracao.json';
+import CadastroSchema from '../../../app-instance/schemas/cw.dialeto.cadastro.json';
 
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
 import SafeAreaContainer from "@/components/safe-container";

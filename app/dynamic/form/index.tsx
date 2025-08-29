@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable, Alert } from "react-native";
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -12,8 +12,8 @@ import { useOperationMode } from '../../../contexts/OperationModeContext';
 import { Field } from "@/types/field";
 import { FormSchema } from "@/types/form-schema";
 
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
-import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
+import PerfuracaoSchema from '../../../app-instance/schemas/energy-fuels.perfuracao.json';
+import CadastroSchema from '../../../app-instance/schemas/cw.dialeto.cadastro.json';
 import { FormikHelpers } from "@/types/formik-helpers";
 
 import FieldRenderer from "@/components/renderer";
@@ -33,7 +33,6 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
     const [loading, setLoading] = useState(true);
 
     const [initialValues, setInitialValues] = useState<{ [key: string]: any }>({});
-    // let initialValues: { [key: string]: any } = {};
 
     const validationShape: { [key: string]: Yup.AnySchema } = {};
 

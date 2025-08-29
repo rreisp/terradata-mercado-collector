@@ -5,9 +5,9 @@ import { View } from 'react-native';
 import { DataLoader } from '@/types/loader';
 import { DataExtractor } from '@/types/extractor';
 import { DataUpdater } from '@/types/updater';
-import { EnergyFuelsDrillingExtractor } from '@/app-instance/extractors/energy-fuels.perfuracao.extractor';
-import { EnergyFuelsDrillingLoader } from "@/app-instance/loaders/energy-fuels.perfuracao.loader";
-import { EnergyFuelsDrillingUpdater } from "@/app-instance/updaters/energy-fuels.perfuracao.updater";
+import { EnergyFuelsDrillingExtractor } from '@/app-instance/data-create/energy-fuels.perfuracao.extractor';
+import { EnergyFuelsDrillingLoader } from "@/app-instance/data-load/energy-fuels.perfuracao.loader";
+import { EnergyFuelsDrillingUpdater } from "@/app-instance/data-update/energy-fuels.perfuracao.updater";
 
 const FormLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;

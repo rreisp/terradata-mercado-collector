@@ -51,9 +51,9 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
             const lithos = this.extractLithologiesInfo(segmentIds[i], info.ef_depth_test.lithologies[i]);
             await this.updateLithologies(segmentIds[i], lithos);
         }
-        return;
-        console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
-        Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
+
+        console.log(`Registro com ID ${drilling!.id} atualizado com sucesso.`);
+        Alert.alert('Sucesso', `Registro com ID ${drilling!.id} foi atualizado.`);
     }
 
     // -----------------------------------------------------------
