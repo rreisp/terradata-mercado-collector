@@ -1,5 +1,5 @@
 // default-extractor.ts
-import { Extractor } from "@/types/extractor";
+import { DataExtractor } from "@/types/extractor";
 import { CrudService } from "@/services/crud.service";
 import { ImageRecord } from '@/types/image-record';
 import { enviarBancoPorEmail } from "@/services/email.service";
@@ -14,7 +14,7 @@ function formatDate(date: Date) {
     return `${day}-${month}-${year}`;
 }
 
-export class EnergyFuelsDrillingExtractor implements Extractor {
+export class EnergyFuelsDrillingExtractor implements DataExtractor {
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         // console.warn('Extract Info');

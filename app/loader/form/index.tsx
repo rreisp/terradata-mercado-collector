@@ -2,10 +2,12 @@ import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
 import { OperationModeProvider } from '@/contexts/OperationModeContext';
 import { View } from 'react-native';
-import { Extractor } from '@/types/extractor';
-import { Loader } from '@/types/loader';
+import { DataLoader } from '@/types/loader';
+import { DataExtractor } from '@/types/extractor';
+import { DataUpdater } from '@/types/updater';
 import { EnergyFuelsDrillingExtractor } from '@/app-instance/extractors/energy-fuels.perfuracao.extractor';
 import { EnergyFuelsDrillingLoader } from "@/app-instance/loaders/energy-fuels.perfuracao.loader";
+import { EnergyFuelsDrillingUpdater } from "@/app-instance/updaters/energy-fuels.perfuracao.updater";
 
 const FormLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;
@@ -17,8 +19,9 @@ const FormLoader = () => {
     const itemIdParam = useLocalSearchParams().itemId;
     const itemId = Array.isArray(itemIdParam) ? itemIdParam[0] : itemIdParam;
 
-    const extractor: Extractor = new EnergyFuelsDrillingExtractor();
-    const loader: Loader = new EnergyFuelsDrillingLoader();
+    const loader: DataLoader = new EnergyFuelsDrillingLoader();
+    const extractor: DataExtractor = new EnergyFuelsDrillingExtractor();
+    const updater: DataUpdater = new EnergyFuelsDrillingUpdater();
 
     return (
         <OperationModeProvider>
@@ -27,8 +30,9 @@ const FormLoader = () => {
                     schemaId={schemaId}
                     editMode={editMode}
                     itemId={itemId}
-                    extract={extractor.extract.bind(extractor)}
                     load={loader.load.bind(loader)}
+                    extract={extractor.extract.bind(extractor)}
+                    update={updater.update.bind(updater)}
                 />
             </View>
         </OperationModeProvider>

@@ -7,12 +7,13 @@ import { ImageRecord } from '@/types/image-record';
 
 type MultiCameraInputProps = {
     name: string;
-    maxPhotos?: number; // Opcional: limite máximo de fotos
+    quality?: number;
+    maxPhotos?: number;
 };
 
-export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos }) => {
+export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos, quality }) => {
     const { setFieldValue } = useFormikContext();
-    const [field, meta] = useField<ImageRecord[]>(name); // O campo agora é um array de strings (base64)
+    const [field, meta] = useField<ImageRecord[]>(name);
 
     // Certifica-se de que o valor inicial do campo seja um array
     React.useEffect(() => {
@@ -36,7 +37,7 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.01,
+            quality: quality,
             base64: true,
             allowsMultipleSelection: false,
         });

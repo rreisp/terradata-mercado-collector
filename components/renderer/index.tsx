@@ -31,7 +31,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
             return (
                 <View style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <MultiCameraInput name={field.id} />
+                    <MultiCameraInput name={field.id} quality={0.01}/>
                 </View>
             );
         case "number":

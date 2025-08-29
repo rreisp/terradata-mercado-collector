@@ -10,7 +10,7 @@ const EF_Notas = ({ index, parent }) => {
     const valorInicial = '';
 
     useEffect(() => {
-        if (!values?.[parent]?.comment?.[index]) {
+        if (!values?.[parent]?.comments?.[index]) {
             setFieldValue(`${parent}.comments[${index}]`, valorInicial);
         }
     }, []);    

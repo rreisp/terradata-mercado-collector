@@ -2,7 +2,7 @@ import { CrudService } from "@/services/crud.service";
 import { DrillingRecord } from "@/types/drilling-record";
 import { ImageRecord } from "@/types/image-record";
 import { LithologyRecord } from "@/types/lithology-record";
-import { Loader } from "@/types/loader";
+import { DataLoader } from "@/types/loader";
 import { SegmentRecord } from "@/types/segment-record";
 
 function parseDate(dateStr: string): Date {
@@ -10,7 +10,7 @@ function parseDate(dateStr: string): Date {
     return new Date(Number(year), Number(month) - 1, Number(day));
 }
 
-export class EnergyFuelsDrillingLoader implements Loader {
+export class EnergyFuelsDrillingLoader implements DataLoader {
     async load(schemaId: string, itemId: number): Promise<{ [key: string]: any }> {
         const drilling = await this.loadDrilling(itemId);
         const segments = await this.loadSegments(itemId);
@@ -80,6 +80,7 @@ export class EnergyFuelsDrillingLoader implements Loader {
 
 
         return {
+            "id": drilling.id,
             "title": drilling.title,
             "ef_coordinates": {
                 "easting": drilling.easting,

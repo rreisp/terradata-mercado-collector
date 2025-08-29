@@ -1,3 +1,3 @@
-export interface Loader {
-    load(itemId: number): { [key: string]: any };
+export interface DataLoader {
+    load(schemaId: string, itemId: number): { [key: string]: any };
 }

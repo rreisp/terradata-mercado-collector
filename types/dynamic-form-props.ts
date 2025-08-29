@@ -6,4 +6,5 @@ export type DynamicFormProps = {
     itemId: number;
     extract: (values: any[]) => Promise<void>;
     load: (schemaId: string, itemId: number) => Promise<{ [key: string]: any }>;
+    update: (values: any[]) => Promise<void>;
 };
