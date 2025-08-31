@@ -112,36 +112,42 @@ export class CrudService {
         }
     }
 
-
     static async list<T>(
         tableName: string,
         where: string[] = [],
-        whereParams: any[] = []
+        whereParams: any[] = [],
+        orderBy?: string,
+        limit?: number,
+        offset?: number
     ): Promise<T[]> {
         let sql = `SELECT * FROM ${tableName}`;
 
         if (where.length > 0) {
             sql += " WHERE ";
-
             const conditions = where.map((condition) => {
-                // remove espaços extras
                 const trimmed = condition.trim();
-
-                // se já contém operador válido, usa direto
                 if (/[=<>]|LIKE|IN/i.test(trimmed)) {
-                    // garante que o ? não está solto
                     return trimmed.endsWith("?") ? trimmed : `${trimmed} ?`;
                 }
-
-                // senão, assume "="
                 return `${trimmed} = ?`;
             });
-
             sql += conditions.join(" AND ");
         }
 
-        // console.log("SQL:", sql, "PARAMS:", whereParams);
+        if (orderBy) {
+            sql += ` ORDER BY ${orderBy}`;
+        }
 
+        if (limit) {
+            sql += ` LIMIT ?`;
+            whereParams.push(limit);
+        }
+
+        if (offset) {
+            sql += ` OFFSET ?`;
+            whereParams.push(offset);
+        }
+        
         try {
             return await this.executeSql<T>(sql, whereParams);
         } catch (error) {

@@ -143,7 +143,8 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
         const lithologies = (await CrudService.list<LithologyRecord>(
             "lithologies",
             ["fgk_segment="],
-            [segmentId]
+            [segmentId],
+            'depth_to ASC'
         ));
         return lithologies;
     }

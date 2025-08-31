@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFormikContext, FieldArray } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import NumericInput from '../../../../../input/numeric';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { CrudService } from '@/services/crud.service';
 
 const EF_Lithology = ({ index, parent, start, end }) => {
     const { language } = useLanguage();
@@ -53,6 +54,49 @@ const EF_Lithology = ({ index, parent, start, end }) => {
             setFieldValue(pathBase, updatedLithologies);
         }
     }, []);
+
+    const handleDelete = async (id: number) => {
+        try {
+            await CrudService.delete(
+                "lithologies",
+                "id = ?",
+                [id]
+            );
+            console.log(`Registro com ID ${id} deletado com sucesso!`);
+        } catch (error) {
+            console.error(`Erro ao deletar o registro com ID ${id}:`, error);
+            // O CrudService.delete já trata o erro e mostra um alerta,
+            // mas é uma boa prática ter um catch aqui para logs ou feedback adicional.
+        }
+    };
+
+    // função auxiliar para confirmar remoção
+    const confirmarRemocao = (remove: (index: number) => void, subIndex: number) => {
+        // console.log(subIndex);
+
+        Alert.alert(
+            language === 'pt-BR' ? 'Remover litologia' : 'Remove lithology',
+            language === 'pt-BR'
+                ? 'Você deseja realmente remover este item?'
+                : 'Do you really want to remove this item?',
+            [
+                {
+                    text: language === 'pt-BR' ? 'Cancelar' : 'Cancel',
+                    style: 'cancel'
+                },
+                {
+                    text: language === 'pt-BR' ? 'Remover' : 'Remove',
+                    style: 'destructive',
+                    onPress: () => {
+                        if (lithologiesArray[subIndex].id) {
+                            handleDelete(lithologiesArray[subIndex].id);
+                        }
+                        remove(subIndex);
+                    }
+                }
+            ]
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -138,7 +182,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                     <View>
                                         <TouchableOpacity
                                             style={[GlobalStyles.warnButton, GlobalStyles.iconButton, { marginTop: 2 }]}
-                                            onPress={() => remove(subIndex)}
+                                            onPress={() => confirmarRemocao(remove, subIndex)}
                                         >
                                             <Icon name="trash" size={16} />
                                         </TouchableOpacity>
