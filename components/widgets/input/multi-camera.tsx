@@ -9,9 +9,10 @@ type MultiCameraInputProps = {
     name: string;
     quality?: number;
     maxPhotos?: number;
+    handleDelete: (id: number) => void;
 };
 
-export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos, quality }) => {
+export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos, quality, handleDelete }) => {
     const { setFieldValue } = useFormikContext();
     const [field, meta] = useField<ImageRecord[]>(name);
 
@@ -71,6 +72,8 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
                     onPress: () => {
                         const updatedPhotos = field.value.filter((_, index) => index !== indexToRemove);
                         setFieldValue(name, updatedPhotos);
+                        if (field.value[indexToRemove].id)
+                            handleDelete(field.value[indexToRemove].id);
                     },
                     style: 'destructive',
                 },

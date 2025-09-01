@@ -5,30 +5,31 @@ import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, s
 import GlobalStyles from '../../../../../constants/styles';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useFormikContext } from 'formik';
+import { CrudService } from '@/services/crud.service';
 
-const EF_DepthResearch = ({ parent }: { parent: string }) => {
+const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: boolean }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
     // const [elements, setElements] = useState<{ id: number }[]>(values?.[parent]?.depth ?? []);
-    const [elements, setElements] = useState<{ id: number }[]>([]);
+    const [segmentIds, setSegmentIds] = useState<{ id: number }[]>([]);
 
     useEffect(() => {
-        setElements(values?.[parent]?.segmentIds.map(id => ({ id })));
+        setSegmentIds(values?.[parent]?.segmentIds.map(id => ({ id })));
     }, []);
 
     const handleAddElement = () => {
         const id = Date.now();
-        if(!elements){
-            setElements([]);
+        if (!segmentIds) {
+            setSegmentIds([]);
         }
-        setElements(prev => [...prev, { id }]);
+        setSegmentIds(prev => [...prev, { id }]);
     };
 
     const handleRemoveElement = (id: number) => {
         const confirmAndRemove = () => {
-            const index = elements.findIndex(el => el.id === id);
+            const index = segmentIds.findIndex(el => el.id === id);
             if (index !== -1) {
-                setElements(prev => prev.filter((_, i) => i !== index));
+                setSegmentIds(prev => prev.filter((_, i) => i !== index));
             }
         };
         const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o segmento?` : `Are you sure you want to remove the segment?`);
@@ -50,15 +51,15 @@ const EF_DepthResearch = ({ parent }: { parent: string }) => {
 
     return (
         <View>
-            {!elements || elements.length === 0 ? (
+            {!segmentIds || segmentIds.length === 0 ? (
                 <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum segmento adicionado.` : `No segment added.`}</Text>
             ) : (
-                elements.map((el, index) => (
-                    <View key={el.id}>
-                        <Section index={index} el={el} size={elements.length} parent={parent} />
+                segmentIds.map((segment, index) => (
+                    <View key={segment.id}>
+                        <Section editMode={editMode} index={index} segmentId={segment.id} size={segmentIds.length} parent={parent} />
                         <View>
-                            {index == elements.length - 1 &&
-                                <TouchableOpacity style={[(index == elements.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(el.id)} disabled={index !== elements.length - 1}>
+                            {index == segmentIds.length - 1 &&
+                                <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}>
                                     <View style={GlobalStyles.row}>
                                         <Icon name="trash" size={16} color="#fff" style={styles.icon} />
                                         <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER SEGMENTO ${index + 1}` : `REMOVE SEGMENT ${index + 1}`}</Text>

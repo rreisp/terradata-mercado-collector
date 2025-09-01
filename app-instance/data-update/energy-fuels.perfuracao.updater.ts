@@ -41,10 +41,10 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
 
 
         // imagens de cada segmento
-        // for (let i = 0; i < segments.length; i++) {
-        //     const photos = this.extractImagesInfo(i, info);
-        //     await this.updateImages(segmentsIds[i], photos);
-        // }
+        for (let i = 0; i < segments.length; i++) {
+            const photos = this.extractImagesInfo(i, info);
+            await this.updateImages(segmentIds[i], photos);
+        }
 
         // litologias de cada segmento        
         for (let i = 0; i < segments.length; i++) {
@@ -111,17 +111,32 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
     }
 
     private async updateImage(data: ImageRecord): Promise<void> {
-        await CrudService.insert('images', {
-            fgk_segment: data.fgk_segment,
-            img: data.img,
-        });
+        if (data.id) {
+            await CrudService.update(
+                'images',
+                {
+                    fgk_segment: data.fgk_segment,
+                    img: data.img,
+                },
+                "id = ?",
+                [data.id]
+            );
+        } else {
+            await CrudService.insert('images',
+                {
+                    fgk_segment: data.fgk_segment,
+                    img: data.img,
+                }
+            );
+        }
     }
 
-    private async updateImages(index: number, photos: string[]) {
+    private async updateImages(index: number, photos: ImageRecord[]) {
         for (const photo of photos) {
             await this.updateImage({
+                id: photo.id,
                 fgk_segment: index,
-                img: photo
+                img: photo.img
             });
         }
     }

@@ -113,7 +113,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
 
     const renderField = (field: Field, formik: FormikHelpers) => {
         return (
-            <FieldRenderer key={field.id} field={field} formik={formik} />
+            <FieldRenderer editMode={editMode} key={field.id} field={field} formik={formik} />
         );
     };
 

@@ -26,14 +26,30 @@ import EF_Wash from './wash';
 import EF_Lithology from './lithology';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { MultiCameraInput } from '@/components/widgets/input/multi-camera';
+import { CrudService } from '@/services/crud.service';
 
-const Section = ({ el, index, size, parent }) => {
+const Section = ({ segmentId, editMode, index, size, parent }) => {
     const { language } = useLanguage();
     const [collapsed, setCollapsed] = useState(true);
     const { values, setFieldValue } = useFormikContext();
 
     const DEFAULT_START = 0;
     const DEFAULT_END = 100;
+
+
+    const handleRemovePhoto = async (id: number) => {
+        if(editMode){
+            try {
+                await CrudService.delete(
+                    "images",
+                    "id = ?",
+                    [id]
+                );
+            } catch(e){
+                console.log(e);
+            }
+        }
+    };
 
     return (
         <View style={styles.bordered}>
@@ -53,10 +69,10 @@ const Section = ({ el, index, size, parent }) => {
                 </View>
             </TouchableOpacity>
             <Collapsible collapsed={collapsed}>
-                <View key={el.id} style={styles.sectionContent}>
+                <View key={segmentId} style={styles.sectionContent}>
                     <View style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fotos do segmento ${index + 1}` : `Photos from segment ${index + 1}`}:</Text>
-                        <MultiCameraInput name={`${parent}.photos[${index}]`} />
+                        <MultiCameraInput handleDelete={handleRemovePhoto} name={`${parent}.photos[${index}]`} />
                     </View>
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>

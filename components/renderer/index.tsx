@@ -12,7 +12,7 @@ import { FieldRendererProps } from "@/types/field-renderer-props";
 import DateRangeInput from "../widgets/input/date-range";
 import GeoPosition3D from "../widgets/input/geo-position-3d";
 
-const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
+const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();
     const { value, onChange } = formik;
 
@@ -31,7 +31,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
             return (
                 <View style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <MultiCameraInput name={field.id} quality={0.01}/>
+                    <MultiCameraInput editMode={editMode} name={field.id} quality={0.01}/>
                 </View>
             );
         case "number":
@@ -96,7 +96,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, formik }) => {
                 <View style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <View>
-                        <EF_DepthResearch parent={field.id} />
+                        <EF_DepthResearch editMode={editMode ?? false} parent={field.id} />
                     </View>
                 </View>
             );
