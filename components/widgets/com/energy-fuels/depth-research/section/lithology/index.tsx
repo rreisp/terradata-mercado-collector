@@ -65,8 +65,6 @@ const EF_Lithology = ({ index, parent, start, end }) => {
             console.log(`Registro com ID ${id} deletado com sucesso!`);
         } catch (error) {
             console.error(`Erro ao deletar o registro com ID ${id}:`, error);
-            // O CrudService.delete já trata o erro e mostra um alerta,
-            // mas é uma boa prática ter um catch aqui para logs ou feedback adicional.
         }
     };
 
@@ -117,7 +115,8 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                         push({
                                             from: null,
                                             to: null,
-                                            type: valorInicialTipo
+                                            type: valorInicialTipo,
+                                            fgk_segment: values?.[parent].segmentIds[index]
                                         });
                                     }}
                                 >
