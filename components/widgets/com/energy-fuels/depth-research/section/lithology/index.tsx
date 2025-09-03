@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFormikContext, FieldArray } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
@@ -68,6 +68,16 @@ const EF_Lithology = ({ index, parent, start, end }) => {
         }
     };
 
+    const handleChangeFrom = (subIndex: number, text: string) => {
+        let v = Number(text) <= Number(start) ? start : text;
+        setFieldValue(`${pathBase}[${index}][${subIndex}].from`, Number(v));
+    };
+
+    const handleChangeTo = (subIndex: number, text: string) => {
+        let v = Number(text) >= Number(end) ? end : text;
+        setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(v));
+    }
+
     // função auxiliar para confirmar remoção
     const confirmarRemocao = (remove: (index: number) => void, subIndex: number) => {
         // console.log(subIndex);
@@ -136,7 +146,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                             placeholder={language === 'pt-BR' ? `De` : `From`}
                                             value={item.from}
                                             onChange={(text: string) => {
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].from`, Number(text));
+                                                handleChangeFrom(subIndex, text);
                                             }}
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
@@ -148,10 +158,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                             placeholder={language === 'pt-BR' ? `Até` : `To`}
                                             value={item.to}
                                             onChange={(text: string) => {
-                                                setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(text));
-                                                if (values?.[parent]?.lithologies?.[index][subIndex + 1]) {
-                                                    setFieldValue(`${pathBase}[${index}][${subIndex + 1}].from`, Number(text));
-                                                }
+                                                handleChangeTo(subIndex, text);
                                             }}
                                             step={1}
                                             style={[GlobalStyles.input, styles.input]}
