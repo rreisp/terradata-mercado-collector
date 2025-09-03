@@ -10,6 +10,7 @@ const EF_Grainsize = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
         "pt-BR": [
+            "Selecione",
             "Muito fina",
             "Fina",
             "Média",
@@ -18,6 +19,7 @@ const EF_Grainsize = ({ index, parent }) => {
             "Cascalho"
         ],
         "en-US": [
+            "Select",
             "Very fine",
             "Fine",
             "Medium",
@@ -28,7 +30,7 @@ const EF_Grainsize = ({ index, parent }) => {
     };
 
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.grainsize || !values?.[parent]?.grainsize[index]) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { useFormikContext } from 'formik';
@@ -18,7 +18,7 @@ import EF_Micah from './micah';
 import EF_Moisture from './moisture';
 import EF_OrganicMatter from './organic-matter';
 import EF_Roundness from './roundness';
-import EF_RunCoreRecovery from './run-core-recovery';
+import EF_Recovery from './recovery';
 import EF_Shells from './shells';
 import EF_Sorting from './sorting';
 import EF_Volume from './volume';
@@ -36,16 +36,15 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
     const DEFAULT_START = 0;
     const DEFAULT_END = 100;
 
-
     const handleRemovePhoto = async (id: number) => {
-        if(editMode){
+        if (editMode) {
             try {
                 await CrudService.delete(
                     "images",
                     "id = ?",
                     [id]
                 );
-            } catch(e){
+            } catch (e) {
                 console.log(e);
             }
         }
@@ -86,7 +85,7 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
 
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
-                            <EF_RunCoreRecovery
+                            <EF_Recovery
                                 index={index}
                                 parent={parent}
                             />

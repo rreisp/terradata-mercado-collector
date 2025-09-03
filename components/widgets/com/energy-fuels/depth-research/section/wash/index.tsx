@@ -10,21 +10,23 @@ const EF_Wash = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
         "pt-BR": [
+            "Selecione",
             "Fácil",
             "Moderada",
             "Difícil",
             "Muito difícil"
         ],
         "en-US": [
+            "Select",
             "Easy",
             "Moderate",
             "Hard",
             "Very hard"
         ]
     };
-    
+
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.wash || !values?.[parent]?.wash[index]) {
@@ -37,7 +39,7 @@ const EF_Wash = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.wash?.[index]-1] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.wash?.[index] - 1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >

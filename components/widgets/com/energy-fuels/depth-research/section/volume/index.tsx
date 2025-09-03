@@ -18,7 +18,7 @@ const EF_Volume = ({ index, parent }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>Volume (m³):</Text>
+            <Text style={GlobalStyles.label}>Volume (cm³):</Text>
             <View>
                 <NumericInput
                     value={currentValue ?? 0} // garante valor definido

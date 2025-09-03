@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
@@ -10,6 +10,7 @@ const EF_Hardness = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
         "pt-BR": [
+            "Selecione",
             "Inconsolidada",
             "Esmagável com o dedo",
             "Nenhuma resistência a penetração",
@@ -17,6 +18,7 @@ const EF_Hardness = ({ index, parent }) => {
             "Total resistência a penetração"
         ],
         "en-US": [
+            "Select",
             "Unconsolidated",
             "Crushable with finger",
             "No resistance to penetration",
@@ -26,7 +28,7 @@ const EF_Hardness = ({ index, parent }) => {
     };
 
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.hardness || !values?.[parent]?.hardness[index]) {

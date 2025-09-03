@@ -10,11 +10,13 @@ const EF_Roundness = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
         "pt-BR": [
+            "Selecione",
             "Fraca",
             "Moderada",
             "Boa"
         ],
         "en-US": [
+            "Select",
             "Weak",
             "Moderate",
             "Good"
@@ -22,7 +24,7 @@ const EF_Roundness = ({ index, parent }) => {
     };
 
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
     
     useEffect(() => {
         if (!values?.[parent]?.roundness || !values?.[parent]?.roundness[index]) {

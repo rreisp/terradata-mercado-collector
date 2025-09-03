@@ -10,6 +10,7 @@ const EF_Sorting = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
         "pt-BR": [
+            "Selecione",
             "Muito fraca",
             "Fraca",
             "Moderada",
@@ -17,6 +18,7 @@ const EF_Sorting = ({ index, parent }) => {
             "Muito boa"
         ],
         "en-US": [
+            "Select",
             "Very weak",
             "Weak",
             "Moderate",
@@ -26,7 +28,7 @@ const EF_Sorting = ({ index, parent }) => {
     };
 
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.sorting || !values?.[parent]?.sorting[index]) {

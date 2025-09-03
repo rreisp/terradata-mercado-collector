@@ -111,33 +111,33 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
     }
 
     private async updateImage(data: ImageRecord): Promise<void> {
-        if (data.id) {
-            await CrudService.update(
-                'images',
-                {
-                    fgk_segment: data.fgk_segment,
-                    img: data.img,
-                },
-                "id = ?",
-                [data.id]
-            );
-        } else {
-            await CrudService.insert('images',
-                {
-                    fgk_segment: data.fgk_segment,
-                    img: data.img,
-                }
-            );
-        }
+        await CrudService.update(
+            'images',
+            {
+                fgk_segment: data.fgk_segment,
+                img: data.img,
+            },
+            "id = ?",
+            [data.id]
+        );
     }
 
-    private async updateImages(index: number, photos: ImageRecord[]) {
+    private async updateImages(segmentId: number, photos: ImageRecord[]) {
         for (const photo of photos) {
-            await this.updateImage({
-                id: photo.id,
-                fgk_segment: index,
-                img: photo.img
-            });
+            if (photo.id) {
+                await this.updateImage({
+                    id: photo.id,
+                    fgk_segment: segmentId,
+                    img: photo.img
+                });
+            } else {
+                await CrudService.insert('images',
+                    {
+                        fgk_segment: segmentId,
+                        img: photo.img,
+                    }
+                );
+            }
         }
     }
 

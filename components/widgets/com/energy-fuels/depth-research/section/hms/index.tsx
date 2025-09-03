@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
 import NumericInput from '@/components/widgets/input/numeric';
+
 const EF_HMS = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const valorInicial = 0;
     const [val, setVal] = useState(values?.[parent]?.hms?.[index] || valorInicial);
 
-    const handleChange = (text: string) => {
+    const handleChange = (text: number) => {
         setFieldValue(`${parent}.hms[${index}]`, text);
         setVal(text);
     };
@@ -21,7 +22,10 @@ const EF_HMS = ({ index, parent }) => {
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>%HMS:</Text>
             <View>
-                <NumericInput step={0.01} min={0} max={100}
+                <NumericInput
+                    step={0.01}
+                    min={0}
+                    max={100}
                     value={val}
                     onChange={handleChange} />
             </View>

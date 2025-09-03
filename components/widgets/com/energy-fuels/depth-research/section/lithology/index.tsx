@@ -111,12 +111,11 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                 <TouchableOpacity
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
                                     onPress={() => {
-                                        // adiciona um novo item vazio sem alterar os anteriores
                                         push({
                                             from: null,
                                             to: null,
                                             type: valorInicialTipo,
-                                            fgk_segment: values?.[parent].segmentIds[index]
+                                            fgk_segment: (values?.[parent]?.segmentIds ? values?.[parent]?.segmentIds[index] : undefined)
                                         });
                                     }}
                                 >

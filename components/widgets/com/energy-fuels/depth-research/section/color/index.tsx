@@ -10,6 +10,7 @@ const EF_Color = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
     const opcoes = {
         "pt-BR": [
+            "Selecione",
             "Clara",
             "Escura",
             "Preta",
@@ -34,6 +35,7 @@ const EF_Color = ({ index, parent }) => {
             "Verde"
         ],
         "en-US": [
+            "Select",
             "Light",
             "Dark",
             "Black",
@@ -60,7 +62,7 @@ const EF_Color = ({ index, parent }) => {
     };
 
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]) + 1
+    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.color || !values?.[parent]?.color[index]) {

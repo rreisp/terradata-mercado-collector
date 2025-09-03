@@ -31,21 +31,23 @@ const NumericInput = ({
         ? new RegExp(`^\\d*(,\\d{0,${maxDecimais}})?$`)
         : /^\d*$/;
 
-    const handleChange = (text) => {
-        if (text === '') {
+    const handleChange = (text: string) => {
+        let normalized = text.replace('.', '');
+        if (normalized === '') {
             onChange('');
             return;
         }
 
-        if (!regex.test(text)) return;
-
-        onChange(text); // permite entrada parcial
+        if (!regex.test(normalized)) return;
+        if (Number(normalized) < min) normalized = ""+ min;        
+        if (Number(normalized) > max) normalized = ""+ max;
+        onChange(normalized); // permite entrada parcial
     };
 
     const handleBlur = () => {
         if (!value) return;
 
-        const normalized = (""+ value).replace(',', '.');
+        const normalized = ("" + value).replace('.', '');
         const num = parseFloat(normalized);
 
         if (isNaN(num) || num < min || num > max) {
