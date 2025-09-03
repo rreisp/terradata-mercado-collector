@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 const EF_Recovery = ({ index, parent }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext();
-    const valorInicial = 100;
+    const valorInicial = 0;
 
     const currentValue = values?.[parent]?.recovery?.[index];
 
@@ -35,6 +35,8 @@ const EF_Recovery = ({ index, parent }) => {
                 <NumericInput
                     step={0.01}
                     value={currentValue ?? 0} // garante valor definido
+                    min={0}
+                    max={100}
                     onChange={(value) =>
                         handleChange(value)
                     }

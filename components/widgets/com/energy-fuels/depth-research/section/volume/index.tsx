@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '../../../../../../../constants/styles';
@@ -6,7 +6,7 @@ import NumericInput from '@/components/widgets/input/numeric';
 
 const EF_Volume = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
-    const valorInicial = 100;
+    const valorInicial = 0;
 
     const currentValue = values?.[parent]?.volume?.[index];
 

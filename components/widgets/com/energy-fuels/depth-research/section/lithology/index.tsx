@@ -75,7 +75,10 @@ const EF_Lithology = ({ index, parent, start, end }) => {
 
     const handleChangeTo = (subIndex: number, text: string) => {
         let v = Number(text) >= Number(end) ? end : text;
-        setFieldValue(`${pathBase}[${index}][${subIndex}].to`, Number(v));
+        setFieldValue(`${pathBase}[${index}][${subIndex}].to`, v);
+        if (values?.[parent]?.lithologies?.[index][subIndex + 1]) {
+            setFieldValue(`${pathBase}[${index}][${subIndex + 1}].from`, v);
+        }
     }
 
     // função auxiliar para confirmar remoção
