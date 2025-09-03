@@ -25,20 +25,15 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
         // console.log(drilling);
         await this.updateDrilling(drilling);
 
-        // const lastDrillingId = await CrudService.lastInsertId();
-        // console.log(drilling!.id);
-
         // informação dos segmentos    
         const segments = this.extractSegmentsInfo(info);
-        const segmentIds = info.ef_depth_test.segmentIds;
+        let segmentIds = info.ef_depth_test.segmentIds;
         // console.log(segments[0]);
         const segmentsWithId = segments.map((segment, index) => ({
             ...segment,
             id: segmentIds[index],
-        }));
-        // console.log(segmentsWithId[0]);        
-        await this.updateSegments(drilling!.id, segmentsWithId);
-
+        }));   
+        segmentIds = await this.updateSegments(drilling!.id, segmentsWithId);
 
         // imagens de cada segmento
         for (let i = 0; i < segments.length; i++) {
@@ -76,36 +71,64 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
 
     // -----------------------------------------------------------
     private async updateSegments(drilling_id: number, data_array: any[]) {
-        // console.warn(data_array[0]);
         let ids = [];
-        for (const data of data_array) {
-            await CrudService.update('segments',
-                {
-                    fgk_drilling: drilling_id,
-                    depth_from: data.depthFrom,
-                    depth_to: data.depthTo,
-                    recovery: data.recovery,
-                    fgk_moisture: data.moisture,
-                    volume: data.volume,
-                    fgk_hardness: data.hardness,
-                    fgk_wash: data.wash,
-                    fgk_color: data.color,
-                    fgk_induration: data.induration,
-                    fgk_grainsize: data.grainsize,
-                    fgk_sorting: data.sorting,
-                    fgk_roundness: data.roundness,
-                    clay: data.clay,
-                    micah: data.micah,
-                    shells: data.shells,
-                    organic_matter: data.organicMatter,
-                    lithic_fragments: data.lithicFragments,
-                    hms: data.hms,
-                    comments: data.comments
-                },
-                "id = ?",
-                [data.id]
-            );
-            ids.push(data.id);
+        for (let data of data_array) {
+            if (data.id) {
+                await CrudService.update('segments',
+                    {
+                        fgk_drilling: drilling_id,
+                        depth_from: data.depthFrom,
+                        depth_to: data.depthTo,
+                        recovery: data.recovery,
+                        fgk_moisture: data.moisture,
+                        volume: data.volume,
+                        fgk_hardness: data.hardness,
+                        fgk_wash: data.wash,
+                        fgk_color: data.color,
+                        fgk_induration: data.induration,
+                        fgk_grainsize: data.grainsize,
+                        fgk_sorting: data.sorting,
+                        fgk_roundness: data.roundness,
+                        clay: data.clay,
+                        micah: data.micah,
+                        shells: data.shells,
+                        organic_matter: data.organicMatter,
+                        lithic_fragments: data.lithicFragments,
+                        hms: data.hms,
+                        comments: data.comments
+                    },
+                    "id = ?",
+                    [data.id]
+                );
+                ids.push(data.id);
+            } else {
+                await CrudService.insert('segments',
+                    {
+                        fgk_drilling: drilling_id,
+                        depth_from: data.depthFrom,
+                        depth_to: data.depthTo,
+                        recovery: data.recovery,
+                        fgk_moisture: data.moisture,
+                        volume: data.volume,
+                        fgk_hardness: data.hardness,
+                        fgk_wash: data.wash,
+                        fgk_color: data.color,
+                        fgk_induration: data.induration,
+                        fgk_grainsize: data.grainsize,
+                        fgk_sorting: data.sorting,
+                        fgk_roundness: data.roundness,
+                        clay: data.clay,
+                        micah: data.micah,
+                        shells: data.shells,
+                        organic_matter: data.organicMatter,
+                        lithic_fragments: data.lithicFragments,
+                        hms: data.hms,
+                        comments: data.comments
+                    }
+                );
+                const lastSegmentId = await CrudService.lastInsertId();
+                ids.push(lastSegmentId);
+            }
         }
         return ids;
     }
