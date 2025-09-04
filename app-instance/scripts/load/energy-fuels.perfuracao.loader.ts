@@ -1,7 +1,7 @@
 import { CrudService } from "@/core/services/crud.service";
 import { DrillingRecord } from "@/app-instance/types/drilling-record";
-import { ImageRecord } from "@/core/types/image-record";
-import { LithologyRecord } from "@/core/types/lithology-record";
+import { ImageRecord } from "@/app-instance/types/image-record";
+import { LithologyRecord } from "@/app-instance/types/lithology-record";
 import { DataLoader } from "@/core/types/data-loader";
 import { SegmentRecord } from "@/app-instance/types/segment-record";
 

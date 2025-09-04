@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet, Alert, TouchableOpacity, ScrollView, Im
 import * as ImagePicker from 'expo-image-picker';
 import { useField, useFormikContext } from 'formik';
 import { MaterialIcons } from '@expo/vector-icons'; // Para o ícone de remoção
-import { ImageRecord } from '@/core/types/image-record';
+import { ImageRecord } from '@/app-instance/types/image-record';
 
 type MultiCameraInputProps = {
     name: string;

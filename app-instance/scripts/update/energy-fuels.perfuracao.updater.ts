@@ -1,11 +1,11 @@
 // default-extractor.ts
 import { DataUpdater } from "@/core/types/data-updater";
 import { CrudService } from "@/core/services/crud.service";
-import { ImageRecord } from '@/core/types/image-record';
+import { ImageRecord } from '@/app-instance/types/image-record';
 // import { enviarBancoPorEmail } from "@/app/core/services/email.service";
 // import { exportarBancoComSAF } from "@/app/core/services/file-copy.service";
 import { Alert } from 'react-native';
-import { LithologyRecord } from "@/core/types/lithology-record";
+import { LithologyRecord } from "@/app-instance/types/lithology-record";
 
 function formatDate(date: Date) {
     const day = String(date.getDate()).padStart(2, '0');

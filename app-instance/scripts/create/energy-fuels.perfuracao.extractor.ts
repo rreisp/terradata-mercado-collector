@@ -1,9 +1,9 @@
 // default-extractor.ts
 import { DataExtractor } from "@/core/types/extractor";
 import { CrudService } from "@/core/services/crud.service";
-import { ImageRecord } from '@/core/types/image-record';
+import { ImageRecord } from '@/app-instance/types/image-record';
 import { Alert } from 'react-native';
-import { LithologyRecord } from "@/core/types/lithology-record";
+import { LithologyRecord } from "@/app-instance/types/lithology-record";
 
 function formatDate(date: Date) {
     const day = String(date.getDate()).padStart(2, '0');
