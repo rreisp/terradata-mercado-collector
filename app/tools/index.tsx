@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
-import GlobalStyles from '../../constants/styles';
-import { useLanguage } from '../../contexts/LanguageContext';
+import GlobalStyles from '@/core/constants/styles';
+import { useLanguage } from '@/core/contexts/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se quiser usar a versão 5
-import { colors } from '../../constants/colors';
-import { values } from "@/constants/values";
-import { OperationModeProvider, useOperationMode } from "@/contexts/OperationModeContext";
-import { Tool } from "@/types/tool";
-import SafeAreaContainer from "@/components/safe-container";
+import { colors } from '@/core/constants/colors';
+import { values } from "@/core/constants/values";
+import { OperationModeProvider, useOperationMode } from "@/core/contexts/OperationModeContext";
+import { Tool } from "@/core/types/tool";
+import SafeAreaContainer from "@/core/components/safe-container";
 
 type Form = {
     id: string;
@@ -38,7 +38,7 @@ const Tools = () => {
 
     const goBack = () => {
         // navigation.navigateDeprecated('index');
-        navigation.navigate('index', {}, { pop: true });        
+        navigation.navigate('index', {}, { pop: true });
     };
 
     useEffect(() => {

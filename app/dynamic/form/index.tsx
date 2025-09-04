@@ -4,24 +4,24 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
-import GlobalStyles from '../../../constants/styles';
+import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useLanguage } from "@/contexts/LanguageContext";
-import { values } from "@/constants/values";
-import { useOperationMode } from '../../../contexts/OperationModeContext';
-import { Field } from "@/types/field";
-import { FormSchema } from "@/types/form-schema";
+import { useLanguage } from "@/core/contexts/LanguageContext";
+import { values } from "@/core/constants/values";
+import { useOperationMode } from '@/core/contexts/OperationModeContext';
+import { Field } from "@/core/types/field";
+import { FormSchema } from "@/core/types/form-schema";
 
 import PerfuracaoSchema from '../../../app-instance/schemas/energy-fuels.perfuracao.json';
 import CadastroSchema from '../../../app-instance/schemas/cw.dialeto.cadastro.json';
-import { FormikHelpers } from "@/types/formik-helpers";
+import { FormikHelpers } from "@/core/types/formik-helpers";
 
-import FieldRenderer from "@/components/renderer";
-import SafeAreaContainer from "@/components/safe-container";
-import { DynamicFormProps } from "@/types/dynamic-form-props";
-import { FieldValidator } from "@/components/validator";
+import FieldRenderer from "@/core/renderer";
+import SafeAreaContainer from "@/core/components/safe-container";
+import { DynamicFormProps } from "@/core/types/dynamic-form-props";
+import { FieldValidator } from "@/core/validation";
 import { ActivityIndicator } from "@react-native-material/core";
-import { colors } from "@/constants/colors";
+import { colors } from "@/core/constants/colors";
 
 const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: DynamicFormProps) => {
     const { language } = useLanguage();
@@ -68,8 +68,8 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
 
             if (editMode) {
                 const handleLoad = async () => {
-                    const v = await load(itemId);             
-                    setInitialValues(v);             
+                    const v = await load(itemId);
+                    setInitialValues(v);
 
                     formSchema?.rows.forEach(row =>
                         row.columns.forEach(({ field }) => {
@@ -133,7 +133,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                             await update(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
                         }
-                    }}      
+                    }}
 
                 // onSubmit={(values, { setSubmitting }) => {
                 //     fetch(formSchema.url, {

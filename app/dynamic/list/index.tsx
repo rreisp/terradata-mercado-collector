@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { View, Text, Button, Image, StyleSheet, Pressable, FlatList } from "react-native";
 import Modal from "react-native-modal";
-import GlobalStyles from '../../../constants/styles';
+import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { values } from '../../../constants/values';
+import { values } from '@/core/constants/values';
 
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigation } from "@react-navigation/native";
-import { useOperationMode } from "@/contexts/OperationModeContext";
-import { FormSchema } from "@/types/form-schema";
-import { DynamicListProps } from "@/types/dynamic-list-props";
+import { useLanguage } from "@/core/contexts/LanguageContext";
+import { useOperationMode } from "@/core/contexts/OperationModeContext";
+import { FormSchema } from "@/core/types/form-schema";
+import { DynamicListProps } from "@/core/types/dynamic-list-props";
 
 import PerfuracaoSchema from '../../../app-instance/schemas/energy-fuels.perfuracao.json';
 import CadastroSchema from '../../../app-instance/schemas/cw.dialeto.cadastro.json';
 
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
-import SafeAreaContainer from "@/components/safe-container";
-import { CrudService } from "@/services/crud.service";
-import { DrillingRecord } from "@/types/drilling-record";
+import SafeAreaContainer from "@/core/components/safe-container";
+import { CrudService } from "@/core/services/crud.service";
+import { DrillingRecord } from "@/app-instance/types/drilling-record";
 import { useFocusEffect } from '@react-navigation/native';
 
 async function listDrillings(): Promise<DrillingRecord[]> {

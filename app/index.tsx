@@ -1,13 +1,13 @@
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
-import { colors } from '../constants/colors';
-import { values } from '../constants/values';
+import { colors } from '@/core/constants/colors';
+import { values } from '@/core/constants/values';
 import { Link } from 'expo-router';
-import GlobalStyles from '../constants/styles';
+import GlobalStyles from '@/core/constants/styles';
 import CountryFlag from "react-native-country-flag";
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '@/core/contexts/LanguageContext';
 import { useEffect, useState } from "react";
-import SafeAreaContainer from "@/components/safe-container";
-import { initDatabase } from "@/app-instance/data-init/energy-fuels.perfuracao.init";
+import SafeAreaContainer from "@/core/components/safe-container";
+import { initDatabase } from "@/app-instance/scripts/init/energy-fuels.perfuracao.init";
 
 export default function Index() {
   const { setLanguage } = useLanguage();
@@ -15,7 +15,7 @@ export default function Index() {
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), values.delay);
-    initDatabase();    
+    initDatabase();
     return () => clearTimeout(timer);
   }, []);
 

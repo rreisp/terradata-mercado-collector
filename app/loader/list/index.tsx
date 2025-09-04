@@ -1,9 +1,9 @@
 import { useLocalSearchParams } from "expo-router";
 import DynamicList from '../../dynamic/list/index';
-import { OperationModeProvider } from "@/contexts/OperationModeContext";
+import { OperationModeProvider } from "@/core/contexts/OperationModeContext";
 import { View } from "react-native";
-import { DataRemover } from "@/types/data-remover";
-import { EnergyFuelsDrillingRemover } from "@/app-instance/data-delete/energy-fuels.perfuracao.remover";
+import { DataRemover } from "@/core/types/data-remover";
+import { EnergyFuelsDrillingRemover } from "@/app-instance/scripts/delete/energy-fuels.perfuracao.remover";
 
 const ListLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;

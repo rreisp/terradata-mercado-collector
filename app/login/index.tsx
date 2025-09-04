@@ -6,14 +6,14 @@ import {
   Pressable,
   ScrollView
 } from 'react-native'
-import { colors } from '../../constants/colors'
-import { Input } from '../../components/widgets/input'
+import { colors } from '@/core/constants/colors'
+import { Input } from '@/core/components/widgets/input'
 
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { router } from 'expo-router'
-// import { useDataStore } from '../../store/data'
+import { useDataStore } from '@/core/types/data'
 
 
 const schema = z.object({

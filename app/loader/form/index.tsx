@@ -1,13 +1,13 @@
 import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
-import { OperationModeProvider } from '@/contexts/OperationModeContext';
+import { OperationModeProvider } from '@/core/contexts/OperationModeContext';
 import { View } from 'react-native';
-import { DataLoader } from '@/types/data-loader';
-import { DataExtractor } from '@/types/extractor';
-import { DataUpdater } from '@/types/data-updater';
-import { EnergyFuelsDrillingExtractor } from '@/app-instance/data-create/energy-fuels.perfuracao.extractor';
-import { EnergyFuelsDrillingLoader } from "@/app-instance/data-load/energy-fuels.perfuracao.loader";
-import { EnergyFuelsDrillingUpdater } from "@/app-instance/data-update/energy-fuels.perfuracao.updater";
+import { DataLoader } from '@/core/types/data-loader';
+import { DataExtractor } from '@/core/types/extractor';
+import { DataUpdater } from '@/core/types/data-updater';
+import { EnergyFuelsDrillingExtractor } from '@/app-instance/scripts/create/energy-fuels.perfuracao.extractor';
+import { EnergyFuelsDrillingLoader } from "@/app-instance/scripts/load/energy-fuels.perfuracao.loader";
+import { EnergyFuelsDrillingUpdater } from "@/app-instance/scripts/update/energy-fuels.perfuracao.updater";
 
 const FormLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;
