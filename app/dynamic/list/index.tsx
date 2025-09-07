@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, Pressable, FlatList } from "react-native";
+import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -36,7 +36,7 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -47,6 +47,17 @@ const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
     // const [images, setImages] = useState<ImageRecord[]>([]);
     const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
     const [loading, setLoading] = useState(true);
+
+    async function fetchDrillingInfo() {
+        try {
+            const data = await listDrillings();
+            setDrillings(data);
+        } catch (error) {
+            console.error('Erro ao carregar registros:', error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function loadSchema(schemaId: string) {
         const timer = setTimeout(() => setLoading(false), values.delay);
@@ -85,9 +96,10 @@ const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
         navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
     }
 
-    async function handleExport(table: string, ids: number[]): Promise<void> {
+    async function handleExport(id: number): Promise<void> {
+        const table = "drillings";
         try {
-            await CrudService.exportToCsv(table, ids);
+            await CrudService.exportToCsv(table, [id]);
             // console.log(`Registro com ID ${id} removido com sucesso.`);
             // Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
         } catch (error) {
@@ -96,18 +108,28 @@ const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
         }
     }
 
+    async function handleReset(): Promise<void> {
+        const reset= () => {
+            onReset();
+            setModalVisible(false);
+            setDrillings([]);
+        };
+        
+        const msg = (language === 'pt-BR' ? `Tem certeza que deseja apagar todos os registros?` : `Are you sure you want to delete all records?`);
+
+        Alert.alert(
+            (language === 'pt-BR' ? `Confirmação` : `Confirmation`),
+            msg,
+            [
+                { text: (language === 'pt-BR' ? `Cancelar` : `Cancel`), style: 'cancel' },
+                { text: (language === 'pt-BR' ? `Remover` : `Delete`), style: 'destructive', onPress: reset }
+            ],
+            { cancelable: true }
+        );
+    }
+
     useFocusEffect(
         useCallback(() => {
-            async function fetchDrillingInfo() {
-                try {
-                    const data = await listDrillings();
-                    setDrillings(data);
-                } catch (error) {
-                    console.error('Erro ao carregar registros:', error);
-                } finally {
-                    setLoading(false);
-                }
-            }
             loadSchema(schemaId);
             fetchDrillingInfo();
         }, [])
@@ -123,16 +145,26 @@ const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
         navigation.navigate('loader/form/index', { schemaId }, { pop: true });
     };
 
+    const showOptions = () => {
+        setModalContent("opa");
+        setModalVisible(true);
+    };
+
     return (
         <SafeAreaContainer scrollable={false}>
             <View style={{ flex: 1 }}>
                 <View style={[GlobalStyles.row]}>
-                    <View style={GlobalStyles.col12}>
+                    <View style={GlobalStyles.col2}>
                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
                             <Icon name="chevron-circle-left" size={16} color="#fff" />
                         </Pressable>
                     </View>
-                    <View style={GlobalStyles.col11}></View>
+                    <View style={GlobalStyles.col8}></View>
+                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", paddingRight: 12 }]}>
+                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={showOptions}>
+                            <Icon name="gear" size={16} color="#fff" />
+                        </Pressable>
+                    </View>
                 </View>
 
                 <View style={[GlobalStyles.row]}>
@@ -202,7 +234,11 @@ const DynamicList = ({ schemaId, onDelete }: DynamicListProps) => {
             </View>
             <Modal isVisible={modalVisible}>
                 <View style={styles.modal}>
-                    <Text>{modalContent}</Text>
+                    {/* <Text>{modalContent}</Text> */}
+                    <View style={{ marginBottom: 12 }}>
+                        <Button title="Resetar" onPress={handleReset} />
+                    </View>
+
                     <Button title="Fechar" onPress={() => setModalVisible(false)} />
                 </View>
             </Modal>
