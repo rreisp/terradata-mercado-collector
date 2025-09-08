@@ -2,12 +2,14 @@ import { useLocalSearchParams } from "expo-router";
 import DynamicForm from '@/app/dynamic/form';
 import { OperationModeProvider } from '@/core/contexts/OperationModeContext';
 import { View } from 'react-native';
+
+import { DataExtractor } from "@/core/types/data-extractor";
 import { DataLoader } from '@/core/types/data-loader';
-import { DataExtractor } from '@/core/types/extractor';
 import { DataUpdater } from '@/core/types/data-updater';
-import { EnergyFuelsDrillingExtractor } from '@/app-instance/scripts/create/energy-fuels.perfuracao.extractor';
-import { EnergyFuelsDrillingLoader } from "@/app-instance/scripts/load/energy-fuels.perfuracao.loader";
-import { EnergyFuelsDrillingUpdater } from "@/app-instance/scripts/update/energy-fuels.perfuracao.updater";
+
+import * as Extractors from "@/app-instance/scripts/create";
+import * as Loaders from "@/app-instance/scripts/load";
+import * as Updaters from "@/app-instance/scripts/update";
 
 const FormLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;
@@ -19,9 +21,20 @@ const FormLoader = () => {
     const itemIdParam = useLocalSearchParams().itemId;
     const itemId = Array.isArray(itemIdParam) ? itemIdParam[0] : itemIdParam;
 
-    const loader: DataLoader = new EnergyFuelsDrillingLoader();
-    const extractor: DataExtractor = new EnergyFuelsDrillingExtractor();
-    const updater: DataUpdater = new EnergyFuelsDrillingUpdater();
+    const extractorRegistry: Record<string, new () => DataExtractor> = {
+        ...Extractors,
+    };   
+    const loaderRegistry: Record<string, new () => DataLoader> = {
+        ...Loaders,
+    };
+    const updaterRegistry: Record<string, new () => DataUpdater> = {
+        ...Updaters,
+    };       
+
+
+    const extractor: DataExtractor = new extractorRegistry[schemaId+"Extractor"]();
+    const loader: DataLoader = new loaderRegistry[schemaId+"Loader"]();
+    const updater: DataUpdater = new updaterRegistry[schemaId+"Updater"]();
 
     return (
         <OperationModeProvider>

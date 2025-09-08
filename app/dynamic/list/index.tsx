@@ -11,8 +11,7 @@ import { useOperationMode } from "@/core/contexts/OperationModeContext";
 import { FormSchema } from "@/core/types/form-schema";
 import { DynamicListProps } from "@/core/types/dynamic-list-props";
 
-import PerfuracaoSchema from '../../../app-instance/schemas/energy-fuels.perfuracao.json';
-import CadastroSchema from '../../../app-instance/schemas/cw.dialeto.cadastro.json';
+import schemaRegistry from "@/app-instance/schemas";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
 import SafeAreaContainer from "@/core/components/safe-container";
@@ -71,15 +70,7 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
                 })
                 .catch((err) => console.error("Erro ao carregar schema:", err));
         } else {
-            let schema = null;
-            switch (schemaId) {
-                case 'cw.dialeto.cadastro':
-                    schema = CadastroSchema;
-                    break;
-                case 'energy-fuels.perfuracao':
-                    schema = PerfuracaoSchema;
-                    break;
-            }
+            const schema = schemaRegistry[schemaId + "Schema"];
             setFormSchema(schema);
             const timer = setTimeout(() => setLoading(false), values.delay);
             return () => clearTimeout(timer);
@@ -109,12 +100,12 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
     }
 
     async function handleReset(): Promise<void> {
-        const reset= () => {
+        const reset = () => {
             onReset();
             setModalVisible(false);
             setDrillings([]);
         };
-        
+
         const msg = (language === 'pt-BR' ? `Tem certeza que deseja apagar todos os registros?` : `Are you sure you want to delete all records?`);
 
         Alert.alert(

@@ -11,9 +11,6 @@ import { values } from "@/core/constants/values";
 import { useOperationMode } from '@/core/contexts/OperationModeContext';
 import { Field } from "@/core/types/field";
 import { FormSchema } from "@/core/types/form-schema";
-
-import PerfuracaoSchema from '../../../app-instance/schemas/energy-fuels.perfuracao.json';
-import CadastroSchema from '../../../app-instance/schemas/cw.dialeto.cadastro.json';
 import { FormikHelpers } from "@/core/types/formik-helpers";
 
 import FieldRenderer from "@/core/renderer";
@@ -22,6 +19,8 @@ import { DynamicFormProps } from "@/core/types/dynamic-form-props";
 import { FieldValidator } from "@/core/validation";
 import { ActivityIndicator } from "@react-native-material/core";
 import { colors } from "@/core/constants/colors";
+
+import schemaRegistry from "@/app-instance/schemas";
 
 const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: DynamicFormProps) => {
     const { language } = useLanguage();
@@ -54,15 +53,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                 // Executa a função e depois continua
                 loadSchema();
             } else {
-                let schema = null;
-                switch (schemaId) {
-                    case 'cw.dialeto.cadastro':
-                        schema = CadastroSchema;
-                        break;
-                    case 'energy-fuels.perfuracao':
-                        schema = PerfuracaoSchema;
-                        break;
-                }
+                const schema = schemaRegistry[schemaId+"Schema"];
                 setFormSchema(schema);
             }
 

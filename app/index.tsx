@@ -7,18 +7,19 @@ import CountryFlag from "react-native-country-flag";
 import { useLanguage } from '@/core/contexts/LanguageContext';
 import { useEffect, useState } from "react";
 import SafeAreaContainer from "@/core/components/safe-container";
-import { DataInitializer } from "@/core/types/data-initializer";
-import { EnergyFuelsDrillingInitializer } from "@/app-instance/scripts/init/energy-fuels.perfuracao.initializer";
+
+import * as Initializers from "@/app-instance/scripts/init";
 
 export default function Index() {
   const { setLanguage } = useLanguage();
   const [loading, setLoading] = useState(true);
 
-  const intializer: DataInitializer = new EnergyFuelsDrillingInitializer();
-
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), values.delay);
-    intializer.init();
+    Object.entries(Initializers).forEach(([className, ClassRef]) => {
+      const initializer = new (ClassRef as any)();
+      initializer.init();
+    });
     return () => clearTimeout(timer);
   }, []);
 

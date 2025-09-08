@@ -1,0 +1,1 @@
+export { EnergyFuelsDrillingInitializer } from "./energy-fuels.perfuracao.initializer";

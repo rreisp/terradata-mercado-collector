@@ -52,7 +52,7 @@ const Tools = () => {
                     "title": (language === 'pt-BR' ? "Cadastro de Participante" : "Participant Registry")
                 },
                 {
-                    "id": "energy-fuels.perfuracao",
+                    "id": "EnergyFuelsDrilling",
                     "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
                 }
             ];

@@ -1,5 +1,3 @@
-import { FormSchema } from "../../types/form-schema";
-
 export type DynamicFormProps = {
     schemaId: string;
     editMode: boolean;
