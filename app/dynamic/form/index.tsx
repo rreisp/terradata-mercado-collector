@@ -53,7 +53,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                 // Executa a função e depois continua
                 loadSchema();
             } else {
-                const schema = schemaRegistry[schemaId+"Schema"];
+                const schema = schemaRegistry[schemaId];
                 setFormSchema(schema);
             }
 

@@ -1,7 +1,7 @@
-import CadastroSchema from './cw.dialeto.cadastro.json';
-import EnergyFuelsDrillingSchema from './energy-fuels.perfuracao.json';
+import Cadastro from './cw.dialeto.cadastro.json';
+import EnergyFuelsDrilling from './energy-fuels.perfuracao.json';
 
 export default {
-    CadastroSchema,
-    EnergyFuelsDrillingSchema,
+    Cadastro,
+    EnergyFuelsDrilling,
 };

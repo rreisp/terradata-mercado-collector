@@ -10,13 +10,9 @@ import { values } from "@/core/constants/values";
 import { OperationModeProvider, useOperationMode } from "@/core/contexts/OperationModeContext";
 import { Tool } from "@/core/types/tool";
 import SafeAreaContainer from "@/core/components/safe-container";
+import { Form } from "@/core/types/form";
 
-type Form = {
-    id: string;
-    title: string;
-};
-
-// type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/list/index'>;
+import schemaRegistry from "@/app-instance/schemas";
 
 const Tools = () => {
     const { language } = useLanguage();
@@ -36,6 +32,13 @@ const Tools = () => {
         "pt-BR": "Escolha um formulário para trabalhar",
     };
 
+
+    useEffect(() => {
+        const timer = setTimeout(() => setLoading(false), values.delay);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const goBack = () => {
         // navigation.navigateDeprecated('index');
         navigation.navigate('index', {}, { pop: true });
@@ -46,16 +49,12 @@ const Tools = () => {
         let tools: Tool[] = [];
 
         if (!isOnline) {
-            tools = [
-                {
-                    "id": "cw.dialeto.cadastro",
-                    "title": (language === 'pt-BR' ? "Cadastro de Participante" : "Participant Registry")
-                },
-                {
-                    "id": "EnergyFuelsDrilling",
-                    "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
-                }
-            ];
+            Object.entries(schemaRegistry).forEach(([schemaId, schema]) => {
+                tools.push({
+                    "id": schemaId,
+                    "title": schema.title[language]
+                });
+            });
             setAvailableForms(tools);
         } else {
             const fetchFormConfig = async () => {

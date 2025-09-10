@@ -1,6 +1,7 @@
-export type DrillingRecord = {
-    id?: number;
-    title: number;
+import { Identified } from "@/core/types/identified";
+
+export type DrillingRecord = Identified & {
+    title: string;
     easting: number;
     northing: number;
     elevation: number;

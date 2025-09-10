@@ -13,16 +13,9 @@ import { DynamicListProps } from "@/core/types/dynamic-list-props";
 
 import schemaRegistry from "@/app-instance/schemas";
 
-import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SafeAreaContainer from "@/core/components/safe-container";
-import { CrudService } from "@/core/services/crud.service";
-import { DrillingRecord } from "@/app-instance/types/drilling-record";
 import { useFocusEffect } from '@react-navigation/native';
-
-async function listDrillings(): Promise<DrillingRecord[]> {
-    const drillings = await CrudService.list<DrillingRecord>('drillings');
-    return drillings;
-}
 
 function formatDate(date: string, lang: string) {
     const day = date.substring(0, 2);
@@ -35,24 +28,23 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
-    const insets = useSafeAreaInsets(); // <-- Novo
-    // const [images, setImages] = useState<ImageRecord[]>([]);
-    const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
+    const insets = useSafeAreaInsets();
+    const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    async function fetchDrillingInfo() {
+    async function fetchRecords() {
         try {
-            const data = await listDrillings();
-            setDrillings(data);
+            const data = await onList();
+            setRecords(data);
         } catch (error) {
-            console.error('Erro ao carregar registros:', error);
+            console.error(language === 'pt-BR' ? 'Erro ao carregar registros:' : 'Error loading records.', error);
         } finally {
             setLoading(false);
         }
@@ -70,7 +62,8 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
                 })
                 .catch((err) => console.error("Erro ao carregar schema:", err));
         } else {
-            const schema = schemaRegistry[schemaId + "Schema"];
+            const schema = schemaRegistry[schemaId];
+            // console.log(schema);
             setFormSchema(schema);
             const timer = setTimeout(() => setLoading(false), values.delay);
             return () => clearTimeout(timer);
@@ -79,7 +72,7 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
 
     async function handleDelete(rootItemId: number): Promise<void> {
         onDelete(rootItemId);
-        setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== rootItemId));
+        setRecords((prevRecords) => prevRecords.filter(record => record.id !== rootItemId));
     }
 
     async function handleEdit(id: number): Promise<void> {
@@ -88,22 +81,15 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
     }
 
     async function handleExport(id: number): Promise<void> {
-        const table = "drillings";
-        try {
-            await CrudService.exportToCsv(table, [id]);
-            // console.log(`Registro com ID ${id} removido com sucesso.`);
-            // Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
-        } catch (error) {
-            console.error('Erro ao remover o registro:', error);
-            // O tratamento de erro já está dentro do CrudService.delete
-        }
+        // TODO
+        return;
     }
 
     async function handleReset(): Promise<void> {
         const reset = () => {
             onReset();
             setModalVisible(false);
-            setDrillings([]);
+            setRecords([]);
         };
 
         const msg = (language === 'pt-BR' ? `Tem certeza que deseja apagar todos os registros?` : `Are you sure you want to delete all records?`);
@@ -122,17 +108,15 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
     useFocusEffect(
         useCallback(() => {
             loadSchema(schemaId);
-            fetchDrillingInfo();
+            fetchRecords();
         }, [])
     );
 
     const goBack = () => {
-        // navigation.navigateDeprecated('tools/index');
         navigation.navigate('tools/index', {}, { pop: true });
     };
 
     const openForm = () => {
-        // navigation.navigateDeprecated('loader/form/index', { schemaId: schemaId });
         navigation.navigate('loader/form/index', { schemaId }, { pop: true });
     };
 
@@ -180,18 +164,28 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
                 <View style={[GlobalStyles.row, { flex: 1 }]}>
                     <View style={[GlobalStyles.col12, { flex: 1 }]}>
                         <FlatList
-                            data={drillings}
+                            data={records}
                             keyExtractor={(item) => item.id!.toString()}
                             renderItem={({ item }) => (
                                 <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                                    <View style={GlobalStyles.col1}>
+                                    {/* <View style={GlobalStyles.col1}>
                                         <Text>{item.id}</Text>
-                                    </View>
-                                    <View style={GlobalStyles.col4}>
-                                        <Text>{item.title}</Text>
-                                    </View>
-                                    <View style={GlobalStyles.col4}>
-                                        <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
+                                    </View> */}
+                                    <View style={[GlobalStyles.col9, { marginRight: 1 }]}>
+                                        <View style={[GlobalStyles.row]}>
+                                            {columns.map((field, index) => {
+                                                const colStyle = {
+                                                    flex: 1 / columns.length,
+                                                    marginRight: 2
+                                                };
+
+                                                return (
+                                                    <View key={index} style={[GlobalStyles.col, colStyle]}>
+                                                        <Text>{item[field]}</Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
                                     </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
@@ -205,7 +199,7 @@ const DynamicList = ({ schemaId, onDelete, onReset }: DynamicListProps) => {
                                             <Icon name="edit" size={16} color="white" />
                                         </Pressable>
                                     </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
+                                    <View style={[GlobalStyles.col1, { marginRight: 0 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>
                                             <Icon name="trash" size={16} color="red" />
