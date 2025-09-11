@@ -251,4 +251,46 @@ export class CrudService {
             throw error;
         }
     }
+
+    static async insertMultiple(
+        tableName: string,
+        dataArray: Record<string, any>[],
+        uniqueConstraintKey: string // Adicione este parâmetro para a coluna a ser verificada
+    ): Promise<void> {
+        if (!Array.isArray(dataArray) || dataArray.length === 0) {
+            return;
+        }
+
+        const keys = Object.keys(dataArray[0]);
+
+        const placeholders = `(${keys.map(() => '?').join(',')})`;
+        const allPlaceholders = dataArray.map(() => placeholders).join(',');
+
+        const values = dataArray.flatMap(item => keys.map(k => item[k]));
+
+        const sql = `
+        INSERT INTO ${tableName} (${keys.join(',')}) 
+        VALUES ${allPlaceholders}
+        ON CONFLICT(${uniqueConstraintKey}) DO NOTHING;
+    `;
+
+        try {
+            await this.executeSql(sql, values);
+        } catch (error) {
+            logDetailedError(`Erro ao inserir múltiplos registros em ${tableName}`, sql, values, error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao inserir múltiplos dados em ${tableName}`, error));
+            throw error;
+        }
+    }
+
+       static async createView(name: string, code: string): Promise<void> {
+        const sql = `CREATE VIEW IF NOT EXISTS ${name} AS ${code}`;
+        try {
+            await db.runAsync(sql);
+        } catch (error) {
+            logDetailedError(`Erro ao criar tabela ${name}`, sql, [], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao criar a view ${name}`, error));
+            throw error;
+        }
+    }
 }
