@@ -242,13 +242,13 @@ export async function initDatabase(): Promise<void> {
   // await CrudService.drop("images");
   // await CrudService.drop("lithologies");
   await CrudService.drop("moisture");
-   await CrudService.drop("hardness");
-    await CrudService.drop("wash");
-     await CrudService.drop("color");
-      await CrudService.drop("induration");
-       await CrudService.drop("grainsize");
-       await CrudService.drop("sorting");
-       await CrudService.drop("roundness");
+  await CrudService.drop("hardness");
+  await CrudService.drop("wash");
+  await CrudService.drop("color");
+  await CrudService.drop("induration");
+  await CrudService.drop("grainsize");
+  await CrudService.drop("sorting");
+  await CrudService.drop("roundness");
 
   await createDrillingsTable();
   await new Promise(resolve => setTimeout(resolve, 100));
