@@ -1,81 +1,31 @@
+// import { Alert } from "react-native";
 import * as Yup from "yup";
 import { Field } from "@/core/types/field";
+import { DataValidator } from "@/core/types/data-validator";
+import { DefaultFieldValidator } from "@/core/validation/default-field-validator";
+import { ValidatorFn } from "@/core/types/validator-fn";
 
-export class FieldValidator {
-    static coordinate_3d(field: Field, language: string): Yup.ObjectSchema<{
-        easting: number;
-        northing: number;
-        elevation: number;
-    }> {
-        let validator = Yup.object({
-            easting: Yup.number()
-                .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                .typeError(language == "pt-BR" ? "Coordenada inválida" : "Invalid coordinate"),
-            northing: Yup.number()
-                .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                .typeError(language == "pt-BR" ? "Coordenada inválida" : "Invalid coordinate"),
-            elevation: Yup.number()
-                .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                .typeError(language == "pt-BR" ? "Elevação inválida" : "Invalid elevation"),
-        });
+export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implements DataValidator {
+    validate(field: Field, language: string): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
+        let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
 
-        if (field.required) {
-            validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
+        switch (field.type) {
+            case "ef_depth_research":
+                validator = this.ef_depth_research(field, language);
+                break;
+            default:
+                // chama método da superclasse dinamicamente
+                // const fn = super[field.type as keyof DefaultFieldValidator] as (field: Field, language: string) => Yup.ObjectSchema<any>;
+                validator = DefaultFieldValidator.createValidator(field, language);
+                // validator = fn(field, language);
+                break;
         }
+
         return validator;
     }
 
-    static date_range(field: Field, language: string): Yup.ObjectSchema<{
-        start: number;
-        end: number;
-    }> {
-        let validator = Yup.object({
-            start: Yup.date()
-                .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                .typeError(language == "pt-BR" ? "Data inválida" : "Invalid date"),
-            end: Yup.date()
-                .required(language == "pt-BR" ? "Campo obrigatório" : "Required field")
-                .typeError(language == "pt-BR" ? "Data inválida" : "Invalid date"),
-        });
-
-        if (field.required) {
-            validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
-        }
-        return validator;
-    }
-
-    // Default para outros campos
-    static default(field: Field, language: string): Yup.StringSchema {
-        let validator = Yup.string();
-
-        if (field.required) {
-            validator = validator.required(language == "pt-BR" ? "Campo obrigatório" : "Required field");
-        }
-
-        if (field.validations?.min_length) {
-            validator = validator.min(
-                field.validations.min_length,
-                field.validations.messages?.min_length
-            );
-        }
-
-        if (field.validations?.max_length) {
-            validator = validator.max(
-                field.validations.max_length,
-                field.validations.messages?.max_length
-            );
-        }
-
-        if (field.type === "email") {
-            validator = Yup.string().email(
-                field.validations?.messages?.email ||
-                (language === "pt-BR" ? "E-mail inválido" : "Invalid e-mail")
-            );
-        }
-        return validator;
-    }
-
-    static ef_depth_research(field: Field, language: string): Yup.ObjectSchema<any> {
+    //  
+    ef_depth_research(field: Field, language: string): Yup.ObjectSchema<any> {
         const isPt = language === "pt-BR";
 
         const message = {
@@ -87,48 +37,48 @@ export class FieldValidator {
 
         let validator = Yup.object({
             // --------------------------------------------            
-            title: Yup.string()
-                .required('O título é obrigatório')
-                .min(3, 'O título deve ter ao menos 3 caracteres'),
+            // title: Yup.string()
+            //     .required('O título é obrigatório')
+            //     .min(3, 'O título deve ter ao menos 3 caracteres'),
             // --------------------------------------------                
-            ef_coordinates: Yup.object({
-                easting: Yup.number()
-                    .required(requiredText)
-                    .typeError('Coordenada inválida'),
-                northing: Yup.number()
-                    .required(requiredText)
-                    .typeError('Coordenada inválida'),
-                elevation: Yup.number()
-                    .required(requiredText)
-                    .typeError('Elevação inválida'),
-            }),
+            // ef_coordinates: Yup.object({
+            //     easting: Yup.number()
+            //         .required(requiredText + "opa")
+            //         .typeError('Coordenada inválida'),
+            //     northing: Yup.number()
+            //         .required(requiredText)
+            //         .typeError('Coordenada inválida'),
+            //     elevation: Yup.number()
+            //         .required(requiredText)
+            //         .typeError('Elevação inválida'),
+            // }),
             // --------------------------------------------
-            tenement: Yup.string()
-                .required(requiredText)
-                .min(3, 'Deve ter ao menos 3 caracteres'),
+            // tenement: Yup.string()
+            //     .required(requiredText)
+            //     .min(3, 'Deve ter ao menos 3 caracteres'),
+            // // --------------------------------------------
+            // landowner: Yup.string()
+            //     .required(requiredText)
+            //     .min(3, 'Deve ter ao menos 3 caracteres'),
             // --------------------------------------------
-            landowner: Yup.string()
-                .required(requiredText)
-                .min(3, 'Deve ter ao menos 3 caracteres'),
-            // --------------------------------------------
-            ef_dates: Yup.object({
-                start: Yup.date()
-                    .required('Campo obrigatório')
-                    .typeError('Data inválida'),
-                end: Yup.date()
-                    .required('Campo obrigatório')
-                    .typeError('Data inválida')
-            }).test(
-                'startBeforeEnd',
-                'Data de início deve ser menor ou igual à data de fim',
-                (value) => {
-                    if (!value) return true; // caso seja null/undefined
-                    const { start, end } = value;
-                    return !start || !end || start <= end;
-                }
-            ),
+            // ef_dates: Yup.object({
+            //     start: Yup.date()
+            //         .required('Campo obrigatório')
+            //         .typeError('Data inválida'),
+            //     end: Yup.date()
+            //         .required('Campo obrigatório')
+            //         .typeError('Data inválida')
+            // }).test(
+            //     'startBeforeEnd',
+            //     'Data de início deve ser menor ou igual à data de fim',
+            //     (value) => {
+            //         if (!value) return true; // caso seja null/undefined
+            //         const { start, end } = value;
+            //         return !start || !end || start <= end;
+            //     }
+            // ),
             // --------------------------------------------            
-            reason: Yup.string().nullable(),
+            // reason: Yup.string().nullable(),
             // --------------------------------------------     
             depth: Yup.array().of(
                 Yup.object({
@@ -365,7 +315,7 @@ export class FieldValidator {
             comments: Yup.array().of(Yup.string()),
         });
 
-        if (field.required) {
+        if (field.validations?.required) {
             validator = validator.required(message.required);
         }
 

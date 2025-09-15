@@ -6,10 +6,12 @@ import { View } from 'react-native';
 import { DataExtractor } from "@/core/types/data-extractor";
 import { DataLoader } from '@/core/types/data-loader';
 import { DataUpdater } from '@/core/types/data-updater';
+import { DataValidator } from "@/core/types/data-validator";
 
 import * as Extractors from "@/app-instance/scripts/create";
 import * as Loaders from "@/app-instance/scripts/load";
 import * as Updaters from "@/app-instance/scripts/update";
+import * as Validators from "@/app-instance/scripts/validate";
 
 const FormLoader = () => {
     const schemaIdParam = useLocalSearchParams().schemaId;
@@ -29,12 +31,15 @@ const FormLoader = () => {
     };
     const updaterRegistry: Record<string, new () => DataUpdater> = {
         ...Updaters,
-    };       
-
+    };    
+    const validatorRegistry: Record<string, new () => DataValidator> = {
+        ...Validators,
+    };           
 
     const extractor: DataExtractor = new extractorRegistry[schemaId+"Extractor"]();
     const loader: DataLoader = new loaderRegistry[schemaId+"Loader"]();
     const updater: DataUpdater = new updaterRegistry[schemaId+"Updater"]();
+    const validator: DataValidator = new validatorRegistry[schemaId+"Validator"]();
 
     return (
         <OperationModeProvider>
@@ -46,6 +51,7 @@ const FormLoader = () => {
                     load={loader.load.bind(loader)}
                     extract={extractor.extract.bind(extractor)}
                     update={updater.update.bind(updater)}
+                    validate={validator.validate.bind(validator)}
                 />
             </View>
         </OperationModeProvider>

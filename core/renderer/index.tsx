@@ -31,7 +31,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             return (
                 <View style={GlobalStyles.fieldContainer}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <MultiCameraInput editMode={editMode} name={field.id} quality={0.01}/>
+                    <MultiCameraInput editMode={editMode} name={field.id} quality={0.01} />
                 </View>
             );
         case "number":
@@ -45,6 +45,11 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         min={field.min ?? undefined}
                         onChange={(text: string) => onChange(field.id, text)}
                     />
+                    {/* {easting === '' && ( */}
+                        <Text style={GlobalStyles.errorText}>
+                            {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
+                        </Text>
+                    {/* )} */}
                 </View>
             );
         case "text":
@@ -60,7 +65,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         style={GlobalStyles.input}
                         secureTextEntry={field.type === "password"}
                     />
-                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}              
                 </View>
             );
         case "checkbox":
@@ -103,7 +108,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
         case "coordinate_3d":
             return (
                 <View key={field.id} style={GlobalStyles.fieldContainer}>
-                    <GeoPosition3D parent={field.id} />
+                    <GeoPosition3D parent={field.id} field={field} />
                 </View>
             );
         case "date_range":

@@ -16,13 +16,12 @@ import { FormikHelpers } from "@/core/types/formik-helpers";
 import FieldRenderer from "@/core/renderer";
 import SafeAreaContainer from "@/core/components/safe-container";
 import { DynamicFormProps } from "@/core/types/dynamic-form-props";
-import { FieldValidator } from "@/core/validation";
 import { ActivityIndicator } from "@react-native-material/core";
 import { colors } from "@/core/constants/colors";
 
 import schemaRegistry from "@/app-instance/schemas";
 
-const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: DynamicFormProps) => {
+const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, validate }: DynamicFormProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -33,67 +32,73 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
 
     const [initialValues, setInitialValues] = useState<{ [key: string]: any }>({});
 
-    const validationShape: { [key: string]: Yup.AnySchema } = {};
+    // const validationShape: { [key: string]: Yup.AnySchema } = {};
+    const [validationShape, setValidationShape] = useState({})
 
     useFocusEffect(
         useCallback(() => {
-            if (isOnline) {
-                const loadSchema = async () => {
-                    try {
+            let mounted = true;
+            const fetchData = async () => {
+                try {
+                    setLoading(true);
+                    let schema: FormSchema;
+                    let valuesToSet = {};
+                    const newValidationShape: { [key: string]: Yup.AnySchema } = {};
+
+                    // 1. Carrega o esquema do formulário (online ou offline)
+                    if (isOnline) {
                         const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
-                        const data = await res.json();
-                        setFormSchema(data);
-                    } catch (err) {
-                        console.error("Erro ao carregar schema:", err);
-                    } finally {
-                        clearTimeout(timer);
+                        schema = await res.json();
+                    } else {
+                        schema = schemaRegistry[schemaId];
                     }
-                };
 
-                // Executa a função e depois continua
-                loadSchema();
-            } else {
-                const schema = schemaRegistry[schemaId];
-                setFormSchema(schema);
-            }
+                    if (!mounted) return;
+                    setFormSchema(schema);
 
-            if (editMode) {
-                const handleLoad = async () => {
-                    const v = await load(itemId);
-                    setInitialValues(v);
+                    // 2. Carrega os valores iniciais (se for modo de edição)
+                    if (editMode) {
+                        valuesToSet = await load(itemId);
+                    } else {
+                        valuesToSet = {};
+                    }
 
-                    formSchema?.rows.forEach(row =>
-                        row.columns.forEach(({ field }) => {
-                            // console.log(field);
-                            setInitialValues(prevValues => ({
-                                ...prevValues,
-                                [field.id]: prevValues[field.id]
-                            }));
+                    // 3. Itera sobre o esquema para construir os valores iniciais e a validação
+                    schema?.rows?.forEach(row => {
+                        row.columns?.forEach(({ field }) => {
+                            // Define o valor inicial, se não estiver definido
+                            if (!(field.id in valuesToSet)) {
+                                valuesToSet[field.id] = "";
+                            }
 
-                            let validator: Yup.AnySchema = getValidatorInstance(field, language);
-                            validationShape[field.id] = validator;
-                        })
-                    );
+                            // Define a regra de validação para o campo
+                            const validator = getValidatorInstance(validate, field, language);
+                            if (validator) {
+                                newValidationShape[field.id] = validator;
+                            }
+                        });
+                    });
 
-                    const timer = setTimeout(() => setLoading(false), values.delay);
-                    return () => clearTimeout(timer);
-                };
+                    if (!mounted) return;
+                    setInitialValues(valuesToSet);
+                    setValidationShape(newValidationShape);
+                } catch (err) {
+                    console.error("Erro ao carregar dados:", err);
+                    console.error("Detalhes do erro:", err.stack);
+                } finally {
+                    if (mounted) {
+                        setLoading(false);
+                    }
+                }
+            };
 
-                handleLoad();
-            } else {
-                formSchema?.rows.forEach(row =>
-                    row.columns.forEach(({ field }) => {
-                        initialValues[field.id] = "";
+            fetchData();
 
-                        let validator: Yup.AnySchema = getValidatorInstance(field, language);
-                        validationShape[field.id] = validator;
-                    })
-                );
-                const timer = setTimeout(() => setLoading(false), values.delay);
-                return () => clearTimeout(timer);
-            }
-
-        }, [])
+            // Função de cleanup para evitar atualizações de estado em componentes desmontados
+            return () => {
+                mounted = false;
+            };
+        }, [schemaId, editMode, language, load, itemId, isOnline])
     );
 
     const openList = () => {
@@ -124,7 +129,9 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                             await update(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
                         }
+                        resetForm();
                     }}
+                    validateOnMount={true}
 
                 // onSubmit={(values, { setSubmitting }) => {
                 //     fetch(formSchema.url, {
@@ -162,9 +169,9 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                                 <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
                             </View>
                             <Text style={styles.description}>{formSchema?.description[language] || ""}</Text>
-                            {formSchema?.rows.map((row, rowIndex) => (
+                            {formSchema?.rows?.map((row, rowIndex) => (
                                 <View key={rowIndex}>
-                                    {row.columns.map(({ field }) =>
+                                    {row?.columns?.map(({ field }) =>
                                         renderField(field, {
                                             value: values[field.id],
                                             onChange: (id, val) => {
@@ -247,23 +254,6 @@ const styles = StyleSheet.create({
 
 export default DynamicForm;
 
-function getValidatorInstance(field: Field, language: string) {
-    let validator: Yup.AnySchema;
-
-    // Validação especial para campos do tipo intervalo de datas (como ef_dates)
-    switch (field.type) {
-        case 'coordinate_3d':
-            validator = FieldValidator.coordinate_3d(field, language);
-            break;
-        case 'date_range':
-            validator = FieldValidator.date_range(field, language);
-            break;
-        case 'ef_depth_research':
-            validator = FieldValidator.ef_depth_research(field, language);
-            break;
-        default:
-            validator = FieldValidator.default(field, language);
-            break;
-    }
-    return validator;
+function getValidatorInstance(validate, field: Field, language: string) {
+    return validate(field, language);
 }

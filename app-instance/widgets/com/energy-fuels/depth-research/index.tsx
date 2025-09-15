@@ -13,7 +13,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
     const [segmentIds, setSegmentIds] = useState<{ id: number }[]>([]);
 
     useEffect(() => {
-        setSegmentIds(values?.[parent]?.segmentIds.map(id => ({ id })));
+        setSegmentIds(values?.[parent]?.segmentIds?.map(id => ({ id })));
     }, []);
 
     const handleAddElement = () => {
@@ -53,7 +53,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
             {!segmentIds || segmentIds.length === 0 ? (
                 <Text style={styles.emptyText}>{language === 'pt-BR' ? `Nenhum segmento adicionado.` : `No segment added.`}</Text>
             ) : (
-                segmentIds.map((segment, index) => (
+                segmentIds?.map((segment, index) => (
                     <View key={segment.id}>
                         <Section editMode={editMode} index={index} segmentId={segment.id} size={segmentIds.length} parent={parent} />
                         <View>

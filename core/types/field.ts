@@ -4,7 +4,6 @@ export type Field = {
     id: string;
     label: LocalizedString;
     type: string;
-    required?: boolean;
     placeholder?: LocalizedString;
     step?: number | undefined;
     min?: number | undefined;
@@ -14,6 +13,7 @@ export type Field = {
         label: LocalizedString;
     }>;
     validations?: {
+        max_length?: number;        
         min_length?: number;
         required?: boolean;
         messages?: {

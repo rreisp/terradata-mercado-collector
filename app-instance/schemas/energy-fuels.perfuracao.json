@@ -58,13 +58,17 @@
               "en-US": "Drilling ID:"
             },
             "type": "text",
-            "required": true,
             "validations": {
-              "min_length": 1,
+              "required": true,
+              "min_length": 5,
               "messages": {
+                "required": {
+                  "pt-BR": "Campo obrigatório pow",
+                  "en-US": "Required field bro"
+                },
                 "min_length": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
+                  "pt-BR": "Comprimento mínimo: 5",
+                  "en-US": "Min length: 5"
                 }
               }
             }
@@ -98,10 +102,14 @@
               "en-US": "Tenement:"
             },
             "type": "text",
-            "required": true,
             "validations": {
+              "required": true,
               "min_length": 1,
               "messages": {
+                "required": {
+                  "pt-BR": "Campo obrigatório",
+                  "en-US": "Required field"
+                },
                 "min_length": {
                   "pt-BR": "Campo obrigatório",
                   "en-US": "Required field"
@@ -125,10 +133,14 @@
               "en-US": "Landowner:"
             },
             "type": "text",
-            "required": true,
             "validations": {
+              "required": true,
               "min_length": 1,
               "messages": {
+                "required": {
+                  "pt-BR": "Campo obrigatório",
+                  "en-US": "Required field"
+                },
                 "min_length": {
                   "pt-BR": "Campo obrigatório",
                   "en-US": "Required field"
