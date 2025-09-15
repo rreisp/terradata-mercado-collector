@@ -35,6 +35,22 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
     // const validationShape: { [key: string]: Yup.AnySchema } = {};
     const [validationShape, setValidationShape] = useState({})
 
+    const createValidationShape = (schema: FormSchema, valuesToSet: any, language: string) => {
+        const newValidationShape: { [key: string]: Yup.AnySchema } = {};
+        schema?.rows?.forEach(row => {
+            row.columns?.forEach(({ field }) => {
+                if (!(field.id in valuesToSet)) {
+                    valuesToSet[field.id] = "";
+                }
+                const validator = getValidatorInstance(validate, field, language);
+                if (validator) {
+                    newValidationShape[field.id] = validator;
+                }
+            });
+        });
+        return newValidationShape;
+    };
+
     useFocusEffect(
         useCallback(() => {
             let mounted = true;
@@ -43,7 +59,6 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                     setLoading(true);
                     let schema: FormSchema;
                     let valuesToSet = {};
-                    const newValidationShape: { [key: string]: Yup.AnySchema } = {};
 
                     // 1. Carrega o esquema do formulário (online ou offline)
                     if (isOnline) {
@@ -63,21 +78,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                         valuesToSet = {};
                     }
 
-                    // 3. Itera sobre o esquema para construir os valores iniciais e a validação
-                    schema?.rows?.forEach(row => {
-                        row.columns?.forEach(({ field }) => {
-                            // Define o valor inicial, se não estiver definido
-                            if (!(field.id in valuesToSet)) {
-                                valuesToSet[field.id] = "";
-                            }
-
-                            // Define a regra de validação para o campo
-                            const validator = getValidatorInstance(validate, field, language);
-                            if (validator) {
-                                newValidationShape[field.id] = validator;
-                            }
-                        });
-                    });
+                    const newValidationShape = createValidationShape(schema, valuesToSet, language);
 
                     if (!mounted) return;
                     setInitialValues(valuesToSet);
