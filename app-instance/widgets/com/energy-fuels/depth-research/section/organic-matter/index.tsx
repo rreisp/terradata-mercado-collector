@@ -12,9 +12,9 @@ const EF_OrganicMatter = ({ index, parent }) => {
   const sugestaoInicial = "0.5"; // ponto em vez de vírgula
 
   // Função para normalizar separador decimal
-  const normalizeValue = (val?: string) => {
-    if (!val) return valorPadrao;
-    return val.replace(",", ".");
+  const normalizeValue = (val?: string | number) => {
+    if (val === undefined || val === null || val === "") return valorPadrao;
+    return String(val).replace(",", ".");
   };
 
   const initialValue = normalizeValue(values?.[parent]?.organicMatterPct?.[index]);

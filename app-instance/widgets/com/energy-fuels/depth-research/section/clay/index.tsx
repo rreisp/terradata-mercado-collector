@@ -12,9 +12,9 @@ const EF_Clay = ({ index, parent }) => {
     const sugestaoInicial = "0.5"; // já com ponto
 
     // Normaliza para ponto decimal
-    const normalizeValue = (val?: string) => {
-        if (!val) return valorPadrao;
-        return val.replace(",", ".");
+    const normalizeValue = (val?: string | number) => {
+        if (val === undefined || val === null || val === "") return valorPadrao;
+        return String(val).replace(",", ".");
     };
 
     const initialValue = normalizeValue(values?.[parent]?.clayPct?.[index]);

@@ -79,25 +79,25 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             // --------------------------------------------            
             // reason: Yup.string().nullable(),
             // --------------------------------------------     
-            depth: Yup.array().of(
-                Yup.object({
-                    from: Yup.number()
-                        .integer('Deve ser um número inteiro')
-                        .min(1, 'Valor deve ser maior que 0')
-                        .required('Campo obrigatório'),
-                    to: Yup.number()
-                        .integer('Deve ser um número inteiro')
-                        .min(1, 'Valor deve ser maior que 0')
-                        .required('Campo obrigatório')
-                }).test(
-                    'fromTo',
-                    'O valor final deve ser maior ou igual ao inicial',
-                    (val) => {
-                        if (!val) return true;
-                        return val.to >= val.from;
-                    }
-                )
-            ),
+            // depth: Yup.array().of(
+            //     Yup.object({
+            //         from: Yup.number()
+            //             .integer('Deve ser um número inteiro')
+            //             .min(1, 'Valor deve ser maior que 0')
+            //             .required('Campo obrigatório'),
+            //         to: Yup.number()
+            //             .integer('Deve ser um número inteiro')
+            //             .min(1, 'Valor deve ser maior que 0')
+            //             .required('Campo obrigatório')
+            //     }).test(
+            //         'fromTo',
+            //         'O valor final deve ser maior ou igual ao inicial',
+            //         (val) => {
+            //             if (!val) return true;
+            //             return val.to >= val.from;
+            //         }
+            //     )
+            // ),
             // --------------------------------------------
             recovery: Yup.array().of(
                 Yup.number()
@@ -288,22 +288,22 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                             .moreThan(0, 'Deve ser maior que 0')
                             .optional()
                             .nullable(),
-                        depth_from: Yup.number()
+                        from: Yup.number()
                             .integer('Deve ser um número inteiro')
-                            .moreThan(0, 'Deve ser maior que 0')
+                            .min(0, 'Deve ser maior ou igual a 0')
                             .required('Campo obrigatório'),
-                        depth_to: Yup.number()
+                        to: Yup.number()
                             .integer('Deve ser um número inteiro')
-                            .moreThan(0, 'Deve ser maior que 0')
+                            .min(0, 'Deve ser maior ou igual a 0')
                             .required('Campo obrigatório')
                             .test(
                                 'depth-to-gte-from',
-                                'depth_to deve ser maior ou igual a depth_from',
+                                'depth_to deve ser maior ou igual a from',
                                 function (value) {
-                                    return value >= this.parent.depth_from;
+                                    return value >= this.parent.from;
                                 }
                             ),
-                        fgk_lithology_type: Yup.number()
+                        type: Yup.number()
                             .integer('Deve ser um número inteiro')
                             .moreThan(0, 'Deve ser maior que 0')
                             .required('Campo obrigatório'),

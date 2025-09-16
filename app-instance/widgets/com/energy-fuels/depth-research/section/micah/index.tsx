@@ -12,9 +12,9 @@ const EF_Micah = ({ index, parent }) => {
     const sugestaoInicial = "0.5"; // já no formato correto
 
     // Função para normalizar decimal
-    const normalizeValue = (val?: string) => {
-        if (!val) return valorPadrao;
-        return val.replace(",", ".");
+    const normalizeValue = (val?: string | number) => {
+        if (val === undefined || val === null || val === "") return valorPadrao;
+        return String(val).replace(",", ".");
     };
 
     const initialValue = normalizeValue(values?.[parent]?.micahPct?.[index]);
