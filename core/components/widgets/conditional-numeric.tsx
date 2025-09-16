@@ -1,5 +1,5 @@
 // components/widgets/input/ConditionalNumericInput.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import NumericInput from '@/core/components/widgets/numeric';
@@ -12,11 +12,17 @@ interface Props {
     checked: boolean;
     onCheckChange: (checked: boolean) => void;
     disabledWhenUnchecked?: boolean;
-    step: number;
-    min: number;
-    max: number;
+    step?: number;
+    min?: number;
+    max?: number;
     defaultValue: number | string;
 }
+
+// função util para normalizar separador
+const normalizeValue = (val: string | number | undefined): string => {
+    if (val === undefined || val === null) return "";
+    return String(val).replace(",", ".");
+};
 
 const ConditionalNumericInput: React.FC<Props> = ({
     label,
@@ -26,35 +32,44 @@ const ConditionalNumericInput: React.FC<Props> = ({
     onCheckChange,
     disabledWhenUnchecked = true,
     step = 1,
-    min = undefined,
-    max = undefined,
-    defaultValue
+    min,
+    max,
+    defaultValue,
 }) => {
-    const [val, setVal] = useState(value);
+    const [val, setVal] = useState<string>(normalizeValue(value));
+
+    // mantém sincronização caso value externo mude
+    useEffect(() => {
+        setVal(normalizeValue(value));
+    }, [value]);
 
     const handleCheckChange = (checked: boolean) => {
         if (checked) {
-            setVal(defaultValue);
+            const normalized = normalizeValue(defaultValue);
+            setVal(normalized);
+            onChange(normalized);
         } else {
             setVal("");
+            onChange("");
         }
         onCheckChange(checked);
     };
 
     const handleChange = (v: string) => {
-        setVal(v);
-        onChange(v);
+        const normalized = normalizeValue(v);
+        setVal(normalized);
+        onChange(normalized);
     };
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <Text style={GlobalStyles.label}>{label}</Text>
-            <View style={[GlobalStyles.row]}>
+            <View style={GlobalStyles.row}>
                 <View style={[GlobalStyles.col1, styles.checkbox]}>
                     <Checkbox
                         value={checked}
                         onValueChange={handleCheckChange}
-                        color={checked ? '#4630EB' : undefined}
+                        color={checked ? "#4630EB" : undefined}
                         style={styles.checkbox}
                     />
                 </View>
@@ -78,7 +93,7 @@ export default ConditionalNumericInput;
 const styles = StyleSheet.create({
     container: { marginTop: 5 },
     checkbox: {
-        flexDirection: 'row',
+        flexDirection: "row",
         marginRight: 5,
         paddingTop: 1,
     },

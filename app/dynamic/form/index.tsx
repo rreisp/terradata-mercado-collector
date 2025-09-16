@@ -193,6 +193,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
 
                                         if (Object.keys(errors).length > 0) {
                                             console.log("Erros de validação:", errors);
+                                            if(errors.ef_depth_test) console.log("Erros de validação:", errors.ef_depth_test);
                                         } else {
                                             handleSubmit(); // dispara o onSubmit se estiver válido
                                         }

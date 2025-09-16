@@ -9,14 +9,21 @@ const EF_Micah = ({ index, parent }) => {
 
     const fieldPath = `${parent}.micahPct[${index}]`;
     const valorPadrao = "";
-    const sugestaoInicial = "0,5";
+    const sugestaoInicial = "0.5"; // já no formato correto
 
-    const [currentValue, setCurrentValue] = useState(values?.[parent]?.micahPct?.[index] ?? valorPadrao);
-    const [isChecked, setIsChecked] = useState(parseFloat(currentValue.replace(',', '.')) > 0);
+    // Função para normalizar decimal
+    const normalizeValue = (val?: string) => {
+        if (!val) return valorPadrao;
+        return val.replace(",", ".");
+    };
 
+    const initialValue = normalizeValue(values?.[parent]?.micahPct?.[index]);
+    const [currentValue, setCurrentValue] = useState(initialValue);
+    const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
+
+    // sincroniza inicial com formik
     useEffect(() => {
         setFieldValue(fieldPath, currentValue);
-        setCurrentValue(currentValue);
     }, []);
 
     const handleCheckChange = (checked: boolean) => {
@@ -32,8 +39,9 @@ const EF_Micah = ({ index, parent }) => {
     };
 
     const handleValueChange = (val: string) => {
-        setFieldValue(fieldPath, val);
-        setCurrentValue(val);
+        const normalized = normalizeValue(val);
+        setFieldValue(fieldPath, normalized);
+        setCurrentValue(normalized);
     };
 
     return (

@@ -4,51 +4,59 @@ import ConditionalNumericInput from '@/core/components/widgets/conditional-numer
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_OrganicMatter = ({ index, parent }) => {
-    const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+  const { language } = useLanguage();
+  const { values, setFieldValue } = useFormikContext();
 
-    const fieldPath = `${parent}.organicMatterPct[${index}]`;
-    const valorPadrao = "";
-    const sugestaoInicial = "0,5";
+  const fieldPath = `${parent}.organicMatterPct[${index}]`;
+  const valorPadrao = "";
+  const sugestaoInicial = "0.5"; // ponto em vez de vírgula
 
-    const [currentValue, setCurrentValue] = useState(values?.[parent]?.organicMatterPct?.[index] ?? valorPadrao);
-    const [isChecked, setIsChecked] = useState(parseFloat(currentValue.replace(',', '.')) > 0);
+  // Função para normalizar separador decimal
+  const normalizeValue = (val?: string) => {
+    if (!val) return valorPadrao;
+    return val.replace(",", ".");
+  };
 
-    useEffect(() => {
-        setFieldValue(fieldPath, currentValue);
-        setCurrentValue(currentValue);
-    }, []);
+  const initialValue = normalizeValue(values?.[parent]?.organicMatterPct?.[index]);
+  const [currentValue, setCurrentValue] = useState(initialValue);
+  const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
 
-    const handleCheckChange = (checked: boolean) => {
-        setIsChecked(checked);
+  // sincroniza valor inicial com Formik
+  useEffect(() => {
+    setFieldValue(fieldPath, currentValue);
+  }, []);
 
-        if (checked) {
-            setFieldValue(fieldPath, sugestaoInicial);
-            setCurrentValue(sugestaoInicial);
-        } else {
-            setFieldValue(fieldPath, undefined);
-            setCurrentValue(valorPadrao);
-        }
-    };
+  const handleCheckChange = (checked: boolean) => {
+    setIsChecked(checked);
 
-    const handleValueChange = (val: string) => {
-        setFieldValue(fieldPath, val);
-        setCurrentValue(val);
-    };
+    if (checked) {
+      setFieldValue(fieldPath, sugestaoInicial);
+      setCurrentValue(sugestaoInicial);
+    } else {
+      setFieldValue(fieldPath, undefined);
+      setCurrentValue(valorPadrao);
+    }
+  };
 
-    return (
-        <ConditionalNumericInput
-            label={language === 'pt-BR' ? 'Matéria Orgânica:' : 'Organic Matter:'}
-            value={currentValue}
-            defaultValue={sugestaoInicial}
-            onChange={handleValueChange}
-            checked={isChecked}
-            onCheckChange={handleCheckChange}
-            step={0.01}
-            min={0}
-            max={100}
-        />
-    );
+  const handleValueChange = (val: string) => {
+    const normalized = normalizeValue(val);
+    setFieldValue(fieldPath, normalized);
+    setCurrentValue(normalized);
+  };
+
+  return (
+    <ConditionalNumericInput
+      label={language === 'pt-BR' ? 'Matéria Orgânica:' : 'Organic Matter:'}
+      value={currentValue}
+      defaultValue={sugestaoInicial}
+      onChange={handleValueChange}
+      checked={isChecked}
+      onCheckChange={handleCheckChange}
+      step={0.01}
+      min={0}
+      max={100}
+    />
+  );
 };
 
 export default EF_OrganicMatter;

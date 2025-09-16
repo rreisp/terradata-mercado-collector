@@ -28,38 +28,49 @@ const NumericInput = ({
     const maxDecimais = getPrecision(step);
 
     const regex = maxDecimais > 0
-        ? new RegExp(`^\\d*(,\\d{0,${maxDecimais}})?$`)
+        ? new RegExp(`^\\d*(\\.\\d{0,${maxDecimais}})?$`) // apenas ponto
         : /^\d*$/;
 
     const handleChange = (text: string) => {
-        let normalized = text.replace('.', '');
-        if (normalized === '') {
+        if (text === '') {
             onChange('');
             return;
         }
 
-        if (!regex.test(normalized)) return;
-        if (Number(normalized) < min) normalized = ""+ min;        
-        if (Number(normalized) > max) normalized = ""+ max;
-        onChange(normalized); // permite entrada parcial
+        if (!regex.test(text)) return;
+
+        const num = parseFloat(text);
+        if (isNaN(num)) {
+            onChange('');
+            return;
+        }
+
+        if (num < min) {
+            onChange(min.toString());
+            return;
+        }
+        if (num > max) {
+            onChange(max.toString());
+            return;
+        }
+
+        onChange(text); // mantém o texto do usuário (sem forçar casas decimais)
     };
 
     const handleBlur = () => {
-        if (!value) return;
+        if (value === '' || value === undefined || value === null) return;
 
-        const normalized = ("" + value).replace('.', '');
-        const num = parseFloat(normalized);
-
+        const num = parseFloat(value.toString());
         if (isNaN(num) || num < min || num > max) {
-            onChange(''); // limpa se inválido ou fora dos limites
-            // TODO: emitir mensagem ou algo melhor
+            onChange('');
         } else {
-            onChange(value);
+            // mantém como string simples, sem toFixed
+            onChange(num.toString());
         }
     };
 
     return (
-        <View style={[styles.container]}>
+        <View style={styles.container}>
             <TextInput
                 value={value?.toString() || ''}
                 onChangeText={handleChange}

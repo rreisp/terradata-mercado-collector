@@ -8,7 +8,7 @@ import { useFormikContext } from 'formik';
 
 const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: boolean }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, validationSchema } = useFormikContext();
     // const [elements, setElements] = useState<{ id: number }[]>(values?.[parent]?.depth ?? []);
     const [segmentIds, setSegmentIds] = useState<{ id: number }[]>([]);
 
@@ -30,6 +30,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
             if (index !== -1) {
                 setSegmentIds(prev => prev.filter((_, i) => i !== index));
             }
+            console.log(validationSchema);
         };
         const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o segmento?` : `Are you sure you want to remove the segment?`);
         if (Platform.OS === 'web') {

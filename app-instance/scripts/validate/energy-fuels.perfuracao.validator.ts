@@ -3,7 +3,6 @@ import * as Yup from "yup";
 import { Field } from "@/core/types/field";
 import { DataValidator } from "@/core/types/data-validator";
 import { DefaultFieldValidator } from "@/core/validation/default-field-validator";
-import { ValidatorFn } from "@/core/types/validator-fn";
 
 export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implements DataValidator {
     validate(field: Field, language: string): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
