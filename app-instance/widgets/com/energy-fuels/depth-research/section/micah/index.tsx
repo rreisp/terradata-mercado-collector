@@ -8,8 +8,8 @@ const EF_Micah = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
 
     const fieldPath = `${parent}.micahPct[${index}]`;
-    const valorPadrao = "";
-    const sugestaoInicial = "0.5"; // já no formato correto
+    const valorPadrao = "0";          // agora padrão é "0"
+    const sugestaoInicial = "0.5";    // já no formato correto
 
     // Função para normalizar decimal
     const normalizeValue = (val?: string | number) => {
@@ -33,7 +33,8 @@ const EF_Micah = ({ index, parent }) => {
             setFieldValue(fieldPath, sugestaoInicial);
             setCurrentValue(sugestaoInicial);
         } else {
-            setFieldValue(fieldPath, undefined);
+            // valor lógico 0, input exibido como ""
+            setFieldValue(fieldPath, valorPadrao);
             setCurrentValue(valorPadrao);
         }
     };

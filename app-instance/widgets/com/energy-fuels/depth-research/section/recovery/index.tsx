@@ -13,11 +13,7 @@ const EF_Recovery = ({ index, parent }) => {
     const currentValue = values?.[parent]?.recovery?.[index];
 
     const handleChange = (value: number) => {
-        if (value > valorInicial) {
-            setFieldValue(`${parent}.recovery[${index}]`, valorInicial)
-        } else {
-            setFieldValue(`${parent}.recovery[${index}]`, value)
-        }
+        setFieldValue(`${parent}.recovery[${index}]`, value)
     };
 
     useEffect(() => {

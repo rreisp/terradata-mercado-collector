@@ -8,8 +8,8 @@ const EF_Clay = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
 
     const fieldPath = `${parent}.clayPct[${index}]`;
-    const valorPadrao = "";
-    const sugestaoInicial = "0.5"; // já com ponto
+    const valorPadrao = "0";           // padrão agora é "0"
+    const sugestaoInicial = "0.5";     // já com ponto decimal
 
     // Normaliza para ponto decimal
     const normalizeValue = (val?: string | number) => {
@@ -19,9 +19,7 @@ const EF_Clay = ({ index, parent }) => {
 
     const initialValue = normalizeValue(values?.[parent]?.clayPct?.[index]);
     const [currentValue, setCurrentValue] = useState(initialValue);
-    const [isChecked, setIsChecked] = useState(
-        parseFloat(initialValue) > 0
-    );
+    const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
 
     // garante sincronização inicial com Formik
     useEffect(() => {
@@ -35,7 +33,8 @@ const EF_Clay = ({ index, parent }) => {
             setFieldValue(fieldPath, sugestaoInicial);
             setCurrentValue(sugestaoInicial);
         } else {
-            setFieldValue(fieldPath, undefined);
+            // valor lógico deve ser "0", mas input mostra ""
+            setFieldValue(fieldPath, valorPadrao);
             setCurrentValue(valorPadrao);
         }
     };

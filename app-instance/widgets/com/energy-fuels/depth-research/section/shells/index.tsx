@@ -8,8 +8,8 @@ const EF_Shells = ({ index, parent }) => {
     const { values, setFieldValue } = useFormikContext();
 
     const fieldPath = `${parent}.shellsPct[${index}]`;
-    const valorPadrao = "";
-    const sugestaoInicial = "0.5"; // já normalizado
+    const valorPadrao = "0";           // agora padrão é "0"
+    const sugestaoInicial = "0.5";     // já normalizado
 
     // Normaliza separador decimal
     const normalizeValue = (val?: string | number) => {
@@ -21,6 +21,7 @@ const EF_Shells = ({ index, parent }) => {
     const [currentValue, setCurrentValue] = useState(initialValue);
     const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
 
+    // sincroniza inicial com formik
     useEffect(() => {
         setFieldValue(fieldPath, currentValue);
     }, []);
@@ -32,7 +33,8 @@ const EF_Shells = ({ index, parent }) => {
             setFieldValue(fieldPath, sugestaoInicial);
             setCurrentValue(sugestaoInicial);
         } else {
-            setFieldValue(fieldPath, undefined);
+            // valor lógico = "0", input exibido como ""
+            setFieldValue(fieldPath, valorPadrao);
             setCurrentValue(valorPadrao);
         }
     };

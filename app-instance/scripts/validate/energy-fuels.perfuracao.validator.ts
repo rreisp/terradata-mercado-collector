@@ -268,8 +268,8 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                             .optional()
                             .nullable(),
                         fgk_segment: Yup.number()
-                            .integer('Deve ser um número inteiro')
-                            .required('Campo obrigatório'),
+                            .optional()
+                            .nullable(),
                         img: Yup.string()
                             .required('Campo obrigatório')
                     })

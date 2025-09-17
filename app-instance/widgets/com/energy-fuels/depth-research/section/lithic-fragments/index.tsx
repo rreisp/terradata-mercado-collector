@@ -8,10 +8,10 @@ const EF_LithicFragments = ({ index, parent }) => {
   const { values, setFieldValue } = useFormikContext();
 
   const fieldPath = `${parent}.lithicFragmentsPct[${index}]`;
-  const valorPadrao = "";
-  const sugestaoInicial = "0.5"; // já com ponto
+  const valorPadrao = "0";           // agora padrão é "0"
+  const sugestaoInicial = "0.5";     // já normalizado
 
-  // Função para normalizar decimal
+  // Normaliza separador decimal
   const normalizeValue = (val?: string | number) => {
     if (val === undefined || val === null || val === "") return valorPadrao;
     return String(val).replace(",", ".");
@@ -21,7 +21,7 @@ const EF_LithicFragments = ({ index, parent }) => {
   const [currentValue, setCurrentValue] = useState(initialValue);
   const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
 
-  // Sincroniza valor inicial no Formik
+  // sincroniza inicial com formik
   useEffect(() => {
     setFieldValue(fieldPath, currentValue);
   }, []);
@@ -33,7 +33,8 @@ const EF_LithicFragments = ({ index, parent }) => {
       setFieldValue(fieldPath, sugestaoInicial);
       setCurrentValue(sugestaoInicial);
     } else {
-      setFieldValue(fieldPath, undefined);
+      // valor lógico = "0", input exibido como ""
+      setFieldValue(fieldPath, valorPadrao);
       setCurrentValue(valorPadrao);
     }
   };

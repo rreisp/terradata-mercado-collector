@@ -8,8 +8,8 @@ const EF_OrganicMatter = ({ index, parent }) => {
   const { values, setFieldValue } = useFormikContext();
 
   const fieldPath = `${parent}.organicMatterPct[${index}]`;
-  const valorPadrao = "";
-  const sugestaoInicial = "0.5"; // ponto em vez de vírgula
+  const valorPadrao = "0";            // padrão agora é "0"
+  const sugestaoInicial = "0.5";      // já no formato correto
 
   // Função para normalizar separador decimal
   const normalizeValue = (val?: string | number) => {
@@ -33,7 +33,8 @@ const EF_OrganicMatter = ({ index, parent }) => {
       setFieldValue(fieldPath, sugestaoInicial);
       setCurrentValue(sugestaoInicial);
     } else {
-      setFieldValue(fieldPath, undefined);
+      // envia "0", input continua vazio
+      setFieldValue(fieldPath, valorPadrao);
       setCurrentValue(valorPadrao);
     }
   };

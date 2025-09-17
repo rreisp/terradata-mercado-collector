@@ -195,6 +195,14 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                                             console.log("Erros de validação:", errors);
                                             if (errors.ef_depth_test) {
                                                 console.log("Erros de validação:", errors.ef_depth_test);
+                                            }                                       
+
+                                            if (
+                                                typeof errors.ef_depth_test === "object" &&
+                                                errors.ef_depth_test !== null &&
+                                                "photos" in errors.ef_depth_test
+                                            ) {
+                                                console.log(errors.ef_depth_test.photos);
                                             }
 
                                             if (
@@ -203,8 +211,6 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                                                 "lithologies" in errors.ef_depth_test
                                             ) {
                                                 console.log(errors.ef_depth_test.lithologies);
-                                            } else {
-                                                console.log("Lithologies não disponível");
                                             }
                                         } else {
                                             handleSubmit(); // dispara o onSubmit se estiver válido
