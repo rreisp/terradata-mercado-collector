@@ -7,7 +7,6 @@ import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useLanguage } from "@/core/contexts/LanguageContext";
-import { values } from "@/core/constants/values";
 import { useOperationMode } from '@/core/contexts/OperationModeContext';
 import { Field } from "@/core/types/field";
 import { FormSchema } from "@/core/types/form-schema";
@@ -20,6 +19,7 @@ import { ActivityIndicator } from "@react-native-material/core";
 import { colors } from "@/core/constants/colors";
 
 import schemaRegistry from "@/app-instance/schemas";
+import { logos } from '@/app-instance/logos';
 
 const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, validate }: DynamicFormProps) => {
     const { language } = useLanguage();
@@ -163,7 +163,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                             </View>
                             <View style={styles.container}>
                                 <Image
-                                    source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
+                                    source={logos[schemaId]}
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
 

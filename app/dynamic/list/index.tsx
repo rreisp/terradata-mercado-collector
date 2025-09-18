@@ -16,6 +16,7 @@ import schemaRegistry from "@/app-instance/schemas";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
+import { logos } from '@/app-instance/logos';
 
 function formatDate(date: string, lang: string) {
     const day = date.substring(0, 2);
@@ -145,7 +146,8 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
                 <View style={[GlobalStyles.row]}>
                     <View style={[GlobalStyles.col12, styles.center]}>
                         <Image
-                            source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
+                            // source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
+                            source={logos[schemaId]}
                             style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                         />
                         <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
