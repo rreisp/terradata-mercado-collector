@@ -7,7 +7,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Induration = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
     const opcoes = {
         "pt-BR": [
             "Selecione",
@@ -32,12 +32,14 @@ const EF_Induration = ({ index, parent }) => {
         }
     }, []);
 
+    const fieldError = errors?.[parent]?.induration?.[index];
+
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.induration?.[index]-1] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.induration?.[index] - 1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
@@ -46,6 +48,7 @@ const EF_Induration = ({ index, parent }) => {
                     ))}
                 </Picker>
             </View>
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

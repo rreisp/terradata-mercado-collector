@@ -10,7 +10,7 @@ import { CrudService } from '@/core/services/crud.service';
 
 const EF_Lithology = ({ index, parent, start, end }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
 
     const opcoes = {
         "pt-BR": [
@@ -46,6 +46,8 @@ const EF_Lithology = ({ index, parent, start, end }) => {
     const valorInicialTipo = opcoes[language].indexOf(opcoes[language][0]);
     const pathBase = `${parent}.lithologies`;
     const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
+
+    const fieldsErrors = errors?.[parent]?.lithologies?.[index];
 
     // garante que o array `${parent}.lithologies[index]` sempre exista
     useEffect(() => {
@@ -145,57 +147,67 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                             </Text>
                         ) : (
                             lithologiesArray.map((item, subIndex: number) => (
-                                <View key={subIndex} style={[GlobalStyles.row, styles.row]}>
-                                    <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
-                                        <NumericInput
-                                            placeholder={language === 'pt-BR' ? `De` : `From`}
-                                            value={item.from}
-                                            onChange={(text: string) => {
-                                                handleChangeFrom(subIndex, text);
-                                            }}
-                                            step={1}
-                                            style={[GlobalStyles.input, styles.input]}
-                                        />
-                                    </View>
+                                <View key={subIndex}>
+                                    <View style={[GlobalStyles.row, styles.row]}>
+                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
+                                            <NumericInput
+                                                placeholder={language === 'pt-BR' ? `De` : `From`}
+                                                value={item.from}
+                                                onChange={(text: string) => {
+                                                    handleChangeFrom(subIndex, text);
+                                                }}
+                                                step={1}
+                                                style={[GlobalStyles.input, styles.input]}
+                                            />
+                                        </View>
 
-                                    <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
-                                        <NumericInput
-                                            placeholder={language === 'pt-BR' ? `Até` : `To`}
-                                            value={item.to}
-                                            onChange={(text: string) => {
-                                                handleChangeTo(subIndex, text);
-                                            }}
-                                            step={1}
-                                            style={[GlobalStyles.input, styles.input]}
-                                        />
-                                    </View>
+                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
+                                            <NumericInput
+                                                placeholder={language === 'pt-BR' ? `Até` : `To`}
+                                                value={item.to}
+                                                onChange={(text: string) => {
+                                                    handleChangeTo(subIndex, text);
+                                                }}
+                                                step={1}
+                                                style={[GlobalStyles.input, styles.input]}
+                                            />
+                                        </View>
 
-                                    <View style={{ flex: 1, marginRight: 3 }}>
-                                        <View style={GlobalStyles.pickerContainer}>
-                                            <Picker
-                                                selectedValue={opcoes[language][(item.type ?? valorInicialTipo) - 1]}
-                                                onValueChange={(itemValue) =>
-                                                    setFieldValue(
-                                                        `${pathBase}[${index}][${subIndex}].type`,
-                                                        opcoes[language].indexOf(itemValue) + 1
-                                                    )
-                                                }
-                                                style={GlobalStyles.picker}
+                                        <View style={{ flex: 1, marginRight: 3 }}>
+                                            <View style={GlobalStyles.pickerContainer}>
+                                                <Picker
+                                                    selectedValue={opcoes[language][(item.type ?? valorInicialTipo) - 1]}
+                                                    onValueChange={(itemValue) =>
+                                                        setFieldValue(
+                                                            `${pathBase}[${index}][${subIndex}].type`,
+                                                            opcoes[language].indexOf(itemValue) + 1
+                                                        )
+                                                    }
+                                                    style={GlobalStyles.picker}
+                                                >
+                                                    {opcoes[language].map((val) => (
+                                                        <Picker.Item key={val} label={`${val}`} value={`${val}`} />
+                                                    ))}
+                                                </Picker>
+                                            </View>
+                                        </View>
+
+                                        <View>
+                                            <TouchableOpacity
+                                                style={[GlobalStyles.warnButton, GlobalStyles.iconButton, { marginTop: 2 }]}
+                                                onPress={() => confirmarRemocao(remove, subIndex)}
                                             >
-                                                {opcoes[language].map((val) => (
-                                                    <Picker.Item key={val} label={`${val}`} value={`${val}`} />
-                                                ))}
-                                            </Picker>
+                                                <Icon name="trash" size={16} />
+                                            </TouchableOpacity>
                                         </View>
                                     </View>
 
-                                    <View>
-                                        <TouchableOpacity
-                                            style={[GlobalStyles.warnButton, GlobalStyles.iconButton, { marginTop: 2 }]}
-                                            onPress={() => confirmarRemocao(remove, subIndex)}
-                                        >
-                                            <Icon name="trash" size={16} />
-                                        </TouchableOpacity>
+                                    <View style={[GlobalStyles.row, styles.row]}>
+                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
+                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
+                                        <View style={{ flex: 1, marginRight: 3 }}>
+                                            {fieldsErrors && fieldsErrors[subIndex] && <Text style={GlobalStyles.errorText}>{fieldsErrors[subIndex].type}</Text>}
+                                        </View>
                                     </View>
                                 </View>
                             ))

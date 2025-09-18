@@ -8,7 +8,7 @@ import { useFormikContext } from 'formik';
 
 const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: boolean }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue, validationSchema } = useFormikContext();
+    const { values, setFieldValue, validationSchema, validateForm } = useFormikContext();
     // const [elements, setElements] = useState<{ id: number }[]>(values?.[parent]?.depth ?? []);
     const [segmentIds, setSegmentIds] = useState<{ id: number }[]>([]);
 
@@ -22,6 +22,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
             setSegmentIds([]);
         }
         setSegmentIds(prev => [...prev, { id }]);
+        validateForm(values);
     };
 
     const handleRemoveElement = (id: number) => {

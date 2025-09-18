@@ -7,7 +7,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Recovery = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
     const valorInicial = 0;
 
     const currentValue = values?.[parent]?.recovery?.[index];
@@ -16,6 +16,8 @@ const EF_Recovery = ({ index, parent }) => {
         setFieldValue(`${parent}.recovery[${index}]`, value)
     };
 
+    const fieldError = errors?.[parent]?.recovery?.[index];
+
     useEffect(() => {
         if (currentValue === undefined) {
             setFieldValue(`${parent}.recovery[${index}]`, valorInicial);
@@ -23,21 +25,24 @@ const EF_Recovery = ({ index, parent }) => {
     }, [currentValue, index, parent, setFieldValue]);
 
     return (
-        <View style={styles.container}>
-            <Text style={GlobalStyles.label}>
-                {language === 'pt-BR' ? 'Recuperação' : 'Recovery'}:
-            </Text>
-            <View>
-                <NumericInput
-                    step={0.01}
-                    value={currentValue ?? 0} // garante valor definido
-                    min={0}
-                    max={100}
-                    onChange={(value) =>
-                        handleChange(value)
-                    }
-                />
+        <View>
+            <View style={styles.container}>
+                <Text style={GlobalStyles.label}>
+                    {language === 'pt-BR' ? 'Recuperação' : 'Recovery'}:
+                </Text>
+                <View>
+                    <NumericInput
+                        step={0.01}
+                        value={currentValue ?? 0} // garante valor definido
+                        min={0}
+                        max={100}
+                        onChange={(value) =>
+                            handleChange(value)
+                        }
+                    />
+                </View>
             </View>
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

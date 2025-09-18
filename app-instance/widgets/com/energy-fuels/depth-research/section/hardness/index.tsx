@@ -7,7 +7,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Hardness = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
     const opcoes = {
         "pt-BR": [
             "Selecione",
@@ -36,12 +36,14 @@ const EF_Hardness = ({ index, parent }) => {
         }
     }, []);
 
+    const fieldError = errors?.[parent]?.hardness?.[index];
+
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.hardness?.[index]-1] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.hardness?.[index] - 1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
@@ -50,6 +52,7 @@ const EF_Hardness = ({ index, parent }) => {
                     ))}
                 </Picker>
             </View>
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

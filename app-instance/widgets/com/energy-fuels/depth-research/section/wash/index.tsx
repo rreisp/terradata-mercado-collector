@@ -7,7 +7,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Wash = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
     const opcoes = {
         "pt-BR": [
             "Selecione",
@@ -34,6 +34,8 @@ const EF_Wash = ({ index, parent }) => {
         }
     }, []);
 
+    const fieldError = errors?.[parent]?.wash?.[index];
+
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
@@ -48,6 +50,7 @@ const EF_Wash = ({ index, parent }) => {
                     ))}
                 </Picker>
             </View>
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

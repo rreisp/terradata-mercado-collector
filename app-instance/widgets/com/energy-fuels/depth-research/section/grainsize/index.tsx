@@ -7,7 +7,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Grainsize = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext<any>();
     const opcoes = {
         "pt-BR": [
             "Selecione",
@@ -38,12 +38,14 @@ const EF_Grainsize = ({ index, parent }) => {
         }
     }, []);
 
+    const fieldError = errors?.[parent]?.grainsize?.[index];
+
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.grainsize?.[index]-1] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.grainsize?.[index] - 1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
@@ -52,6 +54,7 @@ const EF_Grainsize = ({ index, parent }) => {
                     ))}
                 </Picker>
             </View>
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

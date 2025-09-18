@@ -7,7 +7,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Sorting = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
     const opcoes = {
         "pt-BR": [
             "Selecione",
@@ -30,6 +30,8 @@ const EF_Sorting = ({ index, parent }) => {
     // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
     const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
+    const fieldError = errors?.[parent]?.sorting?.[index];
+
     useEffect(() => {
         if (!values?.[parent]?.sorting || !values?.[parent]?.sorting[index]) {
             setFieldValue(`${parent}.sorting[${index}]`, valorInicial);
@@ -41,7 +43,7 @@ const EF_Sorting = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade granulométrica` : `Sorting`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.sorting?.[index]-1] || valorInicial}
+                    selectedValue={opcoes[language][values?.[parent]?.sorting?.[index] - 1] || valorInicial}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
                     style={GlobalStyles.picker}
                 >
@@ -50,6 +52,7 @@ const EF_Sorting = ({ index, parent }) => {
                     ))}
                 </Picker>
             </View>
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

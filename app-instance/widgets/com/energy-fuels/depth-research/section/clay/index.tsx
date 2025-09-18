@@ -1,17 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import { useFormikContext } from 'formik';
 import ConditionalNumericInput from '@/core/components/widgets/conditional-numeric';
+import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
+import { EnergyFuelsDrillingValidator } from '@/app-instance/scripts/validate';
+import * as Yup from 'yup';
 
 const EF_Clay = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
 
     const fieldPath = `${parent}.clayPct[${index}]`;
-    const valorPadrao = "0";           // padrão agora é "0"
-    const sugestaoInicial = "0.5";     // já com ponto decimal
+    const validatorInstance = new EnergyFuelsDrillingValidator();
 
-    // Normaliza para ponto decimal
+    // Obtém o schema completo de ef_depth_research
+    const fieldSchema = validatorInstance.ef_depth_research({ type: 'ef_depth_research' }, language);
+    // Extrai a validação específica de clayPct
+    const claySchema: Yup.NumberSchema = fieldSchema.fields['clayPct'].innerType;
+
+    // Função auxiliar para pegar mensagens
+    const getMessage = (testName: string, defaultMsg: string) => {
+        const tests = claySchema.tests || [];
+        const test = tests.find(t => t.OPTIONS?.name === testName);
+        return test?.OPTIONS?.message || defaultMsg;
+    };
+
+    const valorPadrao = "0";
+    const sugestaoInicial = "0.5";
+
     const normalizeValue = (val?: string | number) => {
         if (val === undefined || val === null || val === "") return valorPadrao;
         return String(val).replace(",", ".");
@@ -21,19 +38,18 @@ const EF_Clay = ({ index, parent }) => {
     const [currentValue, setCurrentValue] = useState(initialValue);
     const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
 
-    // garante sincronização inicial com Formik
+    const fieldError = errors?.[parent]?.clayPct?.[index];
+
     useEffect(() => {
         setFieldValue(fieldPath, currentValue);
     }, []);
 
     const handleCheckChange = (checked: boolean) => {
         setIsChecked(checked);
-
         if (checked) {
             setFieldValue(fieldPath, sugestaoInicial);
             setCurrentValue(sugestaoInicial);
         } else {
-            // valor lógico deve ser "0", mas input mostra ""
             setFieldValue(fieldPath, valorPadrao);
             setCurrentValue(valorPadrao);
         }
@@ -45,18 +61,25 @@ const EF_Clay = ({ index, parent }) => {
         setCurrentValue(normalized);
     };
 
+    // Pega mensagens de validação
+    const minMsg = getMessage('min', language == "pt-BR" ? 'Valor mínimo inválido' : 'Invalid minimum value');
+    const maxMsg = getMessage('max', language == "pt-BR" ? 'Valor máximo inválido' : 'Invalid maximum value');
+
     return (
-        <ConditionalNumericInput
-            label={language === 'pt-BR' ? 'Argila:' : 'Clay:'}
-            value={currentValue}
-            defaultValue={sugestaoInicial}
-            onChange={handleValueChange}
-            checked={isChecked}
-            onCheckChange={handleCheckChange}
-            step={0.01}
-            min={0}
-            max={100}
-        />
+        <View>
+            <ConditionalNumericInput
+                label={language === 'pt-BR' ? 'Argila:' : 'Clay:'}
+                value={currentValue}
+                defaultValue={sugestaoInicial}
+                onChange={handleValueChange}
+                checked={isChecked}
+                onCheckChange={handleCheckChange}
+                step={0.01}
+                min={(claySchema as any)._exclusive?.min || 0}
+                max={(claySchema as any)._exclusive?.max || 1}
+            />
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
+        </View>
     );
 };
 

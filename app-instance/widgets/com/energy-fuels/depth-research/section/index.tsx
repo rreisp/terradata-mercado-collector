@@ -77,7 +77,6 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                         <View style={GlobalStyles.col}>
                             <EF_Depth
                                 index={index}
-                                editable={index === size - 1}
                                 parent={parent}
                             />
                         </View>

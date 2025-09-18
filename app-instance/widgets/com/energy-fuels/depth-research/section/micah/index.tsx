@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import { useFormikContext } from 'formik';
 import ConditionalNumericInput from '@/core/components/widgets/conditional-numeric';
+import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Micah = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
 
     const fieldPath = `${parent}.micahPct[${index}]`;
     const valorPadrao = "0";          // agora padrão é "0"
@@ -20,6 +22,8 @@ const EF_Micah = ({ index, parent }) => {
     const initialValue = normalizeValue(values?.[parent]?.micahPct?.[index]);
     const [currentValue, setCurrentValue] = useState(initialValue);
     const [isChecked, setIsChecked] = useState(parseFloat(initialValue) > 0);
+
+    const fieldError = errors?.[parent]?.micahPct?.[index];
 
     // sincroniza inicial com formik
     useEffect(() => {
@@ -46,17 +50,20 @@ const EF_Micah = ({ index, parent }) => {
     };
 
     return (
-        <ConditionalNumericInput
-            label={language === 'pt-BR' ? 'Mica:' : 'Micah:'}
-            value={currentValue}
-            defaultValue={sugestaoInicial}
-            onChange={handleValueChange}
-            checked={isChecked}
-            onCheckChange={handleCheckChange}
-            step={0.01}
-            min={0}
-            max={100}
-        />
+        <View>
+            <ConditionalNumericInput
+                label={language === 'pt-BR' ? 'Mica:' : 'Micah:'}
+                value={currentValue}
+                defaultValue={sugestaoInicial}
+                onChange={handleValueChange}
+                checked={isChecked}
+                onCheckChange={handleCheckChange}
+                step={0.01}
+                min={0}
+                max={100}
+            />
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
+        </View>
     );
 };
 

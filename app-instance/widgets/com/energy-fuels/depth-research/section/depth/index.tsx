@@ -3,14 +3,17 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
+import NumericInput from '@/core/components/widgets/numeric';
 
-const EF_Depth = ({ index, editable, parent }) => {
+const EF_Depth = ({ index, parent }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue } = useFormikContext();
+    const { values, setFieldValue, errors } = useFormikContext();
 
     const previousTo = values?.[parent]?.depth?.[index - 1]?.to ?? 0;
     const currentFrom = values?.[parent]?.depth?.[index]?.from;
     const currentTo = values?.[parent]?.depth?.[index]?.to;
+
+    const fieldError = errors?.[parent]?.depth?.[index]?.to;
 
     // Set valorInicialFrom uma vez
     useEffect(() => {
@@ -44,31 +47,31 @@ const EF_Depth = ({ index, editable, parent }) => {
             </Text>
             <View style={[GlobalStyles.row, { marginRight: 5 }]}>
                 <View style={[GlobalStyles.col6]}>
-                    <TextInput
-                        style={{
-                            ...GlobalStyles.input,
-                            ...GlobalStyles.disabledInput
-                        }}
-                        placeholder={language === 'pt-BR' ? 'De' : 'From'}
-                        keyboardType="numeric"
+                    <NumericInput
+                        step={1}
                         value={String(currentFrom ?? '')}
-                        onChangeText={(text) => handleChangeFrom(text)}
-                        editable={false}
+                        placeholder={language === 'pt-BR' ? 'De' : 'From'}                        
+                        min={0}
+                        onChange={(value) =>
+                            handleChangeFrom(value)
+                        }
                     />
                 </View>
                 <View style={GlobalStyles.col6}>
-                    <TextInput
-                        style={{
-                            ...GlobalStyles.input,
-                            ...(editable ? {} : GlobalStyles.disabledInput)
-                        }}
-                        placeholder={language === 'pt-BR' ? 'Até' : 'To'}
-                        keyboardType="numeric"
+                    <NumericInput
+                        step={1}
                         value={String(currentTo ?? '')}
-                        onChangeText={(text) => handleChangeTo(text)}
-                        editable={editable}
+                        placeholder={language === 'pt-BR' ? 'Até' : 'To'}                        
+                        min={0}
+                        onChange={(value) =>
+                            handleChangeTo(value)
+                        }
                     />
                 </View>
+            </View>
+            <View style={[GlobalStyles.row, { marginRight: 5 }]}>
+                <View style={[GlobalStyles.col6]}></View>
+                <View style={[GlobalStyles.col6]}>{fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}</View>
             </View>
         </View>
     );
