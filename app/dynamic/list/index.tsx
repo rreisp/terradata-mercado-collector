@@ -145,7 +145,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
                 <View style={[GlobalStyles.row]}>
                     <View style={[GlobalStyles.col12, styles.center]}>
                         <Image
-                            source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                            source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
                             style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                         />
                         <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>

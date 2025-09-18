@@ -33,16 +33,16 @@ export default function Index() {
         style={[GlobalStyles.container, GlobalStyles.centered]}
       >
         <Image
-          source={require('../assets/images/EnergyFuels-Logo.png')}
+          source={require('../assets/images/capturewise.png')}
           style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
         />
 
         <Text style={[GlobalStyles.title, styles.title]}>
-          FIELD<Text style={{ color: colors.grey }}>COLLECTOR</Text>
+          CAPTURE<Text style={{ color: colors.grey }}>WISE</Text>
         </Text>
 
         <Text style={GlobalStyles.textMuted}>
-          POWERED BY CAPTUREWISE
+          POWERED BY TERRADATA
         </Text>
 
         <View style={[GlobalStyles.row, styles.row]}>

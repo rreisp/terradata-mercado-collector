@@ -85,7 +85,7 @@ const Tools = () => {
                         <>
                             <SafeAreaView>
                                 <Image
-                                    source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                    source={require('../../assets/images/capturewise.png')}
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
                             </SafeAreaView>

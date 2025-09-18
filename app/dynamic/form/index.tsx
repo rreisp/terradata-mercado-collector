@@ -163,7 +163,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                             </View>
                             <View style={styles.container}>
                                 <Image
-                                    source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                                    source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
 
@@ -195,7 +195,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                                             console.log("Erros de validação:", errors);
                                             if (errors.ef_depth_test) {
                                                 console.log("Erros de validação:", errors.ef_depth_test);
-                                            }                                       
+                                            }
 
                                             if (
                                                 typeof errors.ef_depth_test === "object" &&
