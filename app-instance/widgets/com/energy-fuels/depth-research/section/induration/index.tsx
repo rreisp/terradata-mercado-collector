@@ -11,12 +11,14 @@ const EF_Induration = ({ index, parent }) => {
     const opcoes = {
         "pt-BR": [
             "Selecione",
+            "Nenhuma",
             "Calcária",
             "Arenosa",
             "Ferro"
         ],
         "en-US": [
             "Select",
+            "None",            
             "Limestone",
             "Sandy",
             "Iron"

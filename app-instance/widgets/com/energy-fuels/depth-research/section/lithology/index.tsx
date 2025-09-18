@@ -201,14 +201,15 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-
-                                    <View style={[GlobalStyles.row, styles.row]}>
-                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
-                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
-                                        <View style={{ flex: 1, marginRight: 3 }}>
-                                            {fieldsErrors && fieldsErrors[subIndex] && <Text style={GlobalStyles.errorText}>{fieldsErrors[subIndex].type}</Text>}
+                                    {fieldsErrors &&
+                                        <View style={[GlobalStyles.row, styles.row]}>
+                                            <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
+                                            <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
+                                            <View style={{ flex: 1, marginRight: 3 }}>
+                                                {fieldsErrors && fieldsErrors[subIndex] && <Text style={GlobalStyles.errorText}>{fieldsErrors[subIndex].type}</Text>}
+                                            </View>
                                         </View>
-                                    </View>
+                                    }
                                 </View>
                             ))
                         )}

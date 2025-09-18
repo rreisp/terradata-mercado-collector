@@ -46,15 +46,15 @@ const NumericInput = ({
         }
 
         if (num < min) {
-            onChange(min.toString());
+            onChange(Number(min.toString()));
             return;
         }
         if (num > max) {
-            onChange(max.toString());
+            onChange(Number(max.toString()));
             return;
         }
 
-        onChange(text); // mantém o texto do usuário (sem forçar casas decimais)
+        onChange(Number(text));
     };
 
     const handleBlur = () => {

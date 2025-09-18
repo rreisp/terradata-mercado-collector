@@ -16,7 +16,9 @@ const EF_Grainsize = ({ index, parent }) => {
             "Média",
             "Grossa",
             "Muito grossa",
-            "Cascalho"
+            "Cascalho",
+            "Silte",
+            "Argila"
         ],
         "en-US": [
             "Select",
@@ -25,7 +27,9 @@ const EF_Grainsize = ({ index, parent }) => {
             "Medium",
             "Coarse",
             "Very coarse",
-            "Gravel"
+            "Gravel",
+            "Silt",
+            "Clay"
         ]
     };
 
