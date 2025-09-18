@@ -83,7 +83,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                 Yup.object({
                     from: Yup.number()
                         .integer('Deve ser um número inteiro')
-                        .min(1, 'Valor deve ser maior que 0')
+                        .min(0, 'Valor deve ser maior ou igual a 0')
                         .required('Campo obrigatório'),
                     to: Yup.number()
                         .integer('Deve ser um número inteiro')

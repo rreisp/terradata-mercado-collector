@@ -13,7 +13,8 @@ const EF_Depth = ({ index, parent }) => {
     const currentFrom = values?.[parent]?.depth?.[index]?.from;
     const currentTo = values?.[parent]?.depth?.[index]?.to;
 
-    const fieldError = errors?.[parent]?.depth?.[index]?.to;
+    const fieldToError = errors?.[parent]?.depth?.[index]?.to;
+    const fieldFromError = errors?.[parent]?.depth?.[index]?.from;
 
     // Set valorInicialFrom uma vez
     useEffect(() => {
@@ -48,6 +49,10 @@ const EF_Depth = ({ index, parent }) => {
             <View style={[GlobalStyles.row, { marginRight: 5 }]}>
                 <View style={[GlobalStyles.col6]}>
                     <NumericInput
+                        style={{
+                            ...GlobalStyles.input,
+                            ...GlobalStyles.disabledInput
+                        }}                    
                         step={1}
                         value={String(currentFrom ?? '')}
                         placeholder={language === 'pt-BR' ? 'De' : 'From'}                        
@@ -55,6 +60,7 @@ const EF_Depth = ({ index, parent }) => {
                         onChange={(value) =>
                             handleChangeFrom(value)
                         }
+                        editable={false}
                     />
                 </View>
                 <View style={GlobalStyles.col6}>
@@ -70,8 +76,8 @@ const EF_Depth = ({ index, parent }) => {
                 </View>
             </View>
             <View style={[GlobalStyles.row, { marginRight: 5 }]}>
-                <View style={[GlobalStyles.col6]}></View>
-                <View style={[GlobalStyles.col6]}>{fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}</View>
+                <View style={[GlobalStyles.col6]}>{fieldFromError && <Text style={GlobalStyles.errorText}>{fieldFromError}</Text>}</View>
+                <View style={[GlobalStyles.col6]}>{fieldToError && <Text style={GlobalStyles.errorText}>{fieldToError}</Text>}</View>
             </View>
         </View>
     );
