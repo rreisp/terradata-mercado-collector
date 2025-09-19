@@ -54,7 +54,7 @@ const NumericInput = ({
             return;
         }
 
-        onChange(Number(text));
+        onChange(text); // mantém string durante edição
     };
 
     const handleBlur = () => {
@@ -64,8 +64,12 @@ const NumericInput = ({
         if (isNaN(num) || num < min || num > max) {
             onChange('');
         } else {
-            // mantém como string simples, sem toFixed
-            onChange(num.toString());
+            // força número final com casas decimais definidas pelo step
+            if (maxDecimais > 0) {
+                onChange(num.toFixed(maxDecimais));
+            } else {
+                onChange(num.toString());
+            }
         }
     };
 

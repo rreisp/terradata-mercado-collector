@@ -19,18 +19,11 @@ const EF_Clay = ({ index, parent }) => {
     // Extrai a validação específica de clayPct
     const claySchema: Yup.NumberSchema = fieldSchema.fields['clayPct'].innerType;
 
-    // Função auxiliar para pegar mensagens
-    const getMessage = (testName: string, defaultMsg: string) => {
-        const tests = claySchema.tests || [];
-        const test = tests.find(t => t.OPTIONS?.name === testName);
-        return test?.OPTIONS?.message || defaultMsg;
-    };
-
-    const valorPadrao = "0";
-    const sugestaoInicial = "0.5";
+    const valorPadrao = "0.00";
+    const sugestaoInicial = "0.50";
 
     const normalizeValue = (val?: string | number) => {
-        if (val === undefined || val === null || val === "") return valorPadrao;
+        if (val === undefined || val === null) return valorPadrao;
         return String(val).replace(",", ".");
     };
 
@@ -61,14 +54,14 @@ const EF_Clay = ({ index, parent }) => {
         setCurrentValue(normalized);
     };
 
-    // Pega mensagens de validação
-    const minMsg = getMessage('min', language == "pt-BR" ? 'Valor mínimo inválido' : 'Invalid minimum value');
-    const maxMsg = getMessage('max', language == "pt-BR" ? 'Valor máximo inválido' : 'Invalid maximum value');
+    // // Pega mensagens de validação
+    // const minMsg = getMessage('min', language == "pt-BR" ? 'Valor mínimo inválido' : 'Invalid minimum value');
+    // const maxMsg = getMessage('max', language == "pt-BR" ? 'Valor máximo inválido' : 'Invalid maximum value');
 
     return (
         <View>
             <ConditionalNumericInput
-                label={language === 'pt-BR' ? 'Argila:' : 'Clay:'}
+                label={language === 'pt-BR' ? 'Argila (%):' : 'Clay (%):'}
                 value={currentValue}
                 defaultValue={sugestaoInicial}
                 onChange={handleValueChange}
@@ -76,7 +69,7 @@ const EF_Clay = ({ index, parent }) => {
                 onCheckChange={handleCheckChange}
                 step={0.01}
                 min={(claySchema as any)._exclusive?.min || 0}
-                max={(claySchema as any)._exclusive?.max || 1}
+                max={(claySchema as any)._exclusive?.max || 100}
             />
             {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>

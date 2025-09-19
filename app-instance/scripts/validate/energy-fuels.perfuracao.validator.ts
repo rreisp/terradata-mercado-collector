@@ -101,7 +101,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             // --------------------------------------------
             recovery: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
+                    // .integer('Deve ser um número inteiro')
                     .min(0, 'O valor deve ser no mínimo 0')
                     .max(100, 'O valor deve ser no máximo 100')
                     .required('Campo obrigatório')
@@ -177,7 +177,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             clayPct: Yup.array().of(
                 Yup.number()
                     .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(1, 'O valor deve ser no máximo 1.00')
+                    .max(100, 'O valor deve ser no máximo 1.00')
                     .test(
                         'max-2-decimals',
                         'Máximo de 2 casas decimais',
@@ -192,7 +192,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             micahPct: Yup.array().of(
                 Yup.number()
                     .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(1, 'O valor deve ser no máximo 1.00')
+                    .max(100, 'O valor deve ser no máximo 1.00')
                     .test(
                         'max-2-decimals',
                         'Máximo de 2 casas decimais',
@@ -207,7 +207,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             shellsPct: Yup.array().of(
                 Yup.number()
                     .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(1, 'O valor deve ser no máximo 1.00')
+                    .max(100, 'O valor deve ser no máximo 1.00')
                     .test(
                         'max-2-decimals',
                         'Máximo de 2 casas decimais',
@@ -222,7 +222,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             organicMatterPct: Yup.array().of(
                 Yup.number()
                     .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(1, 'O valor deve ser no máximo 1.00')
+                    .max(100, 'O valor deve ser no máximo 1.00')
                     .test(
                         'max-2-decimals',
                         'Máximo de 2 casas decimais',
@@ -237,7 +237,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             lithicFragmentsPct: Yup.array().of(
                 Yup.number()
                     .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(1, 'O valor deve ser no máximo 1.00')
+                    .max(100, 'O valor deve ser no máximo 1.00')
                     .test(
                         'max-2-decimals',
                         'Máximo de 2 casas decimais',

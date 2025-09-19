@@ -28,7 +28,7 @@ const EF_Recovery = ({ index, parent }) => {
         <View>
             <View style={styles.container}>
                 <Text style={GlobalStyles.label}>
-                    {language === 'pt-BR' ? 'Recuperação' : 'Recovery'}:
+                    {language === 'pt-BR' ? 'Recuperação (%)' : 'Recovery (%)'}:
                 </Text>
                 <View>
                     <NumericInput

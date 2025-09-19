@@ -42,10 +42,10 @@ const EF_HMS = ({ index, parent }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>%HMS:</Text>
+            <Text style={GlobalStyles.label}>HMS (%):</Text>
             <View>
                 <NumericInput
-                    step={0.01}
+                    step={0.1}
                     min={(hmsSchema as any)._exclusive?.moreThan ?? 0}
                     max={undefined}
                     value={val}

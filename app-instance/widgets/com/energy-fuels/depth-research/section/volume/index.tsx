@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import NumericInput from '@/core/components/widgets/numeric';
@@ -9,14 +9,19 @@ const EF_Volume = ({ index, parent }) => {
     const valorInicial = 0;
 
     const currentValue = values?.[parent]?.volume?.[index];
-
     const fieldError = errors?.[parent]?.volume?.[index];
 
     useEffect(() => {
-        if (currentValue === undefined) {
+        if (currentValue === undefined || currentValue === null) {
             setFieldValue(`${parent}.volume[${index}]`, valorInicial);
         }
     }, [currentValue, index, parent, setFieldValue]);
+
+    const handleChange = (text: string) => {
+        // NumericInput já lida com a validação e formatação.
+        // Apenas repassa o valor para o Formik.
+        setFieldValue(`${parent}.volume[${index}]`, text);
+    };
 
     return (
         <View>
@@ -24,8 +29,10 @@ const EF_Volume = ({ index, parent }) => {
                 <Text style={GlobalStyles.label}>Volume (cm³):</Text>
                 <View>
                     <NumericInput
-                        value={currentValue ?? 0} // garante valor definido
-                        onChange={(text) => setFieldValue(`${parent}.volume[${index}]`, text)} />
+                        step={0.01}
+                        value={currentValue}
+                        onChange={handleChange}
+                    />
                 </View>
             </View>
             {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
