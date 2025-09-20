@@ -16,6 +16,10 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
         setSegmentIds(values?.[parent]?.segmentIds?.map(id => ({ id })));
     }, []);
 
+    useEffect(() => {
+        validateForm(values);
+    }, [values]);
+
     const handleAddElement = () => {
         const id = Date.now();
         if (!segmentIds) {
@@ -29,10 +33,27 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
         const confirmAndRemove = () => {
             const index = segmentIds.findIndex(el => el.id === id);
             if (index !== -1) {
-                setSegmentIds(prev => prev.filter((_, i) => i !== index));
+                // Crie um novo array de ids sem o elemento removido
+                const newSegmentIds = segmentIds.filter((_, i) => i !== index);
+
+                // Crie uma cópia do objeto ef_depth_test para modificá-lo
+                const newEfDepthTest = { ...values.ef_depth_test };
+
+                // Itere sobre as chaves de ef_depth_test
+                for (const key in newEfDepthTest) {
+                    const array = newEfDepthTest[key];
+                    // Verifique se a propriedade é um array e remova o elemento
+                    if (Array.isArray(array)) {
+                        newEfDepthTest[key] = array.filter((_, i) => i !== index);
+                    }
+                }
+                // Atualize o estado local dos ids
+                setSegmentIds(newSegmentIds);
+                // Atualize o Formik para refletir as mudanças em todos os arrays
+                setFieldValue('ef_depth_test', newEfDepthTest);
             }
-            console.log(validationSchema);
         };
+
         const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o segmento?` : `Are you sure you want to remove the segment?`);
         if (Platform.OS === 'web') {
             const confirmed = window.confirm(msg);
@@ -59,7 +80,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
                     <View key={segment.id}>
                         <Section editMode={editMode} index={index} segmentId={segment.id} size={segmentIds.length} parent={parent} />
                         <View>
-                            {index == segmentIds.length - 1 &&
+                            {index == segmentIds.length - 1 && index > 0 &&
                                 <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}>
                                     <View style={GlobalStyles.row}>
                                         <Icon name="trash" size={16} color="#fff" style={styles.icon} />

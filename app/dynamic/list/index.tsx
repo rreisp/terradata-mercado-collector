@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert } from "react-native";
+import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, Platform } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -72,8 +72,30 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
     }
 
     async function handleDelete(rootItemId: number): Promise<void> {
-        onDelete(rootItemId);
-        setRecords((prevRecords) => prevRecords.filter(record => record.id !== rootItemId));
+        const confirmAndDelete = () => {
+            onDelete(rootItemId);
+            setRecords((prevRecords) => prevRecords.filter(record => record.id !== rootItemId));
+        };
+
+        const message = language === "pt-BR" ?
+            `Tem certeza que deseja remover o item com o ID ${rootItemId}?` : `Are you sure you want to remove the item with ID ${rootItemId}?`;
+
+        if (Platform.OS === 'web') {
+            const confirmed = window.confirm(message);
+            if (confirmed) {
+                confirmAndDelete();
+            }
+        } else {
+            Alert.alert(
+                'Confirmação de Exclusão',
+                message,
+                [
+                    { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
+                    { text: language === "pt-BR" ? 'Excluir' : "Remove", style: 'destructive', onPress: confirmAndDelete }
+                ],
+                { cancelable: true }
+            );
+        }
     }
 
     async function handleEdit(id: number): Promise<void> {
