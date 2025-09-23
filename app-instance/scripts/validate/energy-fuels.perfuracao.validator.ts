@@ -1,277 +1,244 @@
-// import { Alert } from "react-native";
 import * as Yup from "yup";
-import { Field } from "@/core/types/field";
 import { DataValidator } from "@/core/types/data-validator";
 import { DefaultFieldValidator } from "@/core/validation/default-field-validator";
+import { Field } from "@/core/types/field";
 
 export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implements DataValidator {
+    titleRegex = /^[A-Z]{2}\d{3}-\d{3}$/;
+    tenementRegex = /^\d{3}\.\d{3}\/\d{4}$/;
+
     validate(field: Field, language: string): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
+        const requiredMsg = this.message('required', language);
+        const formatMsg = language === 'pt-BR' ? 'O formato deve ser ' : 'The format should be ';
+
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
+        const validators = {
+            title: Yup.string()
+                .required(requiredMsg)
+                .matches(this.titleRegex, formatMsg + 'AA000-000'),
+            tenement: Yup.string()
+                .required(requiredMsg)
+                .matches(this.tenementRegex, formatMsg + '000.000/0000'),
+            landowner: Yup.string()
+                .required(requiredMsg),
+            ef_depth_test: this.ef_depth_research(field, language)
+        };
 
-        switch (field.type) {
-            case "ef_depth_research":
-                validator = this.ef_depth_research(field, language);
-                break;
-            default:
-                // chama método da superclasse dinamicamente
-                // const fn = super[field.type as keyof DefaultFieldValidator] as (field: Field, language: string) => Yup.ObjectSchema<any>;
-                validator = DefaultFieldValidator.createValidator(field, language);
-                // validator = fn(field, language);
-                break;
+        if (field.id in validators) {
+            validator = validators[field.id];
+        } else {
+            validator = this.createValidator(field, language);
         }
-
         return validator;
     }
 
     //  
     ef_depth_research(field: Field, language: string): Yup.ObjectSchema<any> {
         const isPt = language === "pt-BR";
-
-        const message = {
-            required: isPt ? "Campo obrigatório" : "Required field",
-            invalid: isPt ? "Valor inválido" : "Invalid value",
-        };
-
-        const requiredText = isPt ? 'Campo obrigatório' : 'Required field';
+        const integerMsg = this.message('integer', language);
+        const requiredMsg = this.message('required', language);
+        const greaterThanMsg = this.message('greaterThanMsg', language);
+        const greaterOrEqualToMsg = this.message('greaterOrEqualTo', language);
+        const minimumMsg = this.message('minimum', language);
+        const maximumMsg = this.message('maximum', language);
+        const finalGreaterThanInitialMsg = isPt ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
+        const selectOptionMsg = this.message('selectOption', language);
+        
 
         let validator = Yup.object({
-            // --------------------------------------------            
-            // title: Yup.string()
-            //     .required('O título é obrigatório')
-            //     .min(3, 'O título deve ter ao menos 3 caracteres'),
-            // --------------------------------------------                
-            // ef_coordinates: Yup.object({
-            //     easting: Yup.number()
-            //         .required(requiredText + "opa")
-            //         .typeError('Coordenada inválida'),
-            //     northing: Yup.number()
-            //         .required(requiredText)
-            //         .typeError('Coordenada inválida'),
-            //     elevation: Yup.number()
-            //         .required(requiredText)
-            //         .typeError('Elevação inválida'),
-            // }),
             // --------------------------------------------
-            // tenement: Yup.string()
-            //     .required(requiredText)
-            //     .min(3, 'Deve ter ao menos 3 caracteres'),
-            // // --------------------------------------------
-            // landowner: Yup.string()
-            //     .required(requiredText)
-            //     .min(3, 'Deve ter ao menos 3 caracteres'),
-            // --------------------------------------------
-            // ef_dates: Yup.object({
-            //     start: Yup.date()
-            //         .required('Campo obrigatório')
-            //         .typeError('Data inválida'),
-            //     end: Yup.date()
-            //         .required('Campo obrigatório')
-            //         .typeError('Data inválida')
-            // }).test(
-            //     'startBeforeEnd',
-            //     'Data de início deve ser menor ou igual à data de fim',
-            //     (value) => {
-            //         if (!value) return true; // caso seja null/undefined
-            //         const { start, end } = value;
-            //         return !start || !end || start <= end;
-            //     }
-            // ),
-            // --------------------------------------------            
-            // reason: Yup.string().nullable(),
-            // --------------------------------------------     
             depth: Yup.array().of(
                 Yup.object({
                     from: Yup.number()
-                        .integer('Deve ser um número inteiro')
-                        .min(0, 'Valor deve ser maior ou igual a 0')
-                        .required('Campo obrigatório'),
+                        .integer(integerMsg)
+                        .min(0, greaterOrEqualToMsg + ' 0')
+                        .required(requiredMsg),
                     to: Yup.number()
-                        .integer('Deve ser um número inteiro')
-                        .min(1, 'Valor deve ser maior que 0')
-                        .required('Campo obrigatório')
+                        .integer(integerMsg)
+                        .min(1, greaterThanMsg + ' 0')
+                        .required(requiredMsg)
                 }).test(
                     'fromTo',
-                    'O valor final deve ser maior ou igual ao inicial',
+                    finalGreaterThanInitialMsg,
                     (val) => {
                         if (!val) return true;
-                        return val.to >= val.from;
+                        return val.to > val.from;
                     }
                 )
             ),
             // --------------------------------------------
             recovery: Yup.array().of(
                 Yup.number()
-                    // .integer('Deve ser um número inteiro')
-                    .min(0, 'O valor deve ser no mínimo 0')
-                    .max(100, 'O valor deve ser no máximo 100')
-                    .required('Campo obrigatório')
+                    .min(0, minimumMsg + ' 0')
+                    .max(100, this.message('maximum', language) + ' 100')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             moisture: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             volume: Yup.array().of(
                 Yup.number()
-                    .moreThan(0, 'O valor deve ser maior que 0')
+                    .moreThan(0, greaterThanMsg + ' 0')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) => (value === undefined || value === null) ? true : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             hardness: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             wash: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             color: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             induration: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             grainsize: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             sorting: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             roundness: Yup.array().of(
                 Yup.number()
-                    .integer('Deve ser um número inteiro')
-                    .min(1, 'Selecione uma opção')
-                    .required('Campo obrigatório')
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
             ),
             // --------------------------------------------              
             clayPct: Yup.array().of(
                 Yup.number()
-                    .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(100, 'O valor deve ser no máximo 1.00')
+                    .min(0, minimumMsg + ' 0')
+                    .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) =>
                             value === undefined || value === null
                                 ? true
                                 : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------              
             micahPct: Yup.array().of(
                 Yup.number()
-                    .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(100, 'O valor deve ser no máximo 1.00')
+                    .min(0, minimumMsg + ' 0')
+                    .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) =>
                             value === undefined || value === null
                                 ? true
                                 : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------              
             shellsPct: Yup.array().of(
                 Yup.number()
-                    .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(100, 'O valor deve ser no máximo 1.00')
+                    .min(0, minimumMsg + ' 0')
+                    .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) =>
                             value === undefined || value === null
                                 ? true
                                 : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------              
             organicMatterPct: Yup.array().of(
                 Yup.number()
-                    .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(100, 'O valor deve ser no máximo 1.00')
+                    .min(0, minimumMsg + ' 0')
+                    .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) =>
                             value === undefined || value === null
                                 ? true
                                 : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------              
             lithicFragmentsPct: Yup.array().of(
                 Yup.number()
-                    .min(0, 'O valor deve ser no mínimo 0.00')
-                    .max(100, 'O valor deve ser no máximo 1.00')
+                    .min(0, minimumMsg + ' 0')
+                    .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) =>
                             value === undefined || value === null
                                 ? true
                                 : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------  
             hms: Yup.array().of(
                 Yup.number()
-                    .moreThan(0, 'O valor deve ser maior que 0')
+                    .moreThan(0, greaterThanMsg + ' 0')
                     .test(
                         'max-2-decimals',
-                        'Máximo de 2 casas decimais',
+                        this.message('max2DecimalPlaces', language),
                         (value) => (value === undefined || value === null) ? true : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
-                    .required('Campo obrigatório')
+                    .required(requiredMsg)
             ),
             // --------------------------------------------                                        
             photos: Yup.array().of(
                 Yup.array().of(
                     Yup.object({
                         id: Yup.number()
-                            .integer('Deve ser um número inteiro')
+                            .integer(integerMsg)
                             .optional()
                             .nullable(),
                         fgk_segment: Yup.number()
                             .optional()
                             .nullable(),
                         img: Yup.string()
-                            .required('Campo obrigatório')
+                            .required(requiredMsg)
                     })
                 )
             ),
@@ -280,43 +247,39 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                 Yup.array().of(
                     Yup.object({
                         id: Yup.number()
-                            .integer('Deve ser um número inteiro')
+                            .integer(integerMsg)
                             .optional()
                             .nullable(),
                         fgk_segment: Yup.number()
-                            .integer('Deve ser um número inteiro')
-                            .moreThan(0, 'Deve ser maior que 0')
+                            .integer(integerMsg)
+                            .moreThan(0, greaterThanMsg + ' 0')
                             .optional()
                             .nullable(),
                         from: Yup.number()
-                            .integer('Deve ser um número inteiro')
-                            .min(0, 'Deve ser maior ou igual a 0')
-                            .required('Campo obrigatório'),
+                            .integer(integerMsg)
+                            .min(0, greaterThanMsg + ' 0')
+                            .required(requiredMsg),
                         to: Yup.number()
-                            .integer('Deve ser um número inteiro')
-                            .min(0, 'Deve ser maior ou igual a 0')
-                            .required('Campo obrigatório')
+                            .integer(integerMsg)
+                            .min(0, greaterThanMsg + ' 0')
+                            .required(requiredMsg)
                             .test(
                                 'depth-to-gte-from',
-                                'depth_to deve ser maior ou igual a from',
+                                finalGreaterThanInitialMsg,
                                 function (value) {
                                     return value >= this.parent.from;
                                 }
                             ),
                         type: Yup.number()
-                            .integer('Deve ser um número inteiro')
-                            .moreThan(0, 'Selecione uma opção')
-                            .required('Campo obrigatório'),
+                            .integer(integerMsg)
+                            .moreThan(0, selectOptionMsg)
+                            .required(requiredMsg),
                     })
                 )
             ),
             // --------------------------------------------    
             comments: Yup.array().of(Yup.string()),
         });
-
-        if (field.validations?.required) {
-            validator = validator.required(message.required);
-        }
 
         return validator;
     }

@@ -54,24 +54,10 @@
           "field": {
             "id": "title",
             "label": {
-              "pt-BR": "Perfuração ID:",
+              "pt-BR": "ID da Perfuração:",
               "en-US": "Drilling ID:"
             },
-            "type": "text",
-            "validations": {
-              "required": true,
-              "min_length": 5,
-              "messages": {
-                "required": {
-                  "pt-BR": "Campo obrigatório pow",
-                  "en-US": "Required field bro"
-                },
-                "min_length": {
-                  "pt-BR": "Comprimento mínimo: 5",
-                  "en-US": "Min length: 5"
-                }
-              }
-            }
+            "type": "text"
           },
           "size": {
             "xs": 12,
@@ -101,21 +87,7 @@
               "pt-BR": "Direito Minerário:",
               "en-US": "Tenement:"
             },
-            "type": "text",
-            "validations": {
-              "required": true,
-              "min_length": 1,
-              "messages": {
-                "required": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
-                },
-                "min_length": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
-                }
-              }
-            }
+            "type": "text"
           },
           "size": {
             "xs": 12,
@@ -132,21 +104,7 @@
               "pt-BR": "Superficiário:",
               "en-US": "Landowner:"
             },
-            "type": "text",
-            "validations": {
-              "required": true,
-              "min_length": 1,
-              "messages": {
-                "required": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
-                },
-                "min_length": {
-                  "pt-BR": "Campo obrigatório",
-                  "en-US": "Required field"
-                }
-              }
-            }
+            "type": "text"
           },
           "size": {
             "xs": 12,

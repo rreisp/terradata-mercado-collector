@@ -90,7 +90,7 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                             />
                         </View>
                         <View style={GlobalStyles.col}>
-                            <EF_Moisture
+                            <EF_Volume
                                 index={index}
                                 parent={parent}
                             />
@@ -99,7 +99,7 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
 
                     <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
-                            <EF_Volume
+                            <EF_Moisture
                                 index={index}
                                 parent={parent}
                             />
