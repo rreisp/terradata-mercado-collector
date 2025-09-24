@@ -37,7 +37,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         const isPt = language === "pt-BR";
         const integerMsg = this.message('integer', language);
         const requiredMsg = this.message('required', language);
-        const greaterThanMsg = this.message('greaterThanMsg', language);
+        const greaterThanMsg = this.message('greaterThan', language);
         const greaterOrEqualToMsg = this.message('greaterOrEqualTo', language);
         const minimumMsg = this.message('minimum', language);
         const maximumMsg = this.message('maximum', language);
