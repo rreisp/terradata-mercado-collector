@@ -20,6 +20,7 @@ import { CrudService } from "@/services/crud.service";
 import { DrillingRecord } from "@/types/drilling-record";
 import { Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import * as ExportCsvService from "@/services/export-csv.service";
 
 async function listDrillings(): Promise<DrillingRecord[]> {
     const drillings = await CrudService.list<DrillingRecord>('drillings');
@@ -94,13 +95,17 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
         navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
     }    
 
-    async function handleExport(table: string, ids: number[]): Promise<void> {
+    async function handleExport(table: string, id: number): Promise<void> {
         try {
-            await CrudService.exportToCsv(table, ids);
+            const resultCsv = await ExportCsvService.exportTableToCSV(table, id);            
+            console.log(resultCsv);           
+            const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', id);
+            const resultZip = await ExportCsvService.exportZIP(resultCsv, `${table}.csv`, resultImgs);
+            console.log(resultZip);
             // console.log(`Registro com ID ${id} removido com sucesso.`);
             // Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
         } catch (error) {
-            console.error('Erro ao remover o registro:', error);
+            console.error('Erro ao exportar', error);
             // O tratamento de erro já está dentro do CrudService.delete
         }
     }    
@@ -181,7 +186,7 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
                                     </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport(item.id)}>
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport('export',item.id)}>
                                             <Icon name="save" size={16} color="white" />
                                         </Pressable>
                                     </View>

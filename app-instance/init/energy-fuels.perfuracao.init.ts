@@ -201,39 +201,81 @@ export async function createOptionsTables():Promise<void>{
   }catch(error){
     console.error('erro ao criar a tabela de opções de esfericidade',error);
   }
+
+     try {
+    await CrudService.createTable('lithology',options);
+    await CrudService.insertMultiple('lithology',[
+      {'description':'Grupo Barreiras'},
+      {'description':'Argila'},
+      {'description':'Argila arenosa'},
+      {'description':'Silte'},
+      {'description':'Areia argilosa'},
+      {'description':'Areia siltosa'},
+      {'description':'Areia'},
+      {'description':'Areia cascalhosa'},
+      {'description':'Solo'},
+      {'description':'Calcário'},
+      {'description':'Rocha'}],'description');
+  }catch(error){
+    console.error('erro ao criar a tabela de opções de esfericidade',error);
+  }
 }
 
 export async function createExportView(): Promise<void> {
   try {
     const sql = `
-          SELECT
-      d.*,
-      s.fgk_drilling, s.depth_from ,s.depth_to ,s.recovery ,s.volume, s.clay ,s.micah ,s.shells ,s.organic_matter ,s.lithic_fragments , s.hms ,s.comments, 
-      m.description AS umidade, 
-      c.description AS cor,
-      g.description AS granulometria,
-      h.description AS dureza,
-      i.description AS cimentacao,
-      r.description AS esfericidade,
-      s2.description AS seletividade_granulometrica,
-      w.description AS deslamagem
-      FROM 
-      segments s 
-      LEFT JOIN drillings d ON d.id = s.fgk_drilling  
-      LEFT JOIN moisture m ON s.fgk_moisture =m.id 
-      LEFT JOIN color c ON c.id = s.fgk_color 
-      LEFT JOIN grainsize g ON g.id = s.fgk_grainsize 
-      LEFT JOIN hardness h ON h.id = s.fgk_grainsize 
-      LEFT JOIN induration i ON i.id = s.fgk_induration 
-      LEFT JOIN roundness r ON r.id = s.fgk_roundness 
-      LEFT JOIN sorting s2 ON s2.id = s.fgk_sorting 
-      LEFT JOIN wash w ON w.id = s.fgk_wash 
-    `;
+          select l.*, 
+            d.id as d_id, 
+            d.title,
+            d.easting ,
+            d.elevation ,
+            d.tenement ,
+            d.landowner ,
+            d.start_date ,
+            d.end_date ,
+            d.interruption_reason,
+            s.*,
+            m.description as umidade, 
+            c.description as cor,
+            g.description as granulometria,
+            h.description as dureza,
+            i.description as cimentacao,
+            r.description as esfericidade,
+            s2.description as seletividade_granulometrica,
+            w.description as deslamagem
+            from 
+            lithologies l 
+            left join lithology l2 on l.fgk_lithology_type = l2.id
+            left join segments s on s.id =l.fgk_segment 
+            LEFT join drillings d on d.id = s.fgk_drilling  
+            LEFT join moisture m on s.fgk_moisture =m.id 
+            LEFT join color c on c.id = s.fgk_color 
+            LEFT join grainsize g on g.id = s.fgk_grainsize 
+            LEFT join hardness h on h.id = s.fgk_grainsize 
+            LEFT join induration i on i.id = s.fgk_induration 
+            LEFT join roundness r on r.id = s.fgk_roundness 
+            LEFT join sorting s2 on s2.id = s.fgk_sorting 
+            LEFT join wash w on w.id = s.fgk_wash;
+          `;
     CrudService.createView('export', sql);
   } catch (error) {
     console.log('erro ao criar a view ', error);
   }
 }
+
+export async function createExportImagesView(): Promise<void> {
+  try {
+    const sql = `select i.*,s.fgk_drilling as d_id 
+            from images i 
+            left join segments s on i.fgk_segment = s.id
+            `;
+    CrudService.createView('export_images', sql);
+  } catch (error) {
+    console.log('erro ao criar a view ', error);
+  }
+}
+
+
 
 // -------------------------------------------------------------------
 export async function initDatabase(): Promise<void> {
@@ -249,6 +291,7 @@ export async function initDatabase(): Promise<void> {
   await CrudService.drop("grainsize");
   await CrudService.drop("sorting");
   await CrudService.drop("roundness");
+  await CrudService.drop("lithology");
 
   await createDrillingsTable();
   await new Promise(resolve => setTimeout(resolve, 100));
@@ -259,4 +302,5 @@ export async function initDatabase(): Promise<void> {
   await createLithologiesTable();
   await createOptionsTables();
   await createExportView();
+  await createExportImagesView();
 }
