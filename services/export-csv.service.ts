@@ -92,7 +92,7 @@ export async function exportZIP(
         // --- 3. Gerar e Salvar o Arquivo ZIP ---
         const zipFile = await zip.generateAsync({ type: 'base64' });
 
-        const zipPath = FileSystem.documentDirectory + '/arquivos_compactados.zip';
+        const zipPath = FileSystem.documentDirectory + 'arquivos_compactados.zip';
         await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
         
         console.log(`Arquivo ZIP criado em: ${zipPath}`);
