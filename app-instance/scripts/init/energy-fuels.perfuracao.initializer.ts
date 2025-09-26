@@ -15,10 +15,10 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     await this.createOptionsTables();
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    await this.createExportView();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await this.createExportImagesView();
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // await this.createExportView();
+    // await new Promise(resolve => setTimeout(resolve, 100));
+    // await this.createExportImagesView();
+    // await new Promise(resolve => setTimeout(resolve, 100));
   }
 
   // -------------------------------------------------------------------
@@ -234,61 +234,6 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
         { 'description': 'Rocha' }], 'description');
     } catch (error) {
       console.error('erro ao criar a tabela de opções de esfericidade', error);
-    }
-  }
-
-  // -------------------------------------------------------------------
-  private async createExportView(): Promise<void> {
-    try {
-      const sql = `
-            SELECT l.*, 
-              d.id AS d_id, 
-              d.title,
-              d.easting ,
-              d.elevation ,
-              d.tenement ,
-              d.landowner ,
-              d.start_date ,
-              d.end_date ,
-              d.interruption_reason,
-              s.*,
-              m.description AS umidade, 
-              c.description AS cor,
-              g.description AS granulometria,
-              h.description AS dureza,
-              i.description AS cimentacao,
-              r.description AS esfericidade,
-              s2.description AS seletividade_granulometrica,
-              w.description AS deslamagem
-              FROM 
-              lithologies l 
-              LEFT JOIN lithology l2 on l.fgk_lithology_type = l2.id
-              LEFT JOIN segments s on s.id =l.fgk_segment 
-              LEFT JOIN drillings d on d.id = s.fgk_drilling  
-              LEFT JOIN moisture m on s.fgk_moisture =m.id 
-              LEFT JOIN color c on c.id = s.fgk_color 
-              LEFT JOIN grainsize g on g.id = s.fgk_grainsize 
-              LEFT JOIN hardness h on h.id = s.fgk_grainsize 
-              LEFT JOIN induration i on i.id = s.fgk_induration 
-              LEFT JOIN roundness r on r.id = s.fgk_roundness 
-              LEFT JOIN sorting s2 on s2.id = s.fgk_sorting 
-              LEFT JOIN wash w on w.id = s.fgk_wash;
-            `;
-      CrudService.createView('export', sql);
-    } catch (error) {
-      console.log('erro ao criar a view ', error);
-    }
-  }
-
-  private async createExportImagesView(): Promise<void> {
-    try {
-      const sql = `SELECT i.*,s.fgk_drilling AS d_id 
-              FROM images i 
-              LEFT JOIN segments s on i.fgk_segment = s.id
-              `;
-      CrudService.createView('export_images', sql);
-    } catch (error) {
-      console.log('erro ao criar a view ', error);
     }
   }
 }

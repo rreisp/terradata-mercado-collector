@@ -189,6 +189,18 @@ export class CrudService {
         }
     }
 
+    static async dropView(viewName: string): Promise<void> {
+        const sql = `DROP VIEW IF EXISTS ${viewName}`;
+        try {
+            await this.runQuery(sql);
+        } catch (error) {
+            //logDetailedError(`Erro ao apagar view ${viewName}`, sql, [], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao apagar a view ${viewName}`, error));
+            throw error;
+        }
+    }
+
+
     static async lastInsertId(): Promise<number> {
         const sql = 'SELECT last_insert_rowid() AS id';
         try {

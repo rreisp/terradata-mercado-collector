@@ -112,7 +112,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
 
     async function handleExport(rootItemId: number): Promise<void> {
         setLoading(true);
-        await onExport(rootItemId);
+        await onExport(rootItemId, language);
         setLoading(false);
     }
 

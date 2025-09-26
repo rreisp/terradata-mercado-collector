@@ -1,3 +1,3 @@
 export interface DataExporter {
-    export(itemId: number): any;
+    export(itemId: number,  language: string): any;
 }
