@@ -147,7 +147,7 @@ export class CrudService {
             sql += ` OFFSET ?`;
             whereParams.push(offset);
         }
-        
+
         try {
             return await this.executeSql<T>(sql, whereParams);
         } catch (error) {
@@ -259,45 +259,45 @@ export class CrudService {
     }
 
     static async exportToCsv2(table: string, id: number): Promise<string> {
-    const sql = `SELECT * FROM ${table} WHERE d_id = ?`;
+        const sql = `SELECT * FROM ${table} WHERE d_id = ?`;
 
-    try {
-        const rows = await this.executeSql<Record<string, any>>(sql, [id]);
+        try {
+            const rows = await this.executeSql<Record<string, any>>(sql, [id]);
 
-        if (!rows.length) {
-            throw new Error(`Nenhum registro encontrado para o ID fornecido: ${id}.`);
+            if (!rows.length) {
+                throw new Error(`Nenhum registro encontrado para o ID fornecido: ${id}.`);
+            }
+
+            // Cabeçalho do CSV
+            const header = Object.keys(rows[0]).join(';');
+
+            // Função para formatar cada valor
+            const formatValue = (value: any) => {
+                if (typeof value === 'number') {
+                    // Substitui ponto por vírgula para decimais
+                    return value.toString().replace('.', ',');
+                }
+                if (value === null || value === undefined) {
+                    return '';
+                }
+                // Escapa aspas e separadores
+                return `"${String(value).replace(/"/g, '""')}"`;
+            };
+
+            // Linhas do CSV
+            const lines = rows.map(row =>
+                Object.values(row).map(formatValue).join(';')
+            );
+
+            // Retorna CSV como string
+            return [header, ...lines].join('\n');
+
+        } catch (error) {
+            logDetailedError(`Erro ao exportar para CSV da tabela ${table}`, sql, [id], error);
+            Alert.alert('Erro', formatErrorMessage(`Erro ao exportar dados de ${table} para CSV`, error));
+            throw error;
         }
-
-        // Cabeçalho do CSV
-        const header = Object.keys(rows[0]).join(';');
-
-        // Função para formatar cada valor
-        const formatValue = (value: any) => {
-            if (typeof value === 'number') {
-                // Substitui ponto por vírgula para decimais
-                return value.toString().replace('.', ',');
-            }
-            if (value === null || value === undefined) {
-                return '';
-            }
-            // Escapa aspas e separadores
-            return `"${String(value).replace(/"/g, '""')}"`;
-        };
-
-        // Linhas do CSV
-        const lines = rows.map(row =>
-            Object.values(row).map(formatValue).join(';')
-        );
-
-        // Retorna CSV como string
-        return [header, ...lines].join('\n');
-
-    } catch (error) {
-        logDetailedError(`Erro ao exportar para CSV da tabela ${table}`, sql, [id], error);
-        Alert.alert('Erro', formatErrorMessage(`Erro ao exportar dados de ${table} para CSV`, error));
-        throw error;
     }
-}
 
     static async insertMultiple(
         tableName: string,
@@ -330,17 +330,30 @@ export class CrudService {
         }
     }
 
-       static async createView(name: string, code: string): Promise<void> {
-         const sqlDrop = `DROP VIEW IF EXISTS ${name}`;
+    static async createView(name: string, code: string): Promise<void> {
+        const sqlDrop = `DROP VIEW IF EXISTS ${name}`;
         // const sql = `CREATE VIEW IF NOT EXISTS ${name} AS ${code}`;
         const sql = `CREATE VIEW ${name} AS ${code}`;
         try {
             await db.runAsync(sqlDrop);
             await db.runAsync(sql);
         } catch (error) {
-            logDetailedError(`Erro ao criar tabela ${name}`, sql, [], error);
+            logDetailedError(`Erro ao criar view ${name}`, sql, [], error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao criar a view ${name}`, error));
             throw error;
+        }
+    }
+
+    static async tableExists(tableName: string): Promise<boolean> {
+        try {
+            const result = await db.getAllAsync(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                [tableName]
+            );
+            return result.length > 0;
+        } catch (error) {
+            console.error("Erro ao verificar tabela:", error);
+            return false;
         }
     }
 }

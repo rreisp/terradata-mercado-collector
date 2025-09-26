@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, Platform } from "react-native";
+import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, Platform, ActivityIndicator } from "react-native";
 import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,7 +17,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
-import * as ExportCsvService from '@/core/services/export-csv.service';
 
 function formatDate(date: string, lang: string) {
     const day = date.substring(0, 2);
@@ -30,7 +29,7 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -40,6 +39,13 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
     const insets = useSafeAreaInsets();
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    useFocusEffect(
+        useCallback(() => {
+            loadSchema(schemaId);
+            fetchRecords();
+        }, [])
+    );
 
     async function fetchRecords() {
         try {
@@ -104,20 +110,11 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
         navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
     }
 
-    async function handleExport(table: string, id: number): Promise<void> {
-        try {
-            const resultCsv = await ExportCsvService.exportTableToCSV(table, id);            
-            console.log(resultCsv);           
-            const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', id);
-            const resultZip = await ExportCsvService.exportZIP(resultCsv, `${table}.csv`, resultImgs);
-            console.log(resultZip);
-            // console.log(`Registro com ID ${id} removido com sucesso.`);
-            // Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
-        } catch (error) {
-            console.error('Erro ao exportar', error);
-            // O tratamento de erro já está dentro do CrudService.delete
-        }
-    }    
+    async function handleExport(rootItemId: number): Promise<void> {
+        setLoading(true);
+        await onExport(rootItemId);
+        setLoading(false);
+    }
 
     async function handleReset(): Promise<void> {
         const reset = () => {
@@ -139,13 +136,6 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
         );
     }
 
-    useFocusEffect(
-        useCallback(() => {
-            loadSchema(schemaId);
-            fetchRecords();
-        }, [])
-    );
-
     const goBack = () => {
         navigation.navigate('tools/index', {}, { pop: true });
     };
@@ -161,6 +151,11 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
 
     return (
         <SafeAreaContainer scrollable={false}>
+            {loading && (
+                <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" />
+                </View>
+            )}
             <View style={{ flex: 1 }}>
                 <View style={[GlobalStyles.row]}>
                     <View style={GlobalStyles.col2}>
@@ -224,7 +219,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicLi
                                     </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport('export',item.id)}>
+                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport(item.id)}>
                                             <Icon name="save" size={16} color="white" />
                                         </Pressable>
                                     </View>
@@ -276,6 +271,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    loadingOverlay: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(255, 255, 255, 0.75)",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 9999,
     },
 });
 

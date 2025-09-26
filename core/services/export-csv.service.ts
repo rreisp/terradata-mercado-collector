@@ -2,60 +2,60 @@ import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import JSZip from 'jszip';
 import RNFS from 'react-native-fs';
+import { CrudService } from '@/core/services/crud.service';
 
-const db = SQLite.openDatabaseSync('app.db');
+// const db = SQLite.openDatabaseSync('app.db');
 
 export async function getTableData(tableName: string, id: number) {
-  const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
-  return result; // já é um array de objetos
+    //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
+    const result = CrudService.list(tableName, ["d_id="], [id]);
+    return result; // já é um array de objetos
 }
 
 function convertToCSV(data: any[]): string {
-  if (!data || data.length === 0) return "";
+    if (!data || data.length === 0) return "";
 
-  const headers = Object.keys(data[0]).join(",");
-  const rows = data.map((row) =>
-    Object.values(row)
-      .map((val) => `"${val ?? ""}"`)
-      .join(",")
-  );
+    const headers = Object.keys(data[0]).join(",");
+    const rows = data.map((row) =>
+        Object.values(row)
+            .map((val) => `"${val ?? ""}"`)
+            .join(",")
+    );
 
-  return [headers, ...rows].join("\n");
+    return [headers, ...rows].join("\n");
 }
 
 export async function saveCSVFile(filename: string, content: string) {
-  const fileUri = FileSystem.documentDirectory + filename;
-  await FileSystem.writeAsStringAsync(fileUri, content, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
-  return fileUri;
+    const fileUri = FileSystem.documentDirectory + filename;
+    await FileSystem.writeAsStringAsync(fileUri, content, {
+        encoding: FileSystem.EncodingType.UTF8,
+    });
+    return fileUri;
 }
 
 
 export async function exportTableToCSV(tableName: string, id: number) {
-  // saveImagesFromTable('export_images', id).then((filePaths) => {
-  //   console.log('Imagens salvas:', filePaths);
-  // }).catch((error) => {
-  //   console.error('Erro ao salvar imagens:', error);
-  // });
+    // saveImagesFromTable('export_images', id).then((filePaths) => {
+    //   console.log('Imagens salvas:', filePaths);
+    // }).catch((error) => {
+    //   console.error('Erro ao salvar imagens:', error);
+    // });
 
-
-  try {
-    const data = await getTableData(tableName, id);
-    const csv = convertToCSV(data);
-    const fileUri = await saveCSVFile(`${tableName}.csv`, csv);
-    console.log(data);
-    console.log("Arquivo salvo em:", fileUri);
-    return fileUri;
-  } catch (error) {
-    console.error("Erro ao exportar tabela:", error);
-    throw error;
-  }
+    try {
+        const data = await getTableData(tableName, id);
+        const csv = convertToCSV(data);
+        const fileUri = await saveCSVFile(`${tableName}.csv`, csv);
+        console.log("Arquivo salvo em:", fileUri);
+        return fileUri;
+    } catch (error) {
+        console.error("Erro ao exportar tabela:", error);
+        throw error;
+    }
 }
 
 export async function exportZIP(
-    csvFilePath: string, 
-    csvFileName: string, 
+    csvFilePath: string,
+    csvFileName: string,
     imagePaths: string[] = [] // Novo parâmetro
 ): Promise<string> {
     const zip = new JSZip();
@@ -75,7 +75,7 @@ export async function exportZIP(
                 // Obtém o nome do arquivo a partir do caminho completo
                 // O substring(lastIndexOf('/')) garante que pegamos o nome do arquivo
                 const fileName = path.substring(path.lastIndexOf('/') + 1);
-                
+
                 // Lê o conteúdo binário do arquivo em Base64
                 // Usamos Base64 porque o JSZip lida melhor com dados binários através dele
                 const imageContentBase64 = await FileSystem.readAsStringAsync(path, {
@@ -94,7 +94,7 @@ export async function exportZIP(
 
         const zipPath = FileSystem.documentDirectory + 'arquivos_compactados.zip';
         await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
-        
+
         console.log(`Arquivo ZIP criado em: ${zipPath}`);
         return zipPath;
 
@@ -106,7 +106,7 @@ export async function exportZIP(
 
 
 export async function saveImagesFromTable(tableName: string, tableId: number): Promise<string[]> {
-    
+
     const savePromises: Promise<string>[] = [];
     const savedFilePaths: string[] = [];
 
@@ -124,18 +124,18 @@ export async function saveImagesFromTable(tableName: string, tableId: number): P
 
             if (base64Data && fileId) {
 
-              let cleanedBase64Data = base64Data;
-              if (base64Data.includes('base64,')) {
+                let cleanedBase64Data = base64Data;
+                if (base64Data.includes('base64,')) {
                     cleanedBase64Data = base64Data.split('base64,')[1];
                 }
                 const fileName = `${tableName}-${fileId}.jpg`;
-        
-                const filePath = `${FileSystem.documentDirectory}${fileName}`; 
+
+                const filePath = `${FileSystem.documentDirectory}${fileName}`;
 
                 const savePromise = FileSystem.writeAsStringAsync(
-                    filePath, 
+                    filePath,
                     cleanedBase64Data,
-                    { encoding: FileSystem.EncodingType.Base64 } 
+                    { encoding: FileSystem.EncodingType.Base64 }
                 )
                     .then(() => {
                         savedFilePaths.push(filePath);
@@ -143,15 +143,15 @@ export async function saveImagesFromTable(tableName: string, tableId: number): P
                     })
                     .catch(error => {
                         console.error(`Erro ao salvar a imagem do ID ${fileId}:`, error);
-                        return null; 
+                        return null;
                     });
-                
+
                 savePromises.push(savePromise as Promise<string>);
             }
         }
-        
+
         await Promise.all(savePromises);
-        
+
         console.log(`Processo finalizado. ${savedFilePaths.length} imagens salvas.`);
         return savedFilePaths;
 
