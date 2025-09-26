@@ -1,0 +1,1 @@
+export { EnergyFuelsDrillingUpdater } from "./energy-fuels.perfuracao.updater";

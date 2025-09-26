@@ -1,13 +1,14 @@
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
-import { colors } from '../constants/colors';
-import { values } from '../constants/values';
+import { colors } from '@/core/constants/colors';
+import { values } from '@/core/constants/values';
 import { Link } from 'expo-router';
-import GlobalStyles from '../constants/styles';
+import GlobalStyles from '@/core/constants/styles';
 import CountryFlag from "react-native-country-flag";
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '@/core/contexts/LanguageContext';
 import { useEffect, useState } from "react";
-import SafeAreaContainer from "@/components/safe-container";
-import { initDatabase } from "@/app-instance/init/energy-fuels.perfuracao.init";
+import SafeAreaContainer from "@/core/components/safe-container";
+
+import * as Initializers from "@/app-instance/scripts/init";
 
 export default function Index() {
   const { setLanguage } = useLanguage();
@@ -15,7 +16,10 @@ export default function Index() {
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), values.delay);
-    initDatabase();    
+    Object.entries(Initializers).forEach(([className, ClassRef]) => {
+      const initializer = new (ClassRef as any)();
+      initializer.init();
+    });
     return () => clearTimeout(timer);
   }, []);
 
@@ -29,16 +33,16 @@ export default function Index() {
         style={[GlobalStyles.container, GlobalStyles.centered]}
       >
         <Image
-          source={require('../assets/images/EnergyFuels-Logo.png')}
+          source={require('../assets/images/capturewise.png')}
           style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
         />
 
         <Text style={[GlobalStyles.title, styles.title]}>
-          FIELD<Text style={{ color: colors.grey }}>COLLECTOR</Text>
+          CAPTURE<Text style={{ color: colors.grey }}>WISE</Text>
         </Text>
 
         <Text style={GlobalStyles.textMuted}>
-          POWERED BY CAPTUREWISE
+          POWERED BY TERRADATA
         </Text>
 
         <View style={[GlobalStyles.row, styles.row]}>

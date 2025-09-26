@@ -1,31 +1,23 @@
-import { useCallback, useEffect, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, Pressable, FlatList } from "react-native";
+import { useCallback, useState } from "react";
+import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, Platform } from "react-native";
 import Modal from "react-native-modal";
-import GlobalStyles from '../../../constants/styles';
+import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { values } from '../../../constants/values';
+import { values } from '@/core/constants/values';
 
-import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigation } from "@react-navigation/native";
-import { useOperationMode } from "@/contexts/OperationModeContext";
-import { FormSchema } from "@/types/form-schema";
-import { DynamicListProps } from "@/types/dynamic-list-props";
+import { useLanguage } from "@/core/contexts/LanguageContext";
+import { useOperationMode } from "@/core/contexts/OperationModeContext";
+import { FormSchema } from "@/core/types/form-schema";
+import { DynamicListProps } from "@/core/types/dynamic-list-props";
 
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
-import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
+import schemaRegistry from "@/app-instance/schemas";
 
-import { useSafeAreaInsets } from "react-native-safe-area-context"; // <-- Importação nova
-import SafeAreaContainer from "@/components/safe-container";
-import { CrudService } from "@/services/crud.service";
-import { DrillingRecord } from "@/types/drilling-record";
-import { Alert } from 'react-native';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
-import * as ExportCsvService from "@/services/export-csv.service";
-
-async function listDrillings(): Promise<DrillingRecord[]> {
-    const drillings = await CrudService.list<DrillingRecord>('drillings');
-    return drillings;
-}
+import { logos } from '@/app-instance/logos';
+import * as ExportCsvService from '@/core/services/export-csv.service';
 
 function formatDate(date: string, lang: string) {
     const day = date.substring(0, 2);
@@ -38,17 +30,27 @@ function formatDate(date: string, lang: string) {
     }
 }
 
-const DynamicList = ({ schemaId, load }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState("");
-    const insets = useSafeAreaInsets(); // <-- Novo
-    // const [images, setImages] = useState<ImageRecord[]>([]);
-    const [drillings, setDrillings] = useState<DrillingRecord[]>([]);
+    const insets = useSafeAreaInsets();
+    const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    async function fetchRecords() {
+        try {
+            const data = await onList();
+            setRecords(data);
+        } catch (error) {
+            console.error(language === 'pt-BR' ? 'Erro ao carregar registros:' : 'Error loading records.', error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function loadSchema(schemaId: string) {
         const timer = setTimeout(() => setLoading(false), values.delay);
@@ -62,38 +64,45 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
                 })
                 .catch((err) => console.error("Erro ao carregar schema:", err));
         } else {
-            let schema = null;
-            switch (schemaId) {
-                case 'cw.dialeto.cadastro':
-                    schema = CadastroSchema;
-                    break;
-                case 'energy-fuels.perfuracao':
-                    schema = PerfuracaoSchema;
-                    break;
-            }
+            const schema = schemaRegistry[schemaId];
+            // console.log(schema);
             setFormSchema(schema);
             const timer = setTimeout(() => setLoading(false), values.delay);
             return () => clearTimeout(timer);
         }
     }
 
-    async function handleDelete(id: number): Promise<void> {
-        Alert.alert('Remover item', `ID do item: ${id}`);
-        try {
-            await CrudService.delete('drillings', 'id = ?', [id]);
-            setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== id));
-            console.log(`Registro com ID ${id} removido com sucesso.`);
-            Alert.alert('Sucesso', `Registro com ID ${id} foi removido.`);
-        } catch (error) {
-            console.error('Erro ao removerx o registro:', error);
-            // O tratamento de erro já está dentro do CrudService.delete
+    async function handleDelete(rootItemId: number): Promise<void> {
+        const confirmAndDelete = () => {
+            onDelete(rootItemId);
+            setRecords((prevRecords) => prevRecords.filter(record => record.id !== rootItemId));
+        };
+
+        const message = language === "pt-BR" ?
+            `Tem certeza que deseja remover o item com o ID ${rootItemId}?` : `Are you sure you want to remove the item with ID ${rootItemId}?`;
+
+        if (Platform.OS === 'web') {
+            const confirmed = window.confirm(message);
+            if (confirmed) {
+                confirmAndDelete();
+            }
+        } else {
+            Alert.alert(
+                'Confirmação de Exclusão',
+                message,
+                [
+                    { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
+                    { text: language === "pt-BR" ? 'Excluir' : "Remove", style: 'destructive', onPress: confirmAndDelete }
+                ],
+                { cancelable: true }
+            );
         }
     }
 
     async function handleEdit(id: number): Promise<void> {
         // Alert.alert('Editar item', `ID do item: ${id}`);
         navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
-    }    
+    }
 
     async function handleExport(table: string, id: number): Promise<void> {
         try {
@@ -110,49 +119,68 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
         }
     }    
 
+    async function handleReset(): Promise<void> {
+        const reset = () => {
+            onReset();
+            setModalVisible(false);
+            setRecords([]);
+        };
+
+        const msg = (language === 'pt-BR' ? `Tem certeza que deseja apagar todos os registros?` : `Are you sure you want to delete all records?`);
+
+        Alert.alert(
+            (language === 'pt-BR' ? `Confirmação` : `Confirmation`),
+            msg,
+            [
+                { text: (language === 'pt-BR' ? `Cancelar` : `Cancel`), style: 'cancel' },
+                { text: (language === 'pt-BR' ? `Remover` : `Delete`), style: 'destructive', onPress: reset }
+            ],
+            { cancelable: true }
+        );
+    }
+
     useFocusEffect(
         useCallback(() => {
-            async function fetchDrillingInfo() {
-                try {
-                    const data = await listDrillings();
-                    setDrillings(data);
-                } catch (error) {
-                    console.error('Erro ao carregar registros:', error);
-                } finally {
-                    setLoading(false);
-                }
-            }
             loadSchema(schemaId);
-            fetchDrillingInfo();
+            fetchRecords();
         }, [])
     );
 
     const goBack = () => {
-        // navigation.navigateDeprecated('tools/index');
         navigation.navigate('tools/index', {}, { pop: true });
     };
 
     const openForm = () => {
-        // navigation.navigateDeprecated('loader/form/index', { schemaId: schemaId });
         navigation.navigate('loader/form/index', { schemaId }, { pop: true });
+    };
+
+    const showOptions = () => {
+        setModalContent("opa");
+        setModalVisible(true);
     };
 
     return (
         <SafeAreaContainer scrollable={false}>
             <View style={{ flex: 1 }}>
                 <View style={[GlobalStyles.row]}>
-                    <View style={GlobalStyles.col12}>
+                    <View style={GlobalStyles.col2}>
                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
                             <Icon name="chevron-circle-left" size={16} color="#fff" />
                         </Pressable>
                     </View>
-                    <View style={GlobalStyles.col11}></View>
+                    <View style={GlobalStyles.col8}></View>
+                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", paddingRight: 12 }]}>
+                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={showOptions}>
+                            <Icon name="gear" size={16} color="#fff" />
+                        </Pressable>
+                    </View>
                 </View>
 
                 <View style={[GlobalStyles.row]}>
                     <View style={[GlobalStyles.col12, styles.center]}>
                         <Image
-                            source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                            // source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
+                            source={logos[schemaId]}
                             style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                         />
                         <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
@@ -171,18 +199,28 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
                 <View style={[GlobalStyles.row, { flex: 1 }]}>
                     <View style={[GlobalStyles.col12, { flex: 1 }]}>
                         <FlatList
-                            data={drillings}
+                            data={records}
                             keyExtractor={(item) => item.id!.toString()}
                             renderItem={({ item }) => (
                                 <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                                    <View style={GlobalStyles.col1}>
+                                    {/* <View style={GlobalStyles.col1}>
                                         <Text>{item.id}</Text>
-                                    </View>
-                                    <View style={GlobalStyles.col4}>
-                                        <Text>{item.title}</Text>
-                                    </View>
-                                    <View style={GlobalStyles.col4}>
-                                        <Text>{formatDate(item.start_date, language)} a {formatDate(item.end_date, language)}</Text>
+                                    </View> */}
+                                    <View style={[GlobalStyles.col9, { marginRight: 1 }]}>
+                                        <View style={[GlobalStyles.row]}>
+                                            {columns.map((field, index) => {
+                                                const colStyle = {
+                                                    flex: 1 / columns.length,
+                                                    marginRight: 2
+                                                };
+
+                                                return (
+                                                    <View key={index} style={[GlobalStyles.col, colStyle]}>
+                                                        <Text>{item[field]}</Text>
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
                                     </View>
                                     <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
@@ -195,8 +233,8 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleEdit(item.id)}>
                                             <Icon name="edit" size={16} color="white" />
                                         </Pressable>
-                                    </View>                                    
-                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
+                                    </View>
+                                    <View style={[GlobalStyles.col1, { marginRight: 0 }]}>
                                         {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>
                                             <Icon name="trash" size={16} color="red" />
@@ -216,7 +254,11 @@ const DynamicList = ({ schemaId, load }: DynamicListProps) => {
             </View>
             <Modal isVisible={modalVisible}>
                 <View style={styles.modal}>
-                    <Text>{modalContent}</Text>
+                    {/* <Text>{modalContent}</Text> */}
+                    <View style={{ marginBottom: 12 }}>
+                        <Button title="Resetar" onPress={handleReset} />
+                    </View>
+
                     <Button title="Fechar" onPress={() => setModalVisible(false)} />
                 </View>
             </Modal>

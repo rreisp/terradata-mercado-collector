@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
-import GlobalStyles from '../../../../../../../constants/styles';
-import { useLanguage } from '@/contexts/LanguageContext';
+import GlobalStyles from '@/core/constants/styles';
+import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_Notas = ({ index, parent }) => {
     const { language } = useLanguage();

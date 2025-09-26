@@ -1,4 +1,4 @@
-import { CrudService } from '@/services/crud.service';
+import { CrudService } from '@/core/services/crud.service';
 
 // -------------------------------------------------------------------
 export async function createDrillingsTable(): Promise<void> {

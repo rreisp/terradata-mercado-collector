@@ -1,0 +1,1 @@
+export { EnergyFuelsDrillingRemover } from "./energy-fuels.perfuracao.remover";

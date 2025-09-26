@@ -2,21 +2,17 @@ import { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from '@react-navigation/native';
-import GlobalStyles from '../../constants/styles';
-import { useLanguage } from '../../contexts/LanguageContext';
+import GlobalStyles from '@/core/constants/styles';
+import { useLanguage } from '@/core/contexts/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se quiser usar a versão 5
-import { colors } from '../../constants/colors';
-import { values } from "@/constants/values";
-import { OperationModeProvider, useOperationMode } from "@/contexts/OperationModeContext";
-import { Tool } from "@/types/tool";
-import SafeAreaContainer from "@/components/safe-container";
+import { colors } from '@/core/constants/colors';
+import { values } from "@/core/constants/values";
+import { OperationModeProvider, useOperationMode } from "@/core/contexts/OperationModeContext";
+import { Tool } from "@/core/types/tool";
+import SafeAreaContainer from "@/core/components/safe-container";
+import { Form } from "@/core/types/form";
 
-type Form = {
-    id: string;
-    title: string;
-};
-
-// type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'loader/list/index'>;
+import schemaRegistry from "@/app-instance/schemas";
 
 const Tools = () => {
     const { language } = useLanguage();
@@ -36,9 +32,16 @@ const Tools = () => {
         "pt-BR": "Escolha um formulário para trabalhar",
     };
 
+
+    useEffect(() => {
+        const timer = setTimeout(() => setLoading(false), values.delay);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const goBack = () => {
         // navigation.navigateDeprecated('index');
-        navigation.navigate('index', {}, { pop: true });        
+        navigation.navigate('index', {}, { pop: true });
     };
 
     useEffect(() => {
@@ -46,16 +49,12 @@ const Tools = () => {
         let tools: Tool[] = [];
 
         if (!isOnline) {
-            tools = [
-                {
-                    "id": "cw.dialeto.cadastro",
-                    "title": (language === 'pt-BR' ? "Cadastro de Participante" : "Participant Registry")
-                },
-                {
-                    "id": "energy-fuels.perfuracao",
-                    "title": (language === 'pt-BR' ? "Caracterização de perfuração" : "Drilling Characterization")
-                }
-            ];
+            Object.entries(schemaRegistry).forEach(([schemaId, schema]) => {
+                tools.push({
+                    "id": schemaId,
+                    "title": schema.title[language]
+                });
+            });
             setAvailableForms(tools);
         } else {
             const fetchFormConfig = async () => {
@@ -86,7 +85,7 @@ const Tools = () => {
                         <>
                             <SafeAreaView>
                                 <Image
-                                    source={require('../../assets/images/EnergyFuels-Logo.png')}
+                                    source={require('../../assets/images/capturewise.png')}
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
                             </SafeAreaView>

@@ -1,0 +1,1 @@
+export { EnergyFuelsDrillingValidator } from "./energy-fuels.perfuracao.validator";

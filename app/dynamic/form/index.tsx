@@ -1,29 +1,27 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable, Alert } from "react-native";
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
-import GlobalStyles from '../../../constants/styles';
+import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useLanguage } from "@/contexts/LanguageContext";
-import { values } from "@/constants/values";
-import { useOperationMode } from '../../../contexts/OperationModeContext';
-import { Field } from "@/types/field";
-import { FormSchema } from "@/types/form-schema";
+import { useLanguage } from "@/core/contexts/LanguageContext";
+import { useOperationMode } from '@/core/contexts/OperationModeContext';
+import { Field } from "@/core/types/field";
+import { FormSchema } from "@/core/types/form-schema";
+import { FormikHelpers } from "@/core/types/formik-helpers";
 
-import PerfuracaoSchema from '../../../schemas/energy-fuels.perfuracao.json';
-import CadastroSchema from '../../../schemas/cw.dialeto.cadastro.json';
-import { FormikHelpers } from "@/types/formik-helpers";
-
-import FieldRenderer from "@/components/renderer";
-import SafeAreaContainer from "@/components/safe-container";
-import { DynamicFormProps } from "@/types/dynamic-form-props";
-import { FieldValidator } from "@/components/validator";
+import FieldRenderer from "@/core/renderer";
+import SafeAreaContainer from "@/core/components/safe-container";
+import { DynamicFormProps } from "@/core/types/dynamic-form-props";
 import { ActivityIndicator } from "@react-native-material/core";
-import { colors } from "@/constants/colors";
+import { colors } from "@/core/constants/colors";
 
-const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: DynamicFormProps) => {
+import schemaRegistry from "@/app-instance/schemas";
+import { logos } from '@/app-instance/logos';
+
+const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, validate }: DynamicFormProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -33,77 +31,75 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
     const [loading, setLoading] = useState(true);
 
     const [initialValues, setInitialValues] = useState<{ [key: string]: any }>({});
-    // let initialValues: { [key: string]: any } = {};
 
-    const validationShape: { [key: string]: Yup.AnySchema } = {};
+    // const validationShape: { [key: string]: Yup.AnySchema } = {};
+    const [validationShape, setValidationShape] = useState({})
+
+    const createValidationShape = (schema: FormSchema, valuesToSet: any, language: string) => {
+        const newValidationShape: { [key: string]: Yup.AnySchema } = {};
+        schema?.rows?.forEach(row => {
+            row.columns?.forEach(({ field }) => {
+                if (!(field.id in valuesToSet)) {
+                    valuesToSet[field.id] = "";
+                }
+                const validator = getValidatorInstance(validate, field, language);
+                if (validator) {
+                    newValidationShape[field.id] = validator;
+                }
+            });
+        });
+        return newValidationShape;
+    };
 
     useFocusEffect(
         useCallback(() => {
-            if (isOnline) {
-                const loadSchema = async () => {
-                    try {
+            let mounted = true;
+            const fetchData = async () => {
+                try {
+                    setLoading(true);
+                    let schema: FormSchema;
+                    let valuesToSet = {};
+
+                    // 1. Carrega o esquema do formulário (online ou offline)
+                    if (isOnline) {
                         const res = await fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`);
-                        const data = await res.json();
-                        setFormSchema(data);
-                    } catch (err) {
-                        console.error("Erro ao carregar schema:", err);
-                    } finally {
-                        clearTimeout(timer);
+                        schema = await res.json();
+                    } else {
+                        schema = schemaRegistry[schemaId];
                     }
-                };
 
-                // Executa a função e depois continua
-                loadSchema();
-            } else {
-                let schema = null;
-                switch (schemaId) {
-                    case 'cw.dialeto.cadastro':
-                        schema = CadastroSchema;
-                        break;
-                    case 'energy-fuels.perfuracao':
-                        schema = PerfuracaoSchema;
-                        break;
+                    if (!mounted) return;
+                    setFormSchema(schema);
+
+                    // 2. Carrega os valores iniciais (se for modo de edição)
+                    if (editMode) {
+                        valuesToSet = await load(itemId);
+                    } else {
+                        valuesToSet = {};
+                    }
+
+                    const newValidationShape = createValidationShape(schema, valuesToSet, language);
+
+                    if (!mounted) return;
+                    setInitialValues(valuesToSet);
+                    setValidationShape(newValidationShape);
+                } catch (err) {
+                    console.error("Erro ao carregar dados:", err);
+                    console.error("Detalhes do erro:", err.stack);
+                } finally {
+                    if (mounted) {
+                        setLoading(false);
+                    }
                 }
-                setFormSchema(schema);
-            }
+            };
 
-            if (editMode) {
-                const handleLoad = async () => {
-                    const v = await load(itemId);
-                    setInitialValues(v);             
+            fetchData();
 
-                    formSchema?.rows.forEach(row =>
-                        row.columns.forEach(({ field }) => {
-                            // console.log(field);
-                            setInitialValues(prevValues => ({
-                                ...prevValues,
-                                [field.id]: prevValues[field.id]
-                            }));
-
-                            let validator: Yup.AnySchema = getValidatorInstance(field, language);
-                            validationShape[field.id] = validator;
-                        })
-                    );
-
-                    const timer = setTimeout(() => setLoading(false), values.delay);
-                    return () => clearTimeout(timer);
-                };
-
-                handleLoad();
-            } else {
-                formSchema?.rows.forEach(row =>
-                    row.columns.forEach(({ field }) => {
-                        initialValues[field.id] = "";
-
-                        let validator: Yup.AnySchema = getValidatorInstance(field, language);
-                        validationShape[field.id] = validator;
-                    })
-                );
-                const timer = setTimeout(() => setLoading(false), values.delay);
-                return () => clearTimeout(timer);
-            }
-
-        }, [])
+            // Função de cleanup para evitar atualizações de estado em componentes desmontados
+            return () => {
+                mounted = false;
+            };
+        }, [schemaId, editMode, language, load, itemId, isOnline])
     );
 
     const openList = () => {
@@ -114,7 +110,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
 
     const renderField = (field: Field, formik: FormikHelpers) => {
         return (
-            <FieldRenderer key={field.id} field={field} formik={formik} />
+            <FieldRenderer editMode={editMode} key={field.id} field={field} formik={formik} />
         );
     };
 
@@ -134,7 +130,9 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                             await update(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
                         }
-                    }}      
+                        resetForm();
+                    }}
+                    validateOnMount={true}
 
                 // onSubmit={(values, { setSubmitting }) => {
                 //     fetch(formSchema.url, {
@@ -165,16 +163,16 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
                             </View>
                             <View style={styles.container}>
                                 <Image
-                                    source={require('../../../assets/images/EnergyFuels-Logo.png')}
+                                    source={logos[schemaId]}
                                     style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                                 />
 
                                 <Text style={GlobalStyles.title}>{formSchema?.title[language] || ""}</Text>
                             </View>
                             <Text style={styles.description}>{formSchema?.description[language] || ""}</Text>
-                            {formSchema?.rows.map((row, rowIndex) => (
+                            {formSchema?.rows?.map((row, rowIndex) => (
                                 <View key={rowIndex}>
-                                    {row.columns.map(({ field }) =>
+                                    {row?.columns?.map(({ field }) =>
                                         renderField(field, {
                                             value: values[field.id],
                                             onChange: (id, val) => {
@@ -195,6 +193,25 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update }: Dyna
 
                                         if (Object.keys(errors).length > 0) {
                                             console.log("Erros de validação:", errors);
+                                            if (errors.ef_depth_test) {
+                                                console.log("Erros de validação:", errors.ef_depth_test);
+                                            }
+
+                                            if (
+                                                typeof errors.ef_depth_test === "object" &&
+                                                errors.ef_depth_test !== null &&
+                                                "photos" in errors.ef_depth_test
+                                            ) {
+                                                console.log(errors.ef_depth_test.photos);
+                                            }
+
+                                            if (
+                                                typeof errors.ef_depth_test === "object" &&
+                                                errors.ef_depth_test !== null &&
+                                                "lithologies" in errors.ef_depth_test
+                                            ) {
+                                                console.log(errors.ef_depth_test.lithologies);
+                                            }
                                         } else {
                                             handleSubmit(); // dispara o onSubmit se estiver válido
                                         }
@@ -257,23 +274,6 @@ const styles = StyleSheet.create({
 
 export default DynamicForm;
 
-function getValidatorInstance(field: Field, language: string) {
-    let validator: Yup.AnySchema;
-
-    // Validação especial para campos do tipo intervalo de datas (como ef_dates)
-    switch (field.type) {
-        case 'coordinate_3d':
-            validator = FieldValidator.coordinate_3d(field, language);
-            break;
-        case 'date_range':
-            validator = FieldValidator.date_range(field, language);
-            break;
-        case 'ef_depth_research':
-            validator = FieldValidator.ef_depth_research(field, language);
-            break;
-        default:
-            validator = FieldValidator.default(field, language);
-            break;
-    }
-    return validator;
+function getValidatorInstance(validate, field: Field, language: string) {
+    return validate(field, language);
 }

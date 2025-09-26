@@ -1,0 +1,164 @@
+{
+  "form_id": "teste_ef_depth_report",
+  "title": {
+    "pt-BR": "RELATÓRIO DE PERFURAÇÃO",
+    "en-US": "DRILLING REPORT"
+  },
+  "logo": "EnergyFuels-Logo.png",
+  "description": {
+    "pt-BR": "Preencha os campos abaixo.",
+    "en-US": "Please fill out the fields below."
+  },
+  "version": "1.0",
+  "method": "POST",
+  "url": "https://www.capturewise.terradata.com.br/index.php",
+  "modal": {
+    "size": "lg",
+    "success": {
+      "header": {
+        "pt-BR": "Sucesso",
+        "en-US": "Success"
+      },
+      "message": {
+        "pt-BR": "Os dados foram enviados com sucesso.",
+        "en-US": "Data submitted successfully."
+      },
+      "button": {
+        "pt-BR": "Fechar",
+        "en-US": "Close"
+      }
+    },
+    "error": {
+      "header": {
+        "pt-BR": "Aviso",
+        "en-US": "Warning"
+      },
+      "message": {
+        "pt-BR": "Houve um problema ao processar sua solicitação. Tente novamente mais tarde.",
+        "en-US": "There was a problem processing your request. Please try again later."
+      },
+      "button": {
+        "pt-BR": "Entendi",
+        "en-US": "Got it"
+      }
+    }
+  },
+  "grid": {
+    "columns": 12,
+    "gap": "3"
+  },
+  "rows": [
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "title",
+            "label": {
+              "pt-BR": "ID da Perfuração:",
+              "en-US": "Drilling ID:"
+            },
+            "type": "text"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+          }
+        },
+        {
+          "field": {
+            "id": "ef_coordinates",
+            "type": "coordinate_3d"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+          }
+        },
+        {
+          "field": {
+            "id": "tenement",
+            "label": {
+              "pt-BR": "Direito Minerário:",
+              "en-US": "Tenement:"
+            },
+            "type": "text"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+          }
+        },
+        {
+          "field": {
+            "id": "landowner",
+            "label": {
+              "pt-BR": "Superficiário:",
+              "en-US": "Landowner:"
+            },
+            "type": "text"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+          }
+        },
+        {
+          "field": {
+            "id": "ef_dates",
+            "type": "date_range"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+          }
+        },
+        {
+          "field": {
+            "id": "reason",
+            "type": "text",
+            "label": {
+              "pt-BR": "Justificativa de Interrupção:",
+              "en-US": "Interruption Reason:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "ef_depth_test",
+            "label": {
+              "pt-BR": "Segmentos:",
+              "en-US": "Segments:"
+            },
+            "type": "ef_depth_research"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
+          }
+        }
+      ]
+    }
+  ]
+}
