@@ -18,17 +18,6 @@ import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
 
-function formatDate(date: string, lang: string) {
-    const day = date.substring(0, 2);
-    const mth = date.substring(3, 5);
-    const year = date.substring(6, 10);
-    if (lang === "pt-BR") {
-        return day + "/" + mth + "/" + year;
-    } else {
-        return mth + "/" + day + "/" + year;
-    }
-}
-
 const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
@@ -49,7 +38,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
 
     async function fetchRecords() {
         try {
-            const data = await onList();
+            const data = await onList(language);
             setRecords(data);
         } catch (error) {
             console.error(language === 'pt-BR' ? 'Erro ao carregar registros:' : 'Error loading records.', error);
@@ -156,7 +145,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                     <ActivityIndicator size="large" />
                 </View>
             )}
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1}}>
                 <View style={[GlobalStyles.row]}>
                     <View style={GlobalStyles.col2}>
                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
@@ -164,7 +153,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                         </Pressable>
                     </View>
                     <View style={GlobalStyles.col8}></View>
-                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", paddingRight: 12 }]}>
+                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", marginRight: 2 }]}>
                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={showOptions}>
                             <Icon name="gear" size={16} color="#fff" />
                         </Pressable>
@@ -184,24 +173,21 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
 
                 <View style={GlobalStyles.row}>
                     <View style={GlobalStyles.col10}></View>
-                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", paddingRight: 7 }]}>
+                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", marginRight: 2 }]}>
                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
                             <Icon name="plus" size={16} color="#fff" />
                         </Pressable>
                     </View>
                 </View>
 
-                <View style={[GlobalStyles.row, { flex: 1 }]}>
-                    <View style={[GlobalStyles.col12, { flex: 1 }]}>
+                <View style={[GlobalStyles.row]}>
+                    <View style={[GlobalStyles.col12]}>
                         <FlatList
                             data={records}
                             keyExtractor={(item) => item.id!.toString()}
                             renderItem={({ item }) => (
-                                <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                                    {/* <View style={GlobalStyles.col1}>
-                                        <Text>{item.id}</Text>
-                                    </View> */}
-                                    <View style={[GlobalStyles.col9, { marginRight: 1 }]}>
+                                <View style={[GlobalStyles.row, { paddingVertical: 3}]}>
+                                    <View style={[GlobalStyles.col9]}>
                                         <View style={[GlobalStyles.row]}>
                                             {columns.map((field, index) => {
                                                 const colStyle = {
@@ -217,20 +203,17 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                                             })}
                                         </View>
                                     </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
-                                        {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                    <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport(item.id)}>
                                             <Icon name="save" size={16} color="white" />
                                         </Pressable>
                                     </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 1 }]}>
-                                        {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                    <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleEdit(item.id)}>
                                             <Icon name="edit" size={16} color="white" />
                                         </Pressable>
                                     </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 0 }]}>
-                                        {/* <Image source={{ uri: `${item.img}` }} style={styles.image} /> */}
+                                    <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
                                         <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>
                                             <Icon name="trash" size={16} color="red" />
                                         </Pressable>
@@ -242,7 +225,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                                     <Text>Nenhum registro encontrado.</Text>
                                 </View>
                             )}
-                            style={{ paddingRight: 14, flex: 1 }}
+                            style={{ paddingRight: 4 }}
                         />
                     </View>
                 </View>

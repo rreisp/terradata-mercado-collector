@@ -1,6 +1,6 @@
 import { Identified } from "./identified";
 
 export interface DataReader {
-    read(): Promise<Identified[]>;
+    read(language: string): Promise<Identified[]>;
     columns(): string[];
 }
