@@ -149,7 +149,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                             lithologiesArray.map((item, subIndex: number) => (
                                 <View key={subIndex}>
                                     <View style={[GlobalStyles.row, styles.row]}>
-                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
+                                        <View style={[GlobalStyles.col3, { flexDirection: 'row' }]}>
                                             <NumericInput
                                                 placeholder={language === 'pt-BR' ? `De` : `From`}
                                                 value={item.from}
@@ -161,7 +161,7 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                             />
                                         </View>
 
-                                        <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}>
+                                        <View style={[GlobalStyles.col3, { flexDirection: 'row' }]}>
                                             <NumericInput
                                                 placeholder={language === 'pt-BR' ? `Até` : `To`}
                                                 value={item.to}
@@ -203,8 +203,9 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                     </View>
                                     {fieldsErrors &&
                                         <View style={[GlobalStyles.row, styles.row]}>
-                                            <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
-                                            <View style={[GlobalStyles.col2, { flexDirection: 'row' }]}></View>
+                                            <View style={[GlobalStyles.col6, { flexDirection: 'row' }]}>
+                                                {fieldsErrors && fieldsErrors[subIndex] && <Text style={GlobalStyles.errorText}>{fieldsErrors[subIndex].from || fieldsErrors[subIndex].to}</Text>}
+                                            </View>
                                             <View style={{ flex: 1, marginRight: 3 }}>
                                                 {fieldsErrors && fieldsErrors[subIndex] && <Text style={GlobalStyles.errorText}>{fieldsErrors[subIndex].type}</Text>}
                                             </View>

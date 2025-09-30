@@ -43,7 +43,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         const maximumMsg = this.message('maximum', language);
         const finalGreaterThanInitialMsg = isPt ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
         const selectOptionMsg = this.message('selectOption', language);
-        
+
 
         let validator = Yup.object({
             // --------------------------------------------
@@ -256,13 +256,13 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                             .optional()
                             .nullable(),
                         from: Yup.number()
+                            .required(isPt ? "Campos obrigatórios" : "Required fields",)
                             .integer(integerMsg)
-                            .min(0, greaterThanMsg + ' 0')
-                            .required(requiredMsg),
+                            .min(0, greaterThanMsg + ' 0'),
                         to: Yup.number()
+                            .required(isPt ? "Campos obrigatórios" : "Required fields",)
                             .integer(integerMsg)
                             .min(0, greaterThanMsg + ' 0')
-                            .required(requiredMsg)
                             .test(
                                 'depth-to-gte-from',
                                 finalGreaterThanInitialMsg,
