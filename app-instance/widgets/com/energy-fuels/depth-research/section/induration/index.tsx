@@ -5,32 +5,13 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
-const EF_Induration = ({ index, parent }) => {
+const EF_Induration = ({ index, parent, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
-    const opcoes = {
-        "pt-BR": [
-            "Selecione",
-            "Nenhuma",
-            "Calcária",
-            "Arenosa",
-            "Ferro"
-        ],
-        "en-US": [
-            "Select",
-            "None",            
-            "Limestone",
-            "Sandy",
-            "Iron"
-        ]
-    };
-
-    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.induration || !values?.[parent]?.induration[index]) {
-            setFieldValue(`${parent}.induration[${index}]`, valorInicial);
+            setFieldValue(`${parent}.induration[${index}]`, 0);
         }
     }, []);
 
@@ -41,12 +22,12 @@ const EF_Induration = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Cimentação` : `Induration`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.induration?.[index] - 1] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
+                    selectedValue={values?.[parent]?.induration?.[index] || options[0].id}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.induration[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes[language].map((val) => (
-                        <Picker.Item key={val} label={`${val}`} value={`${val}`} />
+                    {options && options.map((val, idx) => (
+                        <Picker.Item key={idx} label={val.description} value={val.id} />
                     ))}
                 </Picker>
             </View>
@@ -57,7 +38,6 @@ const EF_Induration = ({ index, parent }) => {
 
 export default EF_Induration;
 
-
 const styles = StyleSheet.create({
-    container: { marginTop: 5 },
+    container: { marginTop: 5 }
 });

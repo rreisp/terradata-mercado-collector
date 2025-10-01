@@ -5,40 +5,13 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
-const EF_Grainsize = ({ index, parent }) => {
+const EF_Grainsize = ({ index, parent, options }) => {
     const { language } = useLanguage();
-    const { values, setFieldValue, errors } = useFormikContext<any>();
-    const opcoes = {
-        "pt-BR": [
-            "Selecione",
-            "Muito fina",
-            "Fina",
-            "Média",
-            "Grossa",
-            "Muito grossa",
-            "Cascalho",
-            "Silte",
-            "Argila"
-        ],
-        "en-US": [
-            "Select",
-            "Very fine",
-            "Fine",
-            "Medium",
-            "Coarse",
-            "Very coarse",
-            "Gravel",
-            "Silt",
-            "Clay"
-        ]
-    };
-
-    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
+    const { values, setFieldValue, errors } = useFormikContext();
 
     useEffect(() => {
         if (!values?.[parent]?.grainsize || !values?.[parent]?.grainsize[index]) {
-            setFieldValue(`${parent}.grainsize[${index}]`, valorInicial);
+            setFieldValue(`${parent}.grainsize[${index}]`, 0);
         }
     }, []);
 
@@ -49,12 +22,12 @@ const EF_Grainsize = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.grainsize?.[index] - 1] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
+                    selectedValue={values?.[parent]?.grainsize?.[index] || options[0].id}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes[language].map((val) => (
-                        <Picker.Item key={val} label={`${val}`} value={`${val}`} />
+                    {options && options.map((val, idx) => (
+                        <Picker.Item key={idx} label={val.description} value={val.id} />
                     ))}
                 </Picker>
             </View>

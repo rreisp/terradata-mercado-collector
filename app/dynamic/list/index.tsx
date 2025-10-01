@@ -95,13 +95,13 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
     }
 
     async function handleEdit(id: number): Promise<void> {
-        // Alert.alert('Editar item', `ID do item: ${id}`);
         navigation.navigate('loader/form/index', { schemaId, editMode: true, itemId: id }, { pop: true });
     }
 
     async function handleExport(rootItemId: number): Promise<void> {
         setLoading(true);
         await onExport(rootItemId, language);
+        Alert.alert(language === 'pt-BR' ? 'Registro exportado com sucesso!' : 'Record exported successfully!');
         setLoading(false);
     }
 
@@ -145,7 +145,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                     <ActivityIndicator size="large" />
                 </View>
             )}
-            <View style={{ flex: 1}}>
+            <View style={{ flex: 1 }}>
                 <View style={[GlobalStyles.row]}>
                     <View style={GlobalStyles.col2}>
                         <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={goBack}>
@@ -186,7 +186,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                             data={records}
                             keyExtractor={(item) => item.id!.toString()}
                             renderItem={({ item }) => (
-                                <View style={[GlobalStyles.row, { paddingVertical: 3}]}>
+                                <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
                                     <View style={[GlobalStyles.col9]}>
                                         <View style={[GlobalStyles.row]}>
                                             {columns.map((field, index) => {

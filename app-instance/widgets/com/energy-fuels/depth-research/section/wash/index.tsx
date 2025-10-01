@@ -1,36 +1,18 @@
-import { useEffect } from 'react';
+// EF_Wash.tsx
+import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
-const EF_Wash = ({ index, parent }) => {
+const EF_Wash = ({ index, parent, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
-    const opcoes = {
-        "pt-BR": [
-            "Selecione",
-            "Fácil",
-            "Moderada",
-            "Difícil",
-            "Muito difícil"
-        ],
-        "en-US": [
-            "Select",
-            "Easy",
-            "Moderate",
-            "Hard",
-            "Very hard"
-        ]
-    };
-
-    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.wash || !values?.[parent]?.wash[index]) {
-            setFieldValue(`${parent}.wash[${index}]`, valorInicial);
+            setFieldValue(`${parent}.wash[${index}]`, 0);
         }
     }, []);
 
@@ -41,12 +23,12 @@ const EF_Wash = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Deslamagem` : `Wash`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.wash?.[index] - 1] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
+                    selectedValue={values?.[parent]?.wash?.[index] || options[0].id}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.wash[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes[language].map((val) => (
-                        <Picker.Item key={val} label={`${val}`} value={`${val}`} />
+                    {options && options.map((val, idx) => (
+                        <Picker.Item key={idx} label={val.description} value={val.id} />
                     ))}
                 </Picker>
             </View>

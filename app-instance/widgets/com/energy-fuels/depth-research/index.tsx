@@ -5,16 +5,60 @@ import Icon from 'react-native-vector-icons/FontAwesome5'; // ou FontAwesome5, s
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 import { useFormikContext } from 'formik';
+import { CrudService } from '@/core/services/crud.service';
+import { Option } from '@/core/types/option';
 
 const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: boolean }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, validationSchema, validateForm } = useFormikContext();
-    // const [elements, setElements] = useState<{ id: number }[]>(values?.[parent]?.depth ?? []);
     const [segmentIds, setSegmentIds] = useState<{ id: number }[]>([]);
+    const [options, setOptions] = useState<Record<string, { id: number; value: string }[]>>({});
+
+    const getOptions = async (table: string): Promise<Option[]> => {
+        const lista = await CrudService.list<any>(table, [], [], language.replace("-", ""));
+        const mapped = lista.map((item) => ({
+            id: item.id,
+            description: language === "pt-BR" ? item.ptBR : item.enUS
+        }));
+
+        return [
+            { id: 0, description: language === 'pt-BR' ? 'Selecione' : 'Select' },
+            ...mapped
+        ];
+    };
+
+    async function loadOptions(keys: string[]) {
+        const optionsObject: Record<string, Option[]> = {};
+
+        for (const key of keys) {
+            try {
+                const result = await getOptions(key) as Option[];
+                optionsObject[key] = result;
+            } catch (error) {
+                console.error(`Erro ao carregar opções de ${key}:`, error);
+                optionsObject[key] = [];
+            }
+        }
+        setOptions(optionsObject);
+    }
 
     useEffect(() => {
         setSegmentIds(values?.[parent]?.segmentIds?.map(id => ({ id })));
     }, []);
+
+    useEffect(() => {
+        loadOptions([
+            "moisture", 
+            "hardness",
+            "wash",
+            "color", 
+            "induration",
+            "grainsize",
+            "roundness",
+            "sorting",
+            "lithology"
+        ]);
+    }, [language]);
 
     useEffect(() => {
         validateForm(values);
@@ -78,7 +122,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
             ) : (
                 segmentIds?.map((segment, index) => (
                     <View key={segment.id}>
-                        <Section editMode={editMode} index={index} segmentId={segment.id} size={segmentIds.length} parent={parent} />
+                        <Section editMode={editMode} index={index} segmentId={segment.id} parent={parent} options={options} />
                         <View>
                             {index == segmentIds.length - 1 && index > 0 &&
                                 <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}>

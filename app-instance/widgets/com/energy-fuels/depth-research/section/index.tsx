@@ -28,7 +28,7 @@ import { useLanguage } from '@/core/contexts/LanguageContext';
 import { MultiCameraInput } from '@/core/components/widgets/multi-camera';
 import { CrudService } from '@/core/services/crud.service';
 
-const Section = ({ segmentId, editMode, index, size, parent }) => {
+const Section = ({ segmentId, editMode, index, parent, options }) => {
     const { language } = useLanguage();
     const [collapsed, setCollapsed] = useState(true);
     const { values, setFieldValue } = useFormikContext();
@@ -102,12 +102,14 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                             <EF_Moisture
                                 index={index}
                                 parent={parent}
+                                options={options.moisture}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Hardness
                                 index={index}
                                 parent={parent}
+                                options={options.hardness}
                             />
                         </View>
                     </View>
@@ -117,12 +119,14 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                             <EF_Wash
                                 index={index}
                                 parent={parent}
+                                options={options.wash}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Color
                                 index={index}
                                 parent={parent}
+                                options={options.color}
                             />
                         </View>
                     </View>
@@ -132,12 +136,14 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                             <EF_Induration
                                 index={index}
                                 parent={parent}
+                                options={options.induration}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Grainsize
                                 index={index}
                                 parent={parent}
+                                options={options.grainsize}
                             />
                         </View>
                     </View>
@@ -147,12 +153,14 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                             <EF_Sorting
                                 index={index}
                                 parent={parent}
+                                options={options.sorting}
                             />
                         </View>
                         <View style={GlobalStyles.col}>
                             <EF_Roundness
                                 index={index}
                                 parent={parent}
+                                options={options.roundness}
                             />
                         </View>
                     </View>
@@ -213,6 +221,7 @@ const Section = ({ segmentId, editMode, index, size, parent }) => {
                                 start={(index == 0 ? DEFAULT_START : values?.[parent]?.depth?.[index - 1].to)}
                                 end={(Number(values?.[parent]?.depth?.[index] ? values?.[parent]?.depth?.[index].to :
                                     index == 0 ? DEFAULT_END : (Number(values?.[parent]?.depth?.[index - 1].to) + DEFAULT_END)))}
+                                options={options.lithology}
                             />
                         </View>
                     </View>

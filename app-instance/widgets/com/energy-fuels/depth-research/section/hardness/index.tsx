@@ -5,34 +5,13 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
-const EF_Hardness = ({ index, parent }) => {
+const EF_Hardness = ({ index, parent, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
-    const opcoes = {
-        "pt-BR": [
-            "Selecione",
-            "Inconsolidada",
-            "Esmagável com o dedo",
-            "Nenhuma resistência a penetração",
-            "Resistência a penetração",
-            "Total resistência a penetração"
-        ],
-        "en-US": [
-            "Select",
-            "Unconsolidated",
-            "Crushable with finger",
-            "No resistance to penetration",
-            "Resistance to penetration",
-            "Total resistance to penetration"
-        ]
-    };
-
-    // const valorInicial = opcoes[language][0].toString(); // Primeiro valor disponível
-    const valorInicial = opcoes[language].indexOf(opcoes[language][0]);
 
     useEffect(() => {
         if (!values?.[parent]?.hardness || !values?.[parent]?.hardness[index]) {
-            setFieldValue(`${parent}.hardness[${index}]`, valorInicial);
+            setFieldValue(`${parent}.hardness[${index}]`, 0);
         }
     }, []);
 
@@ -43,12 +22,12 @@ const EF_Hardness = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Dureza` : `Hardness`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={opcoes[language][values?.[parent]?.hardness?.[index] - 1] || valorInicial}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, opcoes[language].indexOf(itemValue) + 1)}
+                    selectedValue={values?.[parent]?.hardness?.[index] || options[0].id}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.hardness[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
-                    {opcoes[language].map((val) => (
-                        <Picker.Item key={val} label={`${val}`} value={`${val}`} />
+                    {options && options.map((val, idx) => (
+                        <Picker.Item key={idx} label={val.description} value={val.id} />
                     ))}
                 </Picker>
             </View>
@@ -56,7 +35,6 @@ const EF_Hardness = ({ index, parent }) => {
         </View>
     );
 };
-
 
 export default EF_Hardness;
 
