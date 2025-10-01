@@ -3,15 +3,20 @@ import { CrudService } from "@/core/services/crud.service";
 
 export class EnergyFuelsDrillingInitializer implements DataInitializer {
   async init(): Promise<void> {
-    CrudService.drop("moisture");
-    CrudService.drop("hardness");
-    CrudService.drop("wash");
-    CrudService.drop("color");
-    CrudService.drop("induration");
-    CrudService.drop("grainsize");
-    CrudService.drop("sorting");
-    CrudService.drop("roundness");
-    CrudService.drop("lithology");
+    // await CrudService.drop("drillings");
+    // await CrudService.drop("segments");
+    // await CrudService.drop("images");
+    // await CrudService.drop("lithologies");
+
+    await CrudService.drop("moisture");
+    await CrudService.drop("hardness");
+    await CrudService.drop("wash");
+    await CrudService.drop("color");
+    await CrudService.drop("induration");
+    await CrudService.drop("min_grainsize");
+    await CrudService.drop("max_grainsize");
+    await CrudService.drop("roundness");
+    await CrudService.drop("lithology");
 
     await this.createDrillingsTable();
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -62,13 +67,12 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       depth_to NUMERIC NOT NULL,
       recovery NUMERIC NOT NULL,
       fgk_moisture INTEGER NOT NULL,
-      volume NUMERIC NOT NULL,
       fgk_hardness INTEGER NOT NULL,
       fgk_wash INTEGER NOT NULL,
       fgk_color INTEGER NOT NULL,
       fgk_induration INTEGER NOT NULL,
-      fgk_grainsize INTEGER NOT NULL,
-      fgk_sorting INTEGER NOT NULL,
+      fgk_min_grainsize INTEGER NOT NULL,
+      fgk_max_grainsize INTEGER NOT NULL,
       fgk_roundness INTEGER NOT NULL,
       clay NUMERIC NOT NULL,
       micah NUMERIC NOT NULL,
@@ -213,31 +217,33 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     }
 
     try {
-      await CrudService.createTable('grainsize', options);
-      await CrudService.insertMultiple('grainsize', [
-        { 'description': 'Muito fina', 'ptBR': 'Muito fina', 'enUS': 'Very fine' },
-        { 'description': 'Fina', 'ptBR': 'Fina', 'enUS': 'Fine' },
-        { 'description': 'Média', 'ptBR': 'Média', 'enUS': 'Medium' },
-        { 'description': 'Grossa', 'ptBR': 'Grossa', 'enUS': 'Coarse' },
-        { 'description': 'Muito grossa', 'ptBR': 'Muito grossa', 'enUS': 'Very coarse' },
-        { 'description': 'Cascalho', 'ptBR': 'Cascalho', 'enUS': 'Gravel' }
+      await CrudService.createTable('min_grainsize', options + ", position INTEGER");
+      await CrudService.insertMultiple('min_grainsize', [
+        { 'description': 'Muito fina', 'ptBR': 'Muito fina', 'enUS': 'Very fine', 'position': 1 },
+        { 'description': 'Fina', 'ptBR': 'Fina', 'enUS': 'Fine', 'position': 2 },
+        { 'description': 'Média', 'ptBR': 'Média', 'enUS': 'Medium', 'position': 3 },
+        { 'description': 'Grossa', 'ptBR': 'Grossa', 'enUS': 'Coarse', 'position': 4 },
+        { 'description': 'Muito grossa', 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'position': 5 },
+        { 'description': 'Cascalho', 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'position': 6 }
       ], 'description');
 
     } catch (error) {
-      console.error('erro ao criar a tabela de opções de Granulometria', error);
+      console.error('erro ao criar a tabela de opções de Granulometria Mínima', error);
     }
 
     try {
-      await CrudService.createTable('sorting', options);
-      await CrudService.insertMultiple('sorting', [
-        { 'description': 'Muito fraca', 'ptBR': 'Muito fraca', 'enUS': 'Very poor' },
-        { 'description': 'Fraca', 'ptBR': 'Fraca', 'enUS': 'Poor' },
-        { 'description': 'Moderada', 'ptBR': 'Moderada', 'enUS': 'Moderate' },
-        { 'description': 'Boa', 'ptBR': 'Boa', 'enUS': 'Good' },
-        { 'description': 'Muito boa', 'ptBR': 'Muito boa', 'enUS': 'Very good' }
+      await CrudService.createTable('max_grainsize', options + ", position INTEGER");
+      await CrudService.insertMultiple('max_grainsize', [
+        { 'description': 'Muito fina', 'ptBR': 'Muito fina', 'enUS': 'Very fine', 'position': 1 },
+        { 'description': 'Fina', 'ptBR': 'Fina', 'enUS': 'Fine', 'position': 2 },
+        { 'description': 'Média', 'ptBR': 'Média', 'enUS': 'Medium', 'position': 3 },
+        { 'description': 'Grossa', 'ptBR': 'Grossa', 'enUS': 'Coarse', 'position': 4 },
+        { 'description': 'Muito grossa', 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'position': 5 },
+        { 'description': 'Cascalho', 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'position': 6 }
       ], 'description');
+
     } catch (error) {
-      console.error('erro ao criar a tabela de opções de seletividade granulométrica', error);
+      console.error('erro ao criar a tabela de opções de Granulometria Máxima', error);
     }
 
     try {

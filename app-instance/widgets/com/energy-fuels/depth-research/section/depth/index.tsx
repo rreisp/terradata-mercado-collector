@@ -75,7 +75,7 @@ const EF_Depth = ({ index, parent }) => {
                     />
                 </View>
             </View>
-            <View style={[GlobalStyles.row, { marginRight: 5 }]}>
+            <View style={[GlobalStyles.row]}>
                 <View style={[GlobalStyles.col6]}>{fieldFromError && <Text style={GlobalStyles.errorText}>{fieldFromError}</Text>}</View>
                 <View style={[GlobalStyles.col6]}>{fieldToError && <Text style={GlobalStyles.errorText}>{fieldToError}</Text>}</View>
             </View>

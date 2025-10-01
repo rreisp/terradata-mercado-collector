@@ -81,17 +81,6 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .required(requiredMsg)
             ),
             // --------------------------------------------  
-            volume: Yup.array().of(
-                Yup.number()
-                    .moreThan(0, greaterThanMsg + ' 0')
-                    .test(
-                        'max-2-decimals',
-                        this.message('max2DecimalPlaces', language),
-                        (value) => (value === undefined || value === null) ? true : /^\d+(\.\d{1,2})?$/.test(String(value))
-                    )
-                    .required(requiredMsg)
-            ),
-            // --------------------------------------------  
             hardness: Yup.array().of(
                 Yup.number()
                     .integer(integerMsg)
@@ -120,14 +109,14 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .required(requiredMsg)
             ),
             // --------------------------------------------  
-            grainsize: Yup.array().of(
+            minGrainsize: Yup.array().of(
                 Yup.number()
                     .integer(integerMsg)
                     .min(1, selectOptionMsg)
                     .required(requiredMsg)
             ),
             // --------------------------------------------  
-            sorting: Yup.array().of(
+            maxGrainsize: Yup.array().of(
                 Yup.number()
                     .integer(integerMsg)
                     .min(1, selectOptionMsg)

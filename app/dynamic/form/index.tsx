@@ -31,8 +31,6 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
     const [loading, setLoading] = useState(true);
 
     const [initialValues, setInitialValues] = useState<{ [key: string]: any }>({});
-
-    // const validationShape: { [key: string]: Yup.AnySchema } = {};
     const [validationShape, setValidationShape] = useState({})
 
     const createValidationShape = (schema: FormSchema, valuesToSet: any, language: string) => {
@@ -123,6 +121,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                     initialValues={initialValues}
                     validationSchema={Yup.object(validationShape)}
                     onSubmit={async (values, { resetForm }) => {
+                        console.warn(values)
                         if (!editMode) {
                             await extract(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });

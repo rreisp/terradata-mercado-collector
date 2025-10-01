@@ -51,11 +51,11 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
               LEFT JOIN drillings d on d.id = s.fgk_drilling  
               LEFT JOIN moisture m on s.fgk_moisture =m.id 
               LEFT JOIN color c on c.id = s.fgk_color 
-              LEFT JOIN grainsize g on g.id = s.fgk_grainsize 
-              LEFT JOIN hardness h on h.id = s.fgk_grainsize 
+              LEFT JOIN min_grainsize gi on gi.id = s.fgk_min_grainsize 
+              LEFT JOIN max_grainsize ga on ga.id = s.fgk_min_grainsize               
+              LEFT JOIN hardness h on h.id = s.fgk_hardness 
               LEFT JOIN induration i on i.id = s.fgk_induration 
               LEFT JOIN roundness r on r.id = s.fgk_roundness 
-              LEFT JOIN sorting s2 on s2.id = s.fgk_sorting 
               LEFT JOIN wash w on w.id = s.fgk_wash;
             `;
             await CrudService.createView('export', sql);

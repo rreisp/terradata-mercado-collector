@@ -5,25 +5,24 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
-const EF_Grainsize = ({ index, parent, options }) => {
+const EF_MaxGrainsize = ({ index, parent, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
 
     useEffect(() => {
-        if (!values?.[parent]?.grainsize || !values?.[parent]?.grainsize[index]) {
-            setFieldValue(`${parent}.grainsize[${index}]`, 0);
+        if (!values?.[parent]?.maxGrainsize || !values?.[parent]?.maxGrainsize[index]) {
         }
     }, []);
 
-    const fieldError = errors?.[parent]?.grainsize?.[index];
+    const fieldError = errors?.[parent]?.maxGrainsize?.[index];
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria` : `Grainsize`}:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria Máxima` : `Maximum Grainsize`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.grainsize?.[index] || options[0].id}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.grainsize[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.maxGrainsize?.[index] || options[0].id}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.maxGrainsize[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {options && options.map((val, idx) => (
@@ -36,7 +35,7 @@ const EF_Grainsize = ({ index, parent, options }) => {
     );
 };
 
-export default EF_Grainsize;
+export default EF_MaxGrainsize;
 
 const styles = StyleSheet.create({
     container: { marginTop: 5 }

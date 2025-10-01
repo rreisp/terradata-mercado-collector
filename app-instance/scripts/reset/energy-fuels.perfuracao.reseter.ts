@@ -13,8 +13,8 @@ export class EnergyFuelsDrillingReseter implements DataReseter {
     // CrudService.truncate("wash");
     // CrudService.truncate("color");
     // CrudService.truncate("induration");
-    // CrudService.truncate("grainsize");
-    // CrudService.truncate("sorting");
+    // CrudService.truncate("min_grainsize");
+    // CrudService.truncate("max_grainsize");
     // CrudService.truncate("roundness");
     // CrudService.truncate("lithology");
   }

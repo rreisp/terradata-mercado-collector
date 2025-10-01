@@ -5,25 +5,25 @@ import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 
-const EF_Sorting = ({ index, parent, options }) => {
+const EF_MinGrainsize = ({ index, parent, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
 
     useEffect(() => {
-        if (!values?.[parent]?.sorting || !values?.[parent]?.sorting[index]) {
-            setFieldValue(`${parent}.sorting[${index}]`, 0);
+        if (!values?.[parent]?.minGrainsize || !values?.[parent]?.minGrainsize[index]) {
+            setFieldValue(`${parent}.minGrainsize[${index}]`, 0);
         }
     }, []);
 
-    const fieldError = errors?.[parent]?.sorting?.[index];
+    const fieldError = errors?.[parent]?.minGrainsize?.[index];
 
     return (
         <View style={styles.container}>
-            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade Granulométrica` : `Sorting`}:</Text>
+            <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Granulometria Mínima` : `Minimum Grainsize`}:</Text>
             <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
-                    selectedValue={values?.[parent]?.sorting?.[index] || options[0].id}
-                    onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, itemValue)}
+                    selectedValue={values?.[parent]?.minGrainsize?.[index] || options[0].id}
+                    onValueChange={(itemValue) => setFieldValue(`${parent}.minGrainsize[${index}]`, itemValue)}
                     style={GlobalStyles.picker}
                 >
                     {options && options.map((val, idx) => (
@@ -36,7 +36,7 @@ const EF_Sorting = ({ index, parent, options }) => {
     );
 };
 
-export default EF_Sorting;
+export default EF_MinGrainsize;
 
 const styles = StyleSheet.create({
     container: { marginTop: 5 }

@@ -53,9 +53,9 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
             "wash",
             "color", 
             "induration",
-            "grainsize",
             "roundness",
-            "sorting",
+            "min_grainsize",
+            "max_grainsize",
             "lithology"
         ]);
     }, [language]);

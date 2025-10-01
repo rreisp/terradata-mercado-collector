@@ -21,7 +21,8 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
         let clayPct: number[] = [];
         let color: number[] = [];
         let comments: string[] = [];
-        let grainsize: number[] = [];
+        let minGrainsize: number[] = [];
+        let maxGrainsize: number[] = [];
         let hardness: number[] = [];
         let hms: number[] = [];
         let induration: number[] = [];
@@ -32,8 +33,6 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
         let roundness: number[] = [];
         let recovery: number[] = [];
         let shellsPct: number[] = [];
-        let sorting: number[] = [];
-        let volume: number[] = [];
         let wash: number[] = [];
 
         let photos: ImageRecord[][] = [];
@@ -47,7 +46,6 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             clayPct.push(segment.clay);
             color.push(segment.fgk_color);
             comments.push(segment.comments);
-            grainsize.push(segment.fgk_grainsize);
             hardness.push(segment.fgk_hardness);
             hms.push(segment.hms);
             induration.push(segment.fgk_induration);
@@ -58,8 +56,8 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             roundness.push(segment.fgk_roundness);
             recovery.push(segment.recovery);
             shellsPct.push(segment.shells);
-            sorting.push(segment.fgk_sorting);
-            volume.push(segment.volume);
+            minGrainsize.push(segment.fgk_min_grainsize);
+            maxGrainsize.push(segment.fgk_max_grainsize);
             wash.push(segment.fgk_wash);
 
             let segmentImages = await this.loadImages(segment.id!);
@@ -100,7 +98,6 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
                 clayPct,
                 color,
                 comments,
-                grainsize,
                 hardness,
                 hms,
                 induration,
@@ -111,8 +108,8 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
                 roundness,
                 recovery,
                 shellsPct,
-                sorting,
-                volume,
+                minGrainsize,
+                maxGrainsize,
                 wash,
                 lithologies,
                 photos

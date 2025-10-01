@@ -5,13 +5,12 @@ export type SegmentRecord = {
     depth_to: number;
     recovery: number;
     fgk_moisture: number;
-    volume: number;
     fgk_hardness: number;
     fgk_wash: number;
     fgk_color: number;
     fgk_induration: number;
-    fgk_grainsize: number;
-    fgk_sorting: number;
+    fgk_min_grainsize: number;
+    fgk_max_grainsize: number;
     fgk_roundness: number;
     clay: number;
     micah: number;

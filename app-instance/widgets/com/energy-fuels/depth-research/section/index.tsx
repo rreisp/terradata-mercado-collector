@@ -9,7 +9,8 @@ import EF_Clay from './clay';
 import EF_Color from './color';
 import EF_Notas from './comments';
 import EF_Depth from './depth';
-import EF_Grainsize from './grainsize';
+import EF_MinGrainsize from './min-grainsize';
+import EF_MaxGrainsize from './max-grainsize';
 import EF_Hardness from './hardness';
 import EF_HMS from './hms';
 import EF_Induration from './induration';
@@ -20,8 +21,6 @@ import EF_OrganicMatter from './organic-matter';
 import EF_Roundness from './roundness';
 import EF_Recovery from './recovery';
 import EF_Shells from './shells';
-import EF_Sorting from './sorting';
-import EF_Volume from './volume';
 import EF_Wash from './wash';
 import EF_Lithology from './lithology';
 import { useLanguage } from '@/core/contexts/LanguageContext';
@@ -90,21 +89,15 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                             />
                         </View>
                         <View style={GlobalStyles.col}>
-                            <EF_Volume
-                                index={index}
-                                parent={parent}
-                            />
-                        </View>
-                    </View>
-
-                    <View style={GlobalStyles.row}>
-                        <View style={GlobalStyles.col}>
                             <EF_Moisture
                                 index={index}
                                 parent={parent}
                                 options={options.moisture}
                             />
                         </View>
+                    </View>
+
+                    <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Hardness
                                 index={index}
@@ -112,9 +105,6 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                                 options={options.hardness}
                             />
                         </View>
-                    </View>
-
-                    <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Wash
                                 index={index}
@@ -122,6 +112,9 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                                 options={options.wash}
                             />
                         </View>
+                    </View>
+
+                    <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Color
                                 index={index}
@@ -129,9 +122,6 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                                 options={options.color}
                             />
                         </View>
-                    </View>
-
-                    <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
                             <EF_Induration
                                 index={index}
@@ -139,23 +129,26 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                                 options={options.induration}
                             />
                         </View>
+                    </View>
+
+                    <View style={GlobalStyles.row}>
                         <View style={GlobalStyles.col}>
-                            <EF_Grainsize
+                            <EF_MinGrainsize
                                 index={index}
                                 parent={parent}
-                                options={options.grainsize}
+                                options={options.min_grainsize}
+                            />
+                        </View>
+                        <View style={GlobalStyles.col}>
+                            <EF_MaxGrainsize
+                                index={index}
+                                parent={parent}
+                                options={options.max_grainsize}
                             />
                         </View>
                     </View>
 
                     <View style={GlobalStyles.row}>
-                        <View style={GlobalStyles.col}>
-                            <EF_Sorting
-                                index={index}
-                                parent={parent}
-                                options={options.sorting}
-                            />
-                        </View>
                         <View style={GlobalStyles.col}>
                             <EF_Roundness
                                 index={index}
@@ -163,6 +156,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                                 options={options.roundness}
                             />
                         </View>
+                        <View style={GlobalStyles.col}></View>
                     </View>
 
                     <View style={GlobalStyles.row}>
