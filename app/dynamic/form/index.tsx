@@ -40,7 +40,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                 if (!(field.id in valuesToSet)) {
                     valuesToSet[field.id] = "";
                 }
-                const validator = getValidatorInstance(validate, field, language);
+                const validator = getValidatorInstance(validate, field, language, editMode);
                 if (validator) {
                     newValidationShape[field.id] = validator;
                 }
@@ -121,7 +121,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                     initialValues={initialValues}
                     validationSchema={Yup.object(validationShape)}
                     onSubmit={async (values, { resetForm }) => {
-                        console.warn(values)
+                        // console.warn(values)
                         if (!editMode) {
                             await extract(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
@@ -273,6 +273,6 @@ const styles = StyleSheet.create({
 
 export default DynamicForm;
 
-function getValidatorInstance(validate, field: Field, language: string) {
-    return validate(field, language);
+function getValidatorInstance(validate, field: Field, language: string, editMode: boolean) {
+    return validate(field, language, editMode);
 }

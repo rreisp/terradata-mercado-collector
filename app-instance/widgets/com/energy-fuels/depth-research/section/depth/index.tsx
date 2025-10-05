@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
@@ -46,7 +46,7 @@ const EF_Depth = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>
                 {language === 'pt-BR' ? 'Profundidade' : 'Depth'} (cm):
             </Text>
-            <View style={[GlobalStyles.row, { marginRight: 5 }]}>
+            <View style={[GlobalStyles.row]}>
                 <View style={[GlobalStyles.col6]}>
                     <NumericInput
                         style={{

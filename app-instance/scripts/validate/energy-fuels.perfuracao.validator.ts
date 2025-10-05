@@ -2,25 +2,56 @@ import * as Yup from "yup";
 import { DataValidator } from "@/core/types/data-validator";
 import { DefaultFieldValidator } from "@/core/validation/default-field-validator";
 import { Field } from "@/core/types/field";
+import { CrudService } from "@/core/services/crud.service";
+import { DrillingRecord } from "@/app-instance/types/drilling-record";
 
 export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implements DataValidator {
     titleRegex = /^[A-Z]{2}\d{3}-\d{3}$/;
     tenementRegex = /^\d{3}\.\d{3}\/\d{4}$/;
 
-    validate(field: Field, language: string): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
+    validate(field: Field, language: string, editMode: boolean): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
+        const isPt = language === 'pt-BR';
         const requiredMsg = this.message('required', language);
-        const formatMsg = language === 'pt-BR' ? 'O formato deve ser ' : 'The format should be ';
+        const formatMsg = isPt ? 'O formato deve ser ' : 'The format should be ';
+        const duplicateTitleValueMsg = isPt ? 'Perfuração já registrado' : 'Drilling already registered';
+        const finalGreaterThanInitialMsg = isPt ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
 
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
         const validators = {
             title: Yup.string()
                 .required(requiredMsg)
-                .matches(this.titleRegex, formatMsg + 'AA000-000'),
+                .matches(this.titleRegex, formatMsg + 'AA000-000')
+                // TODO: controlar acesso múltiplo ao banco para evitar erros nas requisições assincronas de validação
+                .test(
+                    'duplicateValue',
+                    duplicateTitleValueMsg,
+                    async (val) => {
+                        if (editMode || !val || val === null || val.trim() === '') return true;
+                        try {
+                            return this.getDrilling(val)
+                                .then(rows => rows.length < 1)
+                                .catch(() => true);
+                        } catch (ex) { return true }
+                    }
+                ),
             tenement: Yup.string()
                 .required(requiredMsg)
                 .matches(this.tenementRegex, formatMsg + '000.000/0000'),
             landowner: Yup.string()
                 .required(requiredMsg),
+            ef_dates: Yup.object({
+                start: Yup.date()
+                    .required(requiredMsg),
+                end: Yup.date()
+                    .required(requiredMsg)
+            }).test(
+                'startEnd',
+                finalGreaterThanInitialMsg,
+                (val) => {
+                    if (!val) return true;
+                    return val.end >= val.start;
+                }
+            ),
             ef_depth_test: this.ef_depth_research(field, language)
         };
 
@@ -271,5 +302,15 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         });
 
         return validator;
+    }
+
+    async getDrilling(title: string) {
+        const result = await CrudService.list<DrillingRecord>(
+            "drillings",
+            ["title="],
+            [title]
+        )
+
+        return result
     }
 }

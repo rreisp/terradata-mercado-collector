@@ -6,7 +6,7 @@ import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 import Icon from 'react-native-vector-icons/FontAwesome'; // ou FontAwesome5, se quiser usar a versão 5
 import { colors } from '@/core/constants/colors';
-import { values } from "@/core/constants/values";
+import { constants } from "@/core/constants/constants";
 import { OperationModeProvider, useOperationMode } from "@/core/contexts/OperationModeContext";
 import { Tool } from "@/core/types/tool";
 import SafeAreaContainer from "@/core/components/safe-container";
@@ -34,7 +34,7 @@ const Tools = () => {
 
 
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), values.delay);
+        const timer = setTimeout(() => setLoading(false), constants.delay);
 
         return () => clearTimeout(timer);
     }, []);
@@ -71,7 +71,7 @@ const Tools = () => {
             fetchFormConfig();
         }
         setAvailableForms(tools);
-        const timer = setTimeout(() => setLoading(false), values.delay);
+        const timer = setTimeout(() => setLoading(false), constants.delay);
         return () => clearTimeout(timer);
     }, []);
 

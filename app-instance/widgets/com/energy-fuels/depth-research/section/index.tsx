@@ -26,6 +26,7 @@ import EF_Lithology from './lithology';
 import { useLanguage } from '@/core/contexts/LanguageContext';
 import { MultiCameraInput } from '@/core/components/widgets/multi-camera';
 import { CrudService } from '@/core/services/crud.service';
+import { constants } from "@/core/constants/constants";
 
 const Section = ({ segmentId, editMode, index, parent, options }) => {
     const { language } = useLanguage();
@@ -34,6 +35,8 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
 
     const DEFAULT_START = 0;
     const DEFAULT_END = 100;
+
+    const DEFAULT_MARGIN = constants.margin;
 
     const handleRemovePhoto = async (id: number) => {
         if (editMode) {
@@ -72,7 +75,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fotos do segmento ${index + 1}` : `Photos from segment ${index + 1}`}:</Text>
                         <MultiCameraInput handleDelete={handleRemovePhoto} name={`${parent}.photos[${index}]`} />
                     </View>
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Depth
                                 index={index}
@@ -81,7 +84,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Recovery
                                 index={index}
@@ -97,7 +100,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Hardness
                                 index={index}
@@ -114,7 +117,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Color
                                 index={index}
@@ -131,7 +134,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_MinGrainsize
                                 index={index}
@@ -148,7 +151,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Roundness
                                 index={index}
@@ -159,7 +162,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         <View style={GlobalStyles.col}></View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={[GlobalStyles.col]}>
                             <EF_Clay
                                 index={index}
@@ -175,7 +178,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Shells
                                 index={index}
@@ -191,7 +194,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_LithicFragments
                                 index={index}
@@ -207,7 +210,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Lithology
                                 index={index}
@@ -220,7 +223,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
 
-                    <View style={GlobalStyles.row}>
+                    <View style={[GlobalStyles.row, {marginTop: DEFAULT_MARGIN}]}>
                         <View style={GlobalStyles.col}>
                             <EF_Notas
                                 index={index}

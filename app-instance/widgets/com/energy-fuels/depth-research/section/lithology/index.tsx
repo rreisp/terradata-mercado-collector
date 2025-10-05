@@ -75,6 +75,9 @@ const EF_Lithology = ({ index, parent, start, end }) => {
     const handleChangeFrom = (subIndex: number, text: string) => {
         let v = Number(text) <= Number(start) ? start : text;
         setFieldValue(`${pathBase}[${index}][${subIndex}].from`, Number(v));
+        if (subIndex > 0) {
+            setFieldValue(`${pathBase}[${index}][${subIndex - 1}].to`, Number(v));
+        }
     };
 
     const handleChangeTo = (subIndex: number, text: string) => {

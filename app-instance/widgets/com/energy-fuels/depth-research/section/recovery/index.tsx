@@ -25,24 +25,22 @@ const EF_Recovery = ({ index, parent }) => {
     }, [currentValue, index, parent, setFieldValue]);
 
     return (
-        <View>
-            <View style={styles.container}>
-                <Text style={GlobalStyles.label}>
-                    {language === 'pt-BR' ? 'Recuperação (%)' : 'Recovery (%)'}:
-                </Text>
-                <View>
-                    <NumericInput
-                        step={0.01}
-                        value={currentValue ?? 0} // garante valor definido
-                        min={0}
-                        max={100}
-                        onChange={(value) =>
-                            handleChange(value)
-                        }
-                    />
-                </View>
-            </View>
-            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
+        <View style={styles.container}>
+            <Text style={GlobalStyles.label}>
+                {language === 'pt-BR' ? 'Recuperação (%)' : 'Recovery (%)'}:
+            </Text>
+
+            <NumericInput
+                step={0.01}
+                value={currentValue ?? 0} // garante valor definido
+                min={0}
+                max={100}
+                onChange={(value) =>
+                    handleChange(value)
+                }
+            />
+
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}1</Text>}
         </View>
     );
 };

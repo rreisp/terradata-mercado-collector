@@ -4,7 +4,7 @@ import { Alert } from "react-native";
 
 export class EnergyFuelsDrillingRemover implements DataRemover {
     async remove(rootItemId: number): Promise<void> {
-        console.warn(rootItemId);
+        // console.warn(rootItemId);
         Alert.alert('Remover item', `ID do item: ${rootItemId}`);
         try {
             await CrudService.delete('drillings', 'id = ?', [rootItemId]);

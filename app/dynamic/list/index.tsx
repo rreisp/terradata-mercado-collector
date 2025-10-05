@@ -3,7 +3,7 @@ import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, Plat
 import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { values } from '@/core/constants/values';
+import { constants } from '@/core/constants/constants';
 
 import { useNavigation } from "@react-navigation/native";
 import { useLanguage } from "@/core/contexts/LanguageContext";
@@ -48,7 +48,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
     }
 
     async function loadSchema(schemaId: string) {
-        const timer = setTimeout(() => setLoading(false), values.delay);
+        const timer = setTimeout(() => setLoading(false), constants.delay);
         // Icon.loadFont();
         if (isOnline) {
             fetch(`https://capturewise.terradata.com.br/load-json.php?id=${schemaId}`)
@@ -62,7 +62,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
             const schema = schemaRegistry[schemaId];
             // console.log(schema);
             setFormSchema(schema);
-            const timer = setTimeout(() => setLoading(false), values.delay);
+            const timer = setTimeout(() => setLoading(false), constants.delay);
             return () => clearTimeout(timer);
         }
     }

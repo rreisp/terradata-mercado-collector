@@ -61,7 +61,7 @@ const EF_Clay = ({ index, parent }) => {
     return (
         <View>
             <ConditionalNumericInput
-                label={language === 'pt-BR' ? 'Argila (%):' : 'Clay (%):'}
+                label={language === 'pt-BR' ? 'Argila/Silte (%):' : 'Clay/Silt (%):'}
                 value={currentValue}
                 defaultValue={sugestaoInicial}
                 onChange={handleValueChange}

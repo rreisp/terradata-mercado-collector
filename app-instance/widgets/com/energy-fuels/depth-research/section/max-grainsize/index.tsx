@@ -11,6 +11,7 @@ const EF_MaxGrainsize = ({ index, parent, options }) => {
 
     useEffect(() => {
         if (!values?.[parent]?.maxGrainsize || !values?.[parent]?.maxGrainsize[index]) {
+            setFieldValue(`${parent}.maxGrainsize[${index}]`, 0);            
         }
     }, []);
 

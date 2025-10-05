@@ -47,7 +47,7 @@ const EF_HMS = ({ index, parent }) => {
                 <NumericInput
                     step={0.1}
                     min={(hmsSchema as any)._exclusive?.moreThan ?? 0}
-                    max={undefined}
+                    max={100}
                     value={val}
                     onChange={handleChange}
                     error={fieldError}

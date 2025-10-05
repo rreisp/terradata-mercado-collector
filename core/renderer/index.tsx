@@ -12,31 +12,32 @@ import { FieldRendererProps } from "@/core/types/field-renderer-props";
 import DateRangeInput from "../components/widgets/date-range";
 import GeoPosition3D from "../components/widgets/geo-position-3d";
 
+import { constants } from "@/core/constants/constants";
+
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();
     const { value, onChange } = formik;
 
     const error = formik.errors?.[field.id];
-    const touched = formik.touched?.[field.id];
 
     switch (field.type) {
         case "photo":
             return (
-                <View style={GlobalStyles.fieldContainer}>
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <CameraInput name={field.id} />
                 </View>
             );
         case "photos":
             return (
-                <View style={GlobalStyles.fieldContainer}>
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <MultiCameraInput editMode={editMode} name={field.id} quality={0.01} />
+                    <MultiCameraInput editMode={editMode} name={field.id} quality={constants.imgQuality} />
                 </View>
             );
         case "number":
             return (
-                <View style={GlobalStyles.fieldContainer}>
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <NumericInput
                         step={field.step || 1}
@@ -46,9 +47,9 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         onChange={(text: string) => onChange(field.id, text)}
                     />
                     {/* {easting === '' && ( */}
-                        <Text style={GlobalStyles.errorText}>
-                            {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
-                        </Text>
+                    <Text style={GlobalStyles.errorText}>
+                        {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
+                    </Text>
                     {/* )} */}
                 </View>
             );
@@ -56,7 +57,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
         case "email":
         case "password":
             return (
-                <View style={GlobalStyles.fieldContainer}>
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <TextInput
                         placeholder={field.placeholder ? field.placeholder[language] : ""}
@@ -64,8 +65,9 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         onChangeText={(text) => onChange(field.id, text)}
                         style={GlobalStyles.input}
                         secureTextEntry={field.type === "password"}
+                        maxLength={field.max}
                     />
-                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}              
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
             );
         case "checkbox":
@@ -81,7 +83,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             );
         case "select":
             return (
-                <View style={GlobalStyles.fieldContainer}>
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <View style={GlobalStyles.pickerContainer}>
                         <Picker
@@ -98,7 +100,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             );
         case "ef_depth_research":
             return (
-                <View style={GlobalStyles.fieldContainer}>
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <View>
                         <EF_DepthResearch editMode={editMode ?? false} parent={field.id} />
@@ -107,14 +109,14 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             );
         case "coordinate_3d":
             return (
-                <View key={field.id} style={GlobalStyles.fieldContainer}>
+                <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <GeoPosition3D parent={field.id} field={field} />
                 </View>
             );
         case "date_range":
             return (
-                <View key={field.id} style={GlobalStyles.fieldContainer}>
-                    <DateRangeInput parent={field.id} />
+                <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <DateRangeInput parent={field.id} error={error} />
                 </View>
             );
         // Adicione outros componentes especiais aqui quando necessário

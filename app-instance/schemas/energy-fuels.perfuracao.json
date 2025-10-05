@@ -57,7 +57,8 @@
               "pt-BR": "ID da Perfuração:",
               "en-US": "Drilling ID:"
             },
-            "type": "text"
+            "type": "text",
+            "max": 9
           },
           "size": {
             "xs": 12,
@@ -87,7 +88,8 @@
               "pt-BR": "Direito Minerário:",
               "en-US": "Tenement:"
             },
-            "type": "text"
+            "type": "text",
+            "max": 12
           },
           "size": {
             "xs": 12,

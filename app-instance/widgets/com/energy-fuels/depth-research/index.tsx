@@ -8,6 +8,7 @@ import { useFormikContext } from 'formik';
 import { CrudService } from '@/core/services/crud.service';
 import { Option } from '@/core/types/option';
 
+
 const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: boolean }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, validationSchema, validateForm } = useFormikContext();
@@ -15,7 +16,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
     const [options, setOptions] = useState<Record<string, { id: number; value: string }[]>>({});
 
     const getOptions = async (table: string): Promise<Option[]> => {
-        const lista = await CrudService.list<any>(table, [], [], language.replace("-", ""));
+        const lista = await CrudService.list<any>(table, [], []);
         const mapped = lista.map((item) => ({
             id: item.id,
             description: language === "pt-BR" ? item.ptBR : item.enUS

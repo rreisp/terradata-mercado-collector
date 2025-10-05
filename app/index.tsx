@@ -1,6 +1,6 @@
 import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 import { colors } from '@/core/constants/colors';
-import { values } from '@/core/constants/values';
+import { constants } from '@/core/constants/constants';
 import { Link } from 'expo-router';
 import GlobalStyles from '@/core/constants/styles';
 import CountryFlag from "react-native-country-flag";
@@ -15,7 +15,7 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), values.delay);
+    const timer = setTimeout(() => setLoading(false), constants.delay);
     Object.entries(Initializers).forEach(([className, ClassRef]) => {
       const initializer = new (ClassRef as any)();
       initializer.init();

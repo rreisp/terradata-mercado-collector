@@ -1,38 +1,27 @@
-import { View, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import DateInput from '@/core/components/widgets/date';
 
-const DateRangeInput = ({ parent }: { parent: string }) => {
+const DateRangeInput = ({ parent, error }: { parent: string, error: any }) => {
     const { language } = useLanguage();
     const { values, setFieldValue } = useFormikContext<any>();
     const valorInicial = '';
 
-    const [datasInvalidas, setDatasInvalidas] = useState(false);
-
     const start = values?.[parent]?.start || valorInicial;
     const end = values?.[parent]?.end || valorInicial;
 
-    // Preencher valores iniciais se vazios
     useEffect(() => {
         if (!start) setFieldValue(`${parent}.start`, valorInicial);
         if (!end) setFieldValue(`${parent}.end`, valorInicial);
     }, [start, end, setFieldValue, parent]);
 
-    // Verificação se start < end
-    useEffect(() => {
-        if (start && end) {
-            setDatasInvalidas(end < start);
-        } else {
-            setDatasInvalidas(false);
-        }
-    }, [start, end]);
-
     return (
         <>
-            <View style={[GlobalStyles.row, {marginRight: 7}]}>
+            <View style={[GlobalStyles.row]}>
+                {/* Campo de Data Inicial */}
                 <View style={GlobalStyles.col6}>
                     <Text style={GlobalStyles.label}>
                         {language === 'pt-BR' ? "Data de Início:" : "Start Date:"}
@@ -43,12 +32,12 @@ const DateRangeInput = ({ parent }: { parent: string }) => {
                         format="dd/MM/yyyy"
                         placeholder="dd/mm/aaaa"
                     />
-                    {start === '' && (
-                        <Text style={GlobalStyles.errorText}>
-                            {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
-                        </Text>
+                    {error?.start && (
+                        <Text style={styles.errorText}>{error.start}</Text>
                     )}
                 </View>
+
+                {/* Campo de Data Final */}
                 <View style={GlobalStyles.col6}>
                     <Text style={GlobalStyles.label}>
                         {language === 'pt-BR' ? "Data de Término:" : "End Date:"}
@@ -59,21 +48,16 @@ const DateRangeInput = ({ parent }: { parent: string }) => {
                         format="dd/MM/yyyy"
                         placeholder="dd/mm/aaaa"
                     />
-                    {end === '' && (
-                        <Text style={GlobalStyles.errorText}>
-                            {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
-                        </Text>
+                    {error?.end && (
+                        <Text style={styles.errorText}>{error.end}</Text>
                     )}
                 </View>
             </View>
-            {datasInvalidas && (
+
+            {error && !error.start && !error.end && (
                 <View style={GlobalStyles.row}>
                     <View style={GlobalStyles.col12}>
-                        <Text style={GlobalStyles.errorText}>
-                            {language === 'pt-BR'
-                                ? 'A data de início deve ser menor que a data de término.'
-                                : 'Start date must be before end date.'}
-                        </Text>
+                        <Text style={styles.errorText}>{error}</Text>
                     </View>
                 </View>
             )}
@@ -82,3 +66,10 @@ const DateRangeInput = ({ parent }: { parent: string }) => {
 };
 
 export default DateRangeInput;
+
+const styles = StyleSheet.create({
+    errorText: {
+        color: 'red',
+        marginTop: 4,
+    },
+});

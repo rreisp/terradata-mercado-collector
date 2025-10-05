@@ -208,6 +208,7 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('induration', options);
       await CrudService.insertMultiple('induration', [
+        { 'description': 'Nenhuma', 'ptBR': 'Nenhuma', 'enUS': 'None' },
         { 'description': 'Calcária', 'ptBR': 'Calcária', 'enUS': 'Calcareous' },
         { 'description': 'Arenosa', 'ptBR': 'Arenosa', 'enUS': 'Sandy' },
         { 'description': 'Ferro', 'ptBR': 'Ferro', 'enUS': 'Iron' }

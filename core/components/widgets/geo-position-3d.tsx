@@ -24,11 +24,12 @@ const GeoPosition3D = ({ parent }: { parent: string }) => {
     }, [easting, northing, elevation, setFieldValue, parent]);
 
     return (
-        <View style={[GlobalStyles.row, {marginRight: 10}]}>
+        <View style={[GlobalStyles.row]}>
             <View style={GlobalStyles.col4}>
                 <Text style={GlobalStyles.label}>{language === 'pt-BR' ? "Coordenada Leste:" : "Easting:"}</Text>
                 <NumericInput
-                    step={0.00001}
+                    step={0.01}
+                    max={999999.99}
                     value={values?.[parent]?.easting || ''}
                     onChange={(text) => setFieldValue(`${parent}.easting`, text)}
                 />
@@ -41,7 +42,8 @@ const GeoPosition3D = ({ parent }: { parent: string }) => {
             <View style={GlobalStyles.col4}>
                 <Text style={GlobalStyles.label}>{language === 'pt-BR' ? "Coordenada Norte:" : "Northing:"}</Text>
                 <NumericInput
-                    step={0.00001}
+                    step={0.01}
+                    max={9999999.99}
                     value={values?.[parent]?.northing || ''}
                     onChange={(text) => setFieldValue(`${parent}.northing`, text)}
                 />
@@ -49,12 +51,13 @@ const GeoPosition3D = ({ parent }: { parent: string }) => {
                     <Text style={GlobalStyles.errorText}>
                         {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
                     </Text>
-                )}                
+                )}
             </View>
             <View style={GlobalStyles.col4}>
                 <Text style={GlobalStyles.label}>{language === 'pt-BR' ? "Elevação:" : "Elevation:"}</Text>
                 <NumericInput
-                    step={0.00001}
+                    step={0.01}
+                    max={999.99}
                     value={values?.[parent]?.elevation || ''}
                     onChange={(text) => setFieldValue(`${parent}.elevation`, text)}
                 />
@@ -62,7 +65,7 @@ const GeoPosition3D = ({ parent }: { parent: string }) => {
                     <Text style={GlobalStyles.errorText}>
                         {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
                     </Text>
-                )}                
+                )}
             </View>
         </View>
     );

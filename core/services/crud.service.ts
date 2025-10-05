@@ -26,28 +26,31 @@ function formatErrorMessage(context: string, error: any): string {
 }
 
 export class CrudService {
+    /**
+         * Executa uma consulta SQL que retorna resultados (SELECT).
+         * Não usa transação, pois leituras são seguras e não exigem atomicidade em relação a outras leituras.
+         */
     static async executeSql<T = any>(sql: string, params: Params = []): Promise<T[]> {
-        let results: T[] = [];
         try {
-            await db.withTransactionAsync(async () => {
-                results = await db.getAllAsync<T>(sql, params);
-                // console.log(results);
-            });
+            // Usa db.getAllAsync diretamente.
+            // As leituras no SQLite são não-bloqueantes para outras leituras.
+            return await db.getAllAsync<T>(sql, params);
         } catch (error) {
-            logDetailedError('Erro ao executar SQL', sql, params, error);
-            Alert.alert('Erro de banco de dados', formatErrorMessage("Falha ao executar consulta '" + sql + "'", error));
+            logDetailedError('Erro ao executar SQL (SELECT)', sql, params, error);
+            Alert.alert('Erro de banco de dados', formatErrorMessage("Falha ao executar consulta", error));
             throw error;
         }
-        return results;
     }
 
+    /**
+     * Executa uma query SQL de modificação (INSERT, UPDATE, DELETE, CREATE, DROP).
+     * db.runAsync é atômico e gerencia o lock do SQLite para a operação.
+     */
     static async runQuery(sql: string, params: Params = []): Promise<void> {
         try {
-            // await db.withTransactionAsync(async () => {
             await db.runAsync(sql, params);
-            // });
         } catch (error) {
-            logDetailedError('Erro ao executar query', sql, params, error);
+            logDetailedError('Erro ao executar query (RUN)', sql, params, error);
             Alert.alert('Erro de banco de dados', formatErrorMessage('Falha ao executar query', error));
             throw error;
         }
@@ -55,14 +58,8 @@ export class CrudService {
 
     static async createTable(tableName: string, columns: string): Promise<void> {
         const sql = `CREATE TABLE IF NOT EXISTS ${tableName} (${columns})`;
-        try {
-            await db.runAsync(sql); // sem transação
-            // await this.runQuery(sql);
-        } catch (error) {
-            logDetailedError(`Erro ao criar tabela ${tableName}`, sql, [], error);
-            Alert.alert('Erro', formatErrorMessage(`Erro ao criar a tabela ${tableName}`, error));
-            throw error;
-        }
+        // CREATE TABLE é um DDL e é tratado atomicamente por runQuery
+        await this.runQuery(sql);
     }
 
     static async insert(tableName: string, data: Record<string, any>): Promise<void> {
@@ -71,14 +68,7 @@ export class CrudService {
         const values = keys.map(k => data[k]);
 
         const sql = `INSERT INTO ${tableName} (${keys.join(',')}) VALUES (${placeholders})`;
-        try {
-            // await this.runQuery(sql, values);
-            await this.executeSql(sql, values);
-        } catch (error) {
-            logDetailedError(`Erro ao inserir em ${tableName}`, sql, values, error);
-            Alert.alert('Erro', formatErrorMessage(`Erro ao inserir dados em ${tableName}`, error));
-            throw error;
-        }
+        await this.runQuery(sql, values); // Usa runQuery para garantir atomicidade de uma única operação
     }
 
     static async update(
@@ -314,7 +304,7 @@ export class CrudService {
     static async insertMultiple(
         tableName: string,
         dataArray: Record<string, any>[],
-        uniqueConstraintKey: string // Adicione este parâmetro para a coluna a ser verificada
+        uniqueConstraintKey: string
     ): Promise<void> {
         if (!Array.isArray(dataArray) || dataArray.length === 0) {
             return;
@@ -327,21 +317,23 @@ export class CrudService {
 
         const values = dataArray.flatMap(item => keys.map(k => item[k]));
 
+        // Uma única instrução INSERT com múltiplos VALUES é atômica no SQLite
         const sql = `
         INSERT INTO ${tableName} (${keys.join(',')}) 
         VALUES ${allPlaceholders}
         ON CONFLICT(${uniqueConstraintKey}) DO NOTHING;
-    `;
+        `;
 
+        // Aqui, `runQuery` é mais apropriado, pois é uma operação de modificação
         try {
-            await this.executeSql(sql, values);
+            await this.runQuery(sql, values);
         } catch (error) {
             logDetailedError(`Erro ao inserir múltiplos registros em ${tableName}`, sql, values, error);
             Alert.alert('Erro', formatErrorMessage(`Erro ao inserir múltiplos dados em ${tableName}`, error));
             throw error;
         }
     }
-
+    
     static async createView(name: string, code: string): Promise<void> {
         const sqlDrop = `DROP VIEW IF EXISTS ${name}`;
         // const sql = `CREATE VIEW IF NOT EXISTS ${name} AS ${code}`;
