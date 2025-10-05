@@ -18,7 +18,7 @@ import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
 
-const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, onExportAll }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -28,6 +28,8 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
     const insets = useSafeAreaInsets();
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const isPT = language === 'pt-BR';
 
     useFocusEffect(
         useCallback(() => {
@@ -41,7 +43,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
             const data = await onList(language);
             setRecords(data);
         } catch (error) {
-            console.error(language === 'pt-BR' ? 'Erro ao carregar registros:' : 'Error loading records.', error);
+            console.error(isPT ? 'Erro ao carregar registros:' : 'Error loading records.', error);
         } finally {
             setLoading(false);
         }
@@ -68,7 +70,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
     }
 
     async function handleDelete(rootItemId: number): Promise<void> {
-        const confirmAndDelete = () => {
+        const doDelete = () => {
             onDelete(rootItemId);
             setRecords((prevRecords) => prevRecords.filter(record => record.id !== rootItemId));
         };
@@ -76,22 +78,15 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
         const message = language === "pt-BR" ?
             `Tem certeza que deseja remover o item com o ID ${rootItemId}?` : `Are you sure you want to remove the item with ID ${rootItemId}?`;
 
-        if (Platform.OS === 'web') {
-            const confirmed = window.confirm(message);
-            if (confirmed) {
-                confirmAndDelete();
-            }
-        } else {
-            Alert.alert(
-                'Confirmação de Exclusão',
-                message,
-                [
-                    { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
-                    { text: language === "pt-BR" ? 'Excluir' : "Remove", style: 'destructive', onPress: confirmAndDelete }
-                ],
-                { cancelable: true }
-            );
-        }
+        Alert.alert(
+            'Confirmação de Exclusão',
+            message,
+            [
+                { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
+                { text: language === "pt-BR" ? 'Excluir' : "Remove", style: 'destructive', onPress: doDelete }
+            ],
+            { cancelable: true }
+        );
     }
 
     async function handleEdit(id: number): Promise<void> {
@@ -101,25 +96,45 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
     async function handleExport(rootItemId: number): Promise<void> {
         setLoading(true);
         await onExport(rootItemId, language);
-        Alert.alert(language === 'pt-BR' ? 'Registro exportado com sucesso!' : 'Record exported successfully!');
         setLoading(false);
     }
 
+    async function handleExportAll(): Promise<void> {
+        const doExportAll = async () => {
+            setModalVisible(false);
+            setLoading(true);
+            await onExportAll(language);
+            Alert.alert(isPT ? 'Registro exportado com sucesso!' : 'Record exported successfully!');
+            setLoading(false);
+        };
+
+        Alert.alert(
+            isPT ? 'Atenção!' : 'Atention!',
+            isPT ? 'Esta operação pode demorar. Deseja continuar?' : 'This operation may take some time. Do you wish to continue?',
+            [
+                { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
+                { text: language === "pt-BR" ? 'Confirmar' : "Ok", style: 'destructive', onPress: doExportAll }
+            ],
+            { cancelable: true }
+        );
+    }
+
     async function handleReset(): Promise<void> {
-        const reset = () => {
+        const doReset = () => {
+            setModalVisible(false);            
             onReset();
             setModalVisible(false);
             setRecords([]);
         };
 
-        const msg = (language === 'pt-BR' ? `Tem certeza que deseja apagar todos os registros?` : `Are you sure you want to delete all records?`);
+        const msg = (isPT ? `Tem certeza que deseja apagar todos os registros?` : `Are you sure you want to delete all records?`);
 
         Alert.alert(
-            (language === 'pt-BR' ? `Confirmação` : `Confirmation`),
+            (isPT ? `Atenção!` : `Atention!`),
             msg,
             [
-                { text: (language === 'pt-BR' ? `Cancelar` : `Cancel`), style: 'cancel' },
-                { text: (language === 'pt-BR' ? `Remover` : `Delete`), style: 'destructive', onPress: reset }
+                { text: (isPT ? `Cancelar` : `Cancel`), style: 'cancel' },
+                { text: (isPT ? `Resetar` : `Reset`), style: 'destructive', onPress: doReset }
             ],
             { cancelable: true }
         );
@@ -134,7 +149,6 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
     };
 
     const showOptions = () => {
-        setModalContent("opa");
         setModalVisible(true);
     };
 
@@ -230,11 +244,17 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
                     </View>
                 </View>
             </View>
-            <Modal isVisible={modalVisible}>
-                <View style={styles.modal}>
+
+            <Modal isVisible={modalVisible} backdropColor="white" backdropOpacity={constants.opacity}>
+                <View>
                     {/* <Text>{modalContent}</Text> */}
+
                     <View style={{ marginBottom: 12 }}>
-                        <Button title="Resetar" onPress={handleReset} />
+                        <Button title={isPT ? "Exportar tudo" : "Export all"} onPress={handleExportAll} />
+                    </View>
+
+                    <View style={{ marginBottom: 12 }}>
+                        <Button title={isPT ? "Resetar" : "Reset"} onPress={handleReset} />
                     </View>
 
                     <Button title="Fechar" onPress={() => setModalVisible(false)} />
@@ -245,11 +265,6 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport }:
 };
 
 const styles = StyleSheet.create({
-    modal: {
-        backgroundColor: "white",
-        padding: 20,
-        borderRadius: 10,
-    },
     center: {
         flex: 1,
         justifyContent: 'center',
@@ -261,7 +276,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(255, 255, 255, 0.75)",
+        backgroundColor: `rgba(255, 255, 255, ${constants.opacity})`,
         justifyContent: "center",
         alignItems: "center",
         zIndex: 9999,

@@ -40,7 +40,7 @@ const EF_Recovery = ({ index, parent }) => {
                 }
             />
 
-            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}1</Text>}
+            {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
     );
 };

@@ -20,6 +20,15 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         }
     }
 
+    async exportAll(language: string) {
+        // TODO
+        function sleep(ms: number) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        await sleep(5000)
+        console.log("Exportar xabla " + language);
+    }
+
     // -------------------------------------------------------------------
     private async createExportView(language: string): Promise<void> {
         try {

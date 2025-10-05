@@ -14,14 +14,13 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         const requiredMsg = this.message('required', language);
         const formatMsg = isPt ? 'O formato deve ser ' : 'The format should be ';
         const duplicateTitleValueMsg = isPt ? 'Perfuração já registrado' : 'Drilling already registered';
-        const finalGreaterThanInitialMsg = isPt ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
+        const finalGreaterThanInitialMsg = isPt ? 'A data final deve ser maior ou igual a inicial' : 'The end date must be greater than or equal to the start date';
 
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
         const validators = {
             title: Yup.string()
                 .required(requiredMsg)
                 .matches(this.titleRegex, formatMsg + 'AA000-000')
-                // TODO: controlar acesso múltiplo ao banco para evitar erros nas requisições assincronas de validação
                 .test(
                     'duplicateValue',
                     duplicateTitleValueMsg,

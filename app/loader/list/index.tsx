@@ -42,6 +42,7 @@ const ListLoader = () => {
                     schemaId={schemaId}
                     columns={reader.columns()}
                     onExport={exporter.export.bind(exporter)}
+                    onExportAll={exporter.exportAll.bind(exporter)}
                     onDelete={remover.remove.bind(remover)}
                     onList={reader.read.bind(reader)}
                     onReset={reseter.reset.bind(reseter)}

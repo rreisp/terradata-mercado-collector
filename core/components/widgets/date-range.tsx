@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
@@ -33,7 +33,7 @@ const DateRangeInput = ({ parent, error }: { parent: string, error: any }) => {
                         placeholder="dd/mm/aaaa"
                     />
                     {error?.start && (
-                        <Text style={styles.errorText}>{error.start}</Text>
+                        <Text style={GlobalStyles.errorText}>{error.start}</Text>
                     )}
                 </View>
 
@@ -49,7 +49,7 @@ const DateRangeInput = ({ parent, error }: { parent: string, error: any }) => {
                         placeholder="dd/mm/aaaa"
                     />
                     {error?.end && (
-                        <Text style={styles.errorText}>{error.end}</Text>
+                        <Text style={GlobalStyles.errorText}>{error.end}</Text>
                     )}
                 </View>
             </View>
@@ -57,7 +57,7 @@ const DateRangeInput = ({ parent, error }: { parent: string, error: any }) => {
             {error && !error.start && !error.end && (
                 <View style={GlobalStyles.row}>
                     <View style={GlobalStyles.col12}>
-                        <Text style={styles.errorText}>{error}</Text>
+                        <Text style={GlobalStyles.errorText}>{error}</Text>
                     </View>
                 </View>
             )}
@@ -66,10 +66,3 @@ const DateRangeInput = ({ parent, error }: { parent: string, error: any }) => {
 };
 
 export default DateRangeInput;
-
-const styles = StyleSheet.create({
-    errorText: {
-        color: 'red',
-        marginTop: 4,
-    },
-});
