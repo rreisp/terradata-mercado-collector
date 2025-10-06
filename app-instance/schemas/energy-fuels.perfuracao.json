@@ -57,7 +57,7 @@
               "pt-BR": "ID da Perfuração:",
               "en-US": "Drilling ID:"
             },
-            "type": "text",
+            "type": "sanitized_text",
             "max": 9
           },
           "size": {
@@ -106,7 +106,7 @@
               "pt-BR": "Superficiário:",
               "en-US": "Landowner:"
             },
-            "type": "text"
+            "type": "sanitized_text"
           },
           "size": {
             "xs": 12,
@@ -132,7 +132,7 @@
         {
           "field": {
             "id": "reason",
-            "type": "text",
+            "type": "sanitized_text",
             "label": {
               "pt-BR": "Justificativa de Interrupção:",
               "en-US": "Interruption Reason:"

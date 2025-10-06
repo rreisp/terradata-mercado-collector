@@ -1,7 +1,14 @@
 // components/layout/SafeAreaContainer.tsx
 import React from "react";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { View, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import {
+    View,
+    ActivityIndicator,
+    StyleSheet,
+} from "react-native";
+// 💡 Importamos o componente da biblioteca externa
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"; 
+
 import { colors } from "@/core/constants/colors";
 import GlobalStyles from "@/core/constants/styles";
 
@@ -25,19 +32,24 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
                     <ActivityIndicator size="large" color={colors.blue} />
                 </View>
             ) : scrollable ? (
-                <ScrollView
+                // ✅ SUBSTITUINDO ScrollView por KeyboardAwareScrollView
+                <KeyboardAwareScrollView
+                    // Estilos do seu antigo ScrollView
                     style={[GlobalStyles.container, styles.fill]}
                     contentContainerStyle={GlobalStyles.scrollContainer}
+                    
+                    // Props específicas que melhoram a experiência
+                    enableOnAndroid={true} // Ativa o suporte adequado no Android
+                    extraScrollHeight={180} // Adiciona um pequeno "buffer" (espaço extra) para o campo focado
+                    showsVerticalScrollIndicator={false}
+                    
+                    // Propriedades úteis para integração com formulários
+                    // keyboardShouldPersistTaps="handled" // Útil para garantir que o tap nos inputs não feche o teclado (opcional)
                 >
                     {children}
-                </ScrollView>
+                </KeyboardAwareScrollView>
             ) : (
-                // <View style={[styles.fill, { paddingTop: insets.top, paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right }]}>
-                //     {children}
-                // </View>
-                <View
-                    style={[GlobalStyles.container, styles.fill]}
-                >
+                <View style={[GlobalStyles.container, styles.fill]}>
                     {children}
                 </View>
             )}
@@ -48,7 +60,7 @@ const SafeAreaContainer: React.FC<SafeAreaContainerProps> = ({
 const styles = StyleSheet.create({
     fill: {
         flex: 1,
-        padding: 3
+        padding: 3,
     },
 });
 

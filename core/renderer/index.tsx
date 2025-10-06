@@ -13,6 +13,7 @@ import DateRangeInput from "../components/widgets/date-range";
 import GeoPosition3D from "../components/widgets/geo-position-3d";
 
 import { constants } from "@/core/constants/constants";
+import SanitizedTextInput, { removeAccentsAndSpecialChars } from "../components/widgets/sanitized-text-input";
 
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();
@@ -67,6 +68,20 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         secureTextEntry={field.type === "password"}
                         maxLength={field.max}
                     />
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
+                </View>
+            );
+        case "sanitized_text":
+            return (
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                    <SanitizedTextInput
+                        placeholder={field.placeholder ? field.placeholder[language] : ""}
+                        value={value || ''}
+                        onChangeText={(text) => onChange(field.id, text)}
+                        style={GlobalStyles.input}
+                        secureTextEntry={field.type === "password"}
+                        maxLength={field.max} onSanitize={removeAccentsAndSpecialChars} />
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
             );
