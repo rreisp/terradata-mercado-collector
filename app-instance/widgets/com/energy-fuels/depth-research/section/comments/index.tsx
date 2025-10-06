@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
 import GlobalStyles from '@/core/constants/styles';
 import { useLanguage } from '@/core/contexts/LanguageContext';
-import SanitizedTextInput from '@/core/components/widgets/sanitized-text-input';
+import SanitizedTextInput, { removeAccentsAndSpecialChars } from '@/core/components/widgets/sanitized-text-input';
 
 const EF_Notas = ({ index, parent }) => {
     const { language } = useLanguage();
@@ -28,7 +28,7 @@ const EF_Notas = ({ index, parent }) => {
                     numberOfLines={4}
                     textAlignVertical="top"
                     value={values?.[parent]?.comments?.[index] || valorInicial}
-                    onChangeText={(text) => setFieldValue(`${parent}.comments[${index}]`, text)} onSanitize={undefined}                />
+                    onChangeText={(text) => setFieldValue(`${parent}.comments[${index}]`, text)} onSanitize={removeAccentsAndSpecialChars} />
             </View>
             {fieldError && <Text style={GlobalStyles.errorText}>{fieldError}</Text>}
         </View>
