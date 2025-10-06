@@ -8,7 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { CrudService } from '@/core/services/crud.service';
 
-const EF_Lithology = ({ index, parent, start, end }) => {
+const EF_Lithology = ({ index, parent, start, end, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
 
@@ -43,7 +43,8 @@ const EF_Lithology = ({ index, parent, start, end }) => {
         ]
     };
 
-    const valorInicialTipo = opcoes[language].indexOf(opcoes[language][0]);
+    // const valorInicialTipo = opcoes[language].indexOf(opcoes[language][0]);
+    const valorInicialTipo = 0;
     const pathBase = `${parent}.lithologies`;
     const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
 
@@ -179,17 +180,19 @@ const EF_Lithology = ({ index, parent, start, end }) => {
                                         <View style={{ flex: 1, marginRight: 3 }}>
                                             <View style={GlobalStyles.pickerContainer}>
                                                 <Picker
-                                                    selectedValue={opcoes[language][(item.type ?? valorInicialTipo) - 1]}
-                                                    onValueChange={(itemValue) =>
-                                                        setFieldValue(
-                                                            `${pathBase}[${index}][${subIndex}].type`,
-                                                            opcoes[language].indexOf(itemValue) + 1
-                                                        )
-                                                    }
+                                                    selectedValue={String(item.type)}
+                                                    onValueChange={(itemValue) => setFieldValue(
+                                                        `${pathBase}[${index}][${subIndex}].type`,
+                                                        Number(itemValue)
+                                                    )}
                                                     style={GlobalStyles.picker}
                                                 >
-                                                    {opcoes[language].map((val) => (
-                                                        <Picker.Item key={val} label={`${val}`} value={`${val}`} />
+                                                    {options && options.map((val) => (
+                                                        <Picker.Item
+                                                            key={val.id}
+                                                            label={`${val.description}`}
+                                                            value={String(val.id)}
+                                                        />
                                                     ))}
                                                 </Picker>
                                             </View>

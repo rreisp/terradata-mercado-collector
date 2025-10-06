@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { Controller } from 'react-hook-form';
 import { colors } from '@/core/constants/colors';
+import GlobalStyles from '@/core/constants/styles'
 
 interface InputProps {
   name: string;
