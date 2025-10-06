@@ -121,7 +121,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
 
     async function handleReset(): Promise<void> {
         const doReset = () => {
-            setModalVisible(false);            
+            setModalVisible(false);
             onReset();
             setModalVisible(false);
             setRecords([]);
@@ -194,61 +194,64 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
                     </View>
                 </View>
 
-                <View style={[GlobalStyles.row]}>
-                    <View style={[GlobalStyles.col12]}>
-                        <FlatList
-                            data={records}
-                            keyExtractor={(item) => item.id!.toString()}
-                            renderItem={({ item }) => (
-                                <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                                    <View style={[GlobalStyles.col9]}>
-                                        <View style={[GlobalStyles.row]}>
-                                            {columns.map((field, index) => {
-                                                const colStyle = {
-                                                    flex: 1 / columns.length,
-                                                    marginRight: 2
-                                                };
+                <FlatList
+                    data={records}
+                    keyExtractor={(item) => item.id!.toString()}
+                    contentContainerStyle={{ paddingBottom: 2, marginRight: 5 }}
+                    renderItem={({ item }) => (
+                        <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
+                            <View style={[GlobalStyles.col9]}>
+                                <View style={[GlobalStyles.row]}>
+                                    {columns.map((field, index) => {
+                                        const colStyle = {
+                                            flex: 1 / columns.length,
+                                            marginRight: 2
+                                        };
 
-                                                return (
-                                                    <View key={index} style={[GlobalStyles.col, colStyle]}>
-                                                        <Text>{item[field]}</Text>
-                                                    </View>
-                                                );
-                                            })}
-                                        </View>
-                                    </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleExport(item.id)}>
-                                            <Icon name="save" size={16} color="white" />
-                                        </Pressable>
-                                    </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={() => handleEdit(item.id)}>
-                                            <Icon name="edit" size={16} color="white" />
-                                        </Pressable>
-                                    </View>
-                                    <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
-                                        <Pressable accessibilityRole="button" style={[GlobalStyles.warnButton, GlobalStyles.iconButton]} onPress={() => handleDelete(item.id)}>
-                                            <Icon name="trash" size={16} color="red" />
-                                        </Pressable>
-                                    </View>
+                                        return (
+                                            <View key={index} style={[GlobalStyles.col, colStyle]}>
+                                                <Text>{item[field]}</Text>
+                                            </View>
+                                        );
+                                    })}
                                 </View>
-                            )}
-                            ListEmptyComponent={() => (
-                                <View style={styles.center}>
-                                    <Text>Nenhum registro encontrado.</Text>
-                                </View>
-                            )}
-                            style={{ paddingRight: 4 }}
-                        />
-                    </View>
-                </View>
+                            </View>
+                            <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
+                                <Pressable
+                                    accessibilityRole="button"
+                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                    onPress={() => handleExport(item.id)}>
+                                    <Icon name="save" size={16} color="white" />
+                                </Pressable>
+                            </View>
+                            <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
+                                <Pressable
+                                    accessibilityRole="button"
+                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                    onPress={() => handleEdit(item.id)}>
+                                    <Icon name="edit" size={16} color="white" />
+                                </Pressable>
+                            </View>
+                            <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
+                                <Pressable
+                                    accessibilityRole="button"
+                                    style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}
+                                    onPress={() => handleDelete(item.id)}>
+                                    <Icon name="trash" size={16} color="red" />
+                                </Pressable>
+                            </View>
+                        </View>
+                    )}
+                    ListEmptyComponent={() => (
+                        <View style={styles.center}>
+                            <Text>{isPT ? 'Nenhum registro encontrado.' : 'No records found.'}</Text>
+                        </View>
+                    )}
+                />
             </View>
 
             <Modal isVisible={modalVisible} backdropColor="white" backdropOpacity={constants.opacity}>
                 <View>
-                    {/* <Text>{modalContent}</Text> */}
-
                     <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "Exportar tudo" : "Export all"} onPress={handleExportAll} />
                     </View>
