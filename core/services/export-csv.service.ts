@@ -3,6 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import JSZip from 'jszip';
 import RNFS from 'react-native-fs';
 import { CrudService } from '@/core/services/crud.service';
+import * as Sharing from 'expo-sharing';
 
 // Interface para definir a estrutura dos arquivos CSV
 interface CsvFile {
@@ -119,7 +120,7 @@ export async function exportZIP(
 export async function exportAllZIP(
     csvFiles: CsvFile[],
     imagePaths: string[] = []
-): Promise<string> {
+): Promise<void | string> {
     const zip = new JSZip();
 
     try {
@@ -147,6 +148,18 @@ export async function exportAllZIP(
         await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
 
         console.log(`Arquivo ZIP criado em: ${zipPath}`);
+        // Verifica se o compartilhamento está disponível no dispositivo
+        if (!(await Sharing.isAvailableAsync())) {
+            alert("O compartilhamento de arquivos não está disponível no seu dispositivo.");
+            return;
+        }
+
+        // Abre a planilha de compartilhamento nativa
+        await Sharing.shareAsync(zipPath, {
+            mimeType: 'application/zip', // Ajuda o S.O. a entender o tipo de arquivo
+            dialogTitle: 'Exportar dados compactados', // Título para o diálogo no Android
+            UTI: 'public.zip-archive' // Identificador para iOS
+        });
         return zipPath;
 
     } catch (error) {
