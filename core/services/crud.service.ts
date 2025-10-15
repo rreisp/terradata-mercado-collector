@@ -34,6 +34,9 @@ export class CrudService {
         try {
             // Usa db.getAllAsync diretamente.
             // As leituras no SQLite são não-bloqueantes para outras leituras.
+            if( params.length === 0 ) {
+                return await db.getAllAsync<T>(sql);
+            }
             return await db.getAllAsync<T>(sql, params);
         } catch (error) {
             logDetailedError('Erro ao executar SQL (SELECT)', sql, params, error);
@@ -102,6 +105,7 @@ export class CrudService {
         }
     }
 
+    
     static async list<T>(
         tableName: string,
         where: string[] = [],

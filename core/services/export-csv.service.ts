@@ -4,11 +4,23 @@ import JSZip from 'jszip';
 import RNFS from 'react-native-fs';
 import { CrudService } from '@/core/services/crud.service';
 
+// Interface para definir a estrutura dos arquivos CSV
+interface CsvFile {
+    path: string;
+    fileName: string;
+}
+
 // const db = SQLite.openDatabaseSync('app.db');
 
 export async function getTableData(tableName: string, id: number) {
     //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
     const result = CrudService.list(tableName, ["d_id="], [id]);
+    return result; // já é um array de objetos
+}
+
+export async function getAllTableData(tableName: string) {
+    //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
+    const result = CrudService.list(tableName,[]);
     return result; // já é um array de objetos
 }
 
@@ -42,7 +54,7 @@ export async function exportTableToCSV(tableName: string, id: number) {
     // });
 
     try {
-        const data = await getTableData(tableName, id);
+        const data = await getAllTableData(tableName);
         const csv = convertToCSV(data);
         const fileUri = await saveCSVFile(`${tableName}.csv`, csv);
         console.log("Arquivo salvo em:", fileUri);
@@ -104,14 +116,57 @@ export async function exportZIP(
     }
 }
 
+export async function exportAllZIP(
+    csvFiles: CsvFile[],
+    imagePaths: string[] = []
+): Promise<string> {
+    const zip = new JSZip();
+
+    try {
+        console.log(`Adicionando ${csvFiles.length} arquivos CSV...`);
+        for (const csvFile of csvFiles) {
+            const csvContent = await FileSystem.readAsStringAsync(csvFile.path);
+            zip.file(csvFile.fileName, csvContent);
+            console.log(`CSV '${csvFile.fileName}' adicionado.`);
+        }
+        if (imagePaths.length > 0) {
+            console.log(`Adicionando ${imagePaths.length} arquivos de imagem...`);
+            for (const path of imagePaths) {
+                const fileName = path.substring(path.lastIndexOf('/') + 1);
+                const imageContentBase64 = await FileSystem.readAsStringAsync(path, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
+                zip.file(fileName, imageContentBase64, { base64: true });
+                console.log(`Imagem '${fileName}' adicionada.`);
+            }
+        }
+
+        // --- 3. Gerar e Salvar o Arquivo ZIP ---
+        const zipFile = await zip.generateAsync({ type: 'base64' });
+        const zipPath = FileSystem.documentDirectory + 'exportacao_completa.zip';
+        await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
+
+        console.log(`Arquivo ZIP criado em: ${zipPath}`);
+        return zipPath;
+
+    } catch (error) {
+        console.error('Erro ao criar o arquivo ZIP:', error);
+        throw error;
+    }
+}
+
 
 export async function saveImagesFromTable(tableName: string, tableId: number): Promise<string[]> {
 
     const savePromises: Promise<string>[] = [];
     const savedFilePaths: string[] = [];
-
+    let results: any[] = [];
     try {
-        const results: any[] = await getTableData(tableName, tableId);
+        if(tableId === 0){
+            results = await getAllTableData(tableName);
+        }else{
+            results = await getTableData(tableName, tableId);
+        }
 
         if (!results || results.length === 0) {
             console.log(`Nenhum dado encontrado na tabela ${tableName} com d_id = ${tableId}.`);
@@ -120,7 +175,7 @@ export async function saveImagesFromTable(tableName: string, tableId: number): P
 
         for (const row of results) {
             const base64Data = row.img;
-            const fileId = row.id;
+            const fileId = row.ID_HOLE+'_'+row.fgk_segment+'_'+row.id;
 
             if (base64Data && fileId) {
 
@@ -128,7 +183,7 @@ export async function saveImagesFromTable(tableName: string, tableId: number): P
                 if (base64Data.includes('base64,')) {
                     cleanedBase64Data = base64Data.split('base64,')[1];
                 }
-                const fileName = `${tableName}-${fileId}.jpg`;
+                const fileName = `${fileId}.jpg`;
 
                 const filePath = `${FileSystem.documentDirectory}${fileName}`;
 
