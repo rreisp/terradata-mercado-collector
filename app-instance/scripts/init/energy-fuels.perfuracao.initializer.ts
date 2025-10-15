@@ -3,10 +3,10 @@ import { CrudService } from "@/core/services/crud.service";
 
 export class EnergyFuelsDrillingInitializer implements DataInitializer {
   async init(): Promise<void> {
-    // await CrudService.drop("drillings");
-    // await CrudService.drop("segments");
-    // await CrudService.drop("images");
-    // await CrudService.drop("lithologies");
+    await CrudService.drop("drillings");
+    await CrudService.drop("segments");
+    await CrudService.drop("images");
+    await CrudService.drop("lithologies");
 
     await CrudService.drop("moisture");
     await CrudService.drop("hardness");
