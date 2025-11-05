@@ -1,4 +1,12 @@
-import { View, Text, Image, Pressable, StyleSheet } from "react-native";
+import { 
+  View, 
+  Text, 
+  Image, 
+  Pressable, 
+  StyleSheet, 
+  ActivityIndicator, // --- NOVO ---
+  Alert               // --- NOVO ---
+} from "react-native";
 import { colors } from '@/core/constants/colors';
 import { constants } from '@/core/constants/constants';
 import { Link } from 'expo-router';
@@ -10,23 +18,95 @@ import SafeAreaContainer from "@/core/components/safe-container";
 
 import * as Initializers from "@/app-instance/scripts/init";
 
+// --- NOVOS IMPORTS DO SISTEMA DE LICENÇA ---
+// (Ajuste os caminhos se eles estiverem em locais diferentes)
+import { getLicenseStatus } from "@/core/services/license.service";
+import ActivationScreen from "@/core/components/widgets/activationScreen"; 
+// ---------------------------------------------
+
 export default function Index() {
   const { setLanguage } = useLanguage();
-  const [loading, setLoading] = useState(true);
 
+  // --- STATES ALTERADOS ---
+  // Renomeamos 'loading' para ser mais específico
+  const [isCheckingLicense, setIsCheckingLicense] = useState(true);
+  // Novo state para controlar se o app está licenciado
+  const [isLicensed, setIsLicensed] = useState(false);
+  // -------------------------
+
+  // --- USEEFFECT ALTERADO ---
+  // Agora ele verifica a licença E roda seus initializers
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), constants.delay);
-    Object.entries(Initializers).forEach(([className, ClassRef]) => {
-      const initializer = new (ClassRef as any)();
-      initializer.init();
-    });
-    return () => clearTimeout(timer);
-  }, []);
+    const initializeAndCheckLicense = async () => {
+      // 1. Verifica o status da licença
+      const status = await getLicenseStatus();
+
+      if (status.licensed) {
+        setIsLicensed(true);
+        
+        // 2. Roda seus initializers (pois o usuário é válido)
+        Object.entries(Initializers).forEach(([className, ClassRef]) => {
+          const initializer = new (ClassRef as any)();
+          initializer.init();
+        });
+      } else {
+        setIsLicensed(false);
+        // 3. Se houver uma mensagem (ex: erro de relógio), mostra
+        if (status.message) {
+          Alert.alert("Aviso", status.message);
+        }
+      }
+      
+      // 4. Termina o carregamento
+      setIsCheckingLicense(false);
+    };
+
+    initializeAndCheckLicense();
+
+    // Removemos o timer e a limpeza, pois o check de licença já
+    // controla o fim do "loading"
+  }, []); // Roda apenas uma vez na inicialização
 
   const escolherIdioma = (lang: 'pt-BR' | 'en-US') => {
     setLanguage(lang);
   };
 
+  // --- LÓGICA DE RENDERIZAÇÃO CONDICIONAL ---
+
+  // 1. Enquanto estiver verificando, mostra um "carregando"
+  if (isCheckingLicense) {
+    return (
+      <SafeAreaContainer>
+        <View style={[GlobalStyles.container, GlobalStyles.centered]}>
+          <ActivityIndicator size="large" color={colors.green} />
+          <Text style={[GlobalStyles.textMuted, { marginTop: 20 }]}>
+            Verificando licença...
+          </Text>
+        </View>
+      </SafeAreaContainer>
+    );
+  }
+
+  // 2. Se não estiver licenciado, mostra a tela de Ativação
+  if (!isLicensed) {
+    return (
+      <ActivationScreen 
+        onLicenseVerified={() => {
+          // Esta função é chamada pela ActivationScreen quando
+          // o usuário ativa com sucesso.
+          setIsLicensed(true);
+          
+          // Roda os initializers pela primeira vez
+          Object.entries(Initializers).forEach(([className, ClassRef]) => {
+            const initializer = new (ClassRef as any)();
+            initializer.init();
+          });
+        }} 
+      />
+    );
+  }
+
+  // 3. Se passou em tudo (está licenciado), mostra sua tela de idioma
   return (
     <SafeAreaContainer>
       <View
@@ -68,6 +148,7 @@ export default function Index() {
   );
 }
 
+// Seus estilos (sem alteração)
 const styles = StyleSheet.create({
   row: {
     width: '50%',
@@ -92,4 +173,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingTop: 7
   }
-})
+});
