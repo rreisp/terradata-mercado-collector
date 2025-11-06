@@ -38,6 +38,24 @@ function convertToCSV(data: any[]): string {
     return [headers, ...rows].join("\n");
 }
 
+function getDateTimeString(): string {
+    const now = new Date();
+
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+
+    // const dateExport = `${day}-${month}-${year}`;
+    const dateExport = `${year}-${month}-${day}`;
+
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timeExport = `${hours}-${minutes}-${seconds}`;
+
+    return `${dateExport}_${timeExport}`;
+}
+
 export async function saveCSVFile(filename: string, content: string) {
     const fileUri = FileSystem.documentDirectory + filename;
     await FileSystem.writeAsStringAsync(fileUri, content, {
@@ -104,11 +122,17 @@ export async function exportZIP(
 
         // --- 3. Gerar e Salvar o Arquivo ZIP ---
         const zipFile = await zip.generateAsync({ type: 'base64' });
-
-        const zipPath = FileSystem.documentDirectory + 'arquivos_compactados.zip';
+        const dateExport = new Date().toISOString().split('T')[0];
+        const timeExport = new Date().toISOString().split('T')[1].replace(/:/g, '-').split('.')[0];
+        const zipPath = FileSystem.documentDirectory+'export_'+getDateTimeString()+'.zip';
         await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
 
         console.log(`Arquivo ZIP criado em: ${zipPath}`);
+        await Sharing.shareAsync(zipPath, {
+            mimeType: 'application/zip', // Ajuda o S.O. a entender o tipo de arquivo
+            dialogTitle: 'Exportar dados compactados', // Título para o diálogo no Android
+            UTI: 'public.zip-archive' // Identificador para iOS
+        });
         return zipPath;
 
     } catch (error) {
@@ -144,7 +168,7 @@ export async function exportAllZIP(
 
         // --- 3. Gerar e Salvar o Arquivo ZIP ---
         const zipFile = await zip.generateAsync({ type: 'base64' });
-        const zipPath = FileSystem.documentDirectory + 'exportacao_completa.zip';
+        const zipPath = FileSystem.documentDirectory +'exportAll_'+ getDateTimeString() +'.zip';
         await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
 
         console.log(`Arquivo ZIP criado em: ${zipPath}`);

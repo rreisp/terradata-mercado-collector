@@ -1,4 +1,12 @@
-import { View, Text, Image, Pressable, StyleSheet } from "react-native";
+import { 
+  View, 
+  Text, 
+  Image, 
+  Pressable, 
+  StyleSheet, 
+  ActivityIndicator, // --- NOVO ---
+  Alert               // --- NOVO ---
+} from "react-native";
 import { colors } from '@/core/constants/colors';
 import { constants } from '@/core/constants/constants';
 import { Link } from 'expo-router';
@@ -10,23 +18,85 @@ import SafeAreaContainer from "@/core/components/safe-container";
 
 import * as Initializers from "@/app-instance/scripts/init";
 
+import { getLicenseStatus } from "@/core/services/license.service";
+import ActivationScreen from "@/core/components/widgets/activationScreen"; 
+
 export default function Index() {
   const { setLanguage } = useLanguage();
-  const [loading, setLoading] = useState(true);
+  // --- LÓGICA DE LICENÇA ---
+  // 'loading' para ser mais específico
+  const [isCheckingLicense, setIsCheckingLicense] = useState(true);
+  // Novo state para controlar se o app está licenciado
+  const [isLicensed, setIsLicensed] = useState(false);
 
+  // verifica a licença E roda seus initializers
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), constants.delay);
-    Object.entries(Initializers).forEach(([className, ClassRef]) => {
-      const initializer = new (ClassRef as any)();
-      initializer.init();
-    });
-    return () => clearTimeout(timer);
-  }, []);
+    const initializeAndCheckLicense = async () => {
+      // Verifica o status da licença
+      const status = await getLicenseStatus();
+
+      if (status.licensed) {
+        setIsLicensed(true);
+        
+        // Roda seus initializers (pois o usuário é válido)
+        Object.entries(Initializers).forEach(([className, ClassRef]) => {
+          const initializer = new (ClassRef as any)();
+          initializer.init();
+        });
+      } else {
+        setIsLicensed(false);
+        // Se houver uma mensagem (ex: erro de relógio), mostra um alerta
+        if (status.message) {
+          Alert.alert("Aviso", status.message);
+        }
+      }
+      
+      // Termina o carregamento
+      setIsCheckingLicense(false);
+    };
+
+    initializeAndCheckLicense();
+
+    
+  }, []); // Roda apenas uma vez na inicialização
 
   const escolherIdioma = (lang: 'pt-BR' | 'en-US') => {
     setLanguage(lang);
   };
 
+
+  // Enquanto estiver verificando, mostra um "carregando"
+  if (isCheckingLicense) {
+    return (
+      <SafeAreaContainer>
+        <View style={[GlobalStyles.container, GlobalStyles.centered]}>
+          <ActivityIndicator size="large" color={colors.green} />
+          <Text style={[GlobalStyles.textMuted, { marginTop: 20 }]}>
+            Verificando licença...
+          </Text>
+        </View>
+      </SafeAreaContainer>
+    );
+  }
+
+  //Se não estiver licenciado, mostra a tela de Ativação
+  if (!isLicensed) {
+    return (
+      <ActivationScreen 
+        onLicenseVerified={() => {
+          // Esta função é chamada pela ActivationScreen quando
+          // o usuário ativa com sucesso.
+          setIsLicensed(true);
+          Object.entries(Initializers).forEach(([className, ClassRef]) => {
+            const initializer = new (ClassRef as any)();
+            initializer.init();
+          });
+        }} 
+      />
+    );
+  }
+
+  // Se passou em tudo (está licenciado), mostra sua tela de idioma
   return (
     <SafeAreaContainer>
       <View
@@ -92,4 +162,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingTop: 7
   }
-})
+});

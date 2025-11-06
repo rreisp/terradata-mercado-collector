@@ -178,3 +178,6 @@ ios/
 
 # any generated binary
 *.apk
+
+# arquivos de banco de dados
+*.db

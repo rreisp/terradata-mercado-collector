@@ -106,29 +106,40 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 
     // -------------------------------------------------------------------
     private async createExportView(language: string): Promise<void> {
-        language = language.replace('-', '');        
+         language = language.replace('-', '');
         try {
             await CrudService.dropView("export");
             const sql = `
-            SELECT l.*, 
+            SELECT 
+              l.fgk_segment AS SEGMENT_ID,
+              l.id AS ID_LITO,
+              l.depth_from AS _FROM,
+              l.depth_to AS _TO,
+              l2.${language} AS LITHOLOGY_TYPE,
               d.id AS d_id, 
-              d.title,
-              d.easting ,
-              d.elevation ,
-              d.tenement ,
-              d.landowner ,
-              d.start_date ,
-              d.end_date ,
-              d.interruption_reason,
-              s.*,
-              m.${language} AS umidade, 
-              c.${language} AS cor,
+              d.title AS ID_HOLE ,
+              d.easting AS EASTING ,
+              d.elevation AS ELEVATION ,
+              d.tenement AS MINING_TENEMENT,
+              d.landowner AS LANDOWNER ,
+              d.start_date AS BEGIN_DATE ,
+              d.end_date AS END_DATE ,
+              d.interruption_reason AS JUSTIFICATION ,
+              s.clay AS CLAY,
+              s.micah AS MICAH,
+              s.shells AS SHELLS,
+              s.organic_matter AS ORGANIC_MATTER,
+              s.lithic_fragments AS LITHIC_FRAGMENTS,
+              s.hms AS HMS,
+              s.comments AS COMMENTS,
+              m.${language} AS HUMIDITY, 
+              c.${language} AS COLOR,
               gi.${language} AS MINIMUM_GRANULOMETRY,
               ga.${language} AS MAXIMUM_GRANULOMETRY,
-              h.${language} AS dureza,
-              i.${language} AS cimentacao,
-              r.${language} AS esfericidade,
-              w.${language} AS deslamagem
+              h.${language} AS HARDNESS,
+              i.${language} AS INDURATION,
+              r.${language} AS ROUDNESS,
+              w.${language} AS WASH
               FROM 
               lithologies l 
               LEFT JOIN lithology l2 on l.fgk_lithology_type = l2.id
@@ -137,7 +148,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
               LEFT JOIN moisture m on s.fgk_moisture =m.id 
               LEFT JOIN color c on c.id = s.fgk_color 
               LEFT JOIN min_grainsize gi on gi.id = s.fgk_min_grainsize 
-              LEFT JOIN max_grainsize ga on ga.id = s.fgk_min_grainsize               
+              LEFT JOIN max_grainsize ga on ga.id = s.fgk_max_grainsize               
               LEFT JOIN hardness h on h.id = s.fgk_hardness 
               LEFT JOIN induration i on i.id = s.fgk_induration 
               LEFT JOIN roundness r on r.id = s.fgk_roundness 
@@ -167,13 +178,13 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 mg.${language} AS MINIMUM_GRANULOMETRY,
                 mg2.${language} AS MAXIMUM_GRANULOMETRY,
                 r.${language} AS ROUNDNESS,
-                s.clay,
-                s. micah ,
-                s.shells ,
-                s.organic_matter ,
-                s.lithic_fragments ,
-                s.hms ,
-                s.comments 
+                s.clay AS CLAY,
+                s. micah AS MICAH,
+                s.shells AS SHELLS,
+                s.organic_matter AS ORGANIC_MATTER,
+                s.lithic_fragments AS LITHIC_FRAGMENTS,
+                s.hms AS HMS,
+                s.comments AS COMMENTS
                 FROM segments s
                 LEFT JOIN drillings d ON s.fgk_drilling = d.id
                 LEFT join moisture m on s.fgk_moisture =m.id 
@@ -226,7 +237,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             l.id AS ID_LITO,
             l.depth_from AS _FROM,
             l.depth_to AS _TO,
-            l2.${language} 
+            l2.${language} AS LITHOLOGY_TYPE,
             FROM lithologies l
             LEFT JOIN segments s ON l.fgk_segment = s.id 
             LEFT JOIN drillings d ON s.fgk_drilling = d.id 
