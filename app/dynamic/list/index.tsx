@@ -216,7 +216,8 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
                                     })}
                                 </View>
                             </View>
-                            <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
+                            
+                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                 <Pressable
                                     accessibilityRole="button"
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
@@ -224,7 +225,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
                                     <Icon name="save" size={16} color="white" />
                                 </Pressable>
                             </View>
-                            <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
+                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                 <Pressable
                                     accessibilityRole="button"
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
@@ -232,7 +233,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
                                     <Icon name="edit" size={16} color="white" />
                                 </Pressable>
                             </View>
-                            <View style={[GlobalStyles.col1, { marginRight: 2 }]}>
+                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end",  }]}>
                                 <Pressable
                                     accessibilityRole="button"
                                     style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}

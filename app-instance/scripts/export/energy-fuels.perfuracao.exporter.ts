@@ -2,6 +2,7 @@ import { DataExporter } from "@/core/types/data-exporter";
 import * as ExportCsvService from '@/core/services/export-csv.service';
 import { CrudService } from "@/core/services/crud.service";
 import * as FileSystem from 'expo-file-system';
+import { Alert } from "react-native";
 
 // Interface para definir a estrutura dos arquivos CSV
 interface CsvFile {
@@ -9,9 +10,13 @@ interface CsvFile {
     fileName: string;
 }
 
+export type LanguageCode = "pt-BR" | "en-US";
+
 export class EnergyFuelsDrillingExporter implements DataExporter {
     async export(itemId: number, language: string): Promise<void> {
-        await this.createExportView(language)
+        const lang = await this.selectLanguage(language); 
+
+        await this.createExportView(lang)
         await this.createExportImagesView()
         try {
             const table = "drillings"
@@ -27,79 +32,81 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         }
     }
 
+    async exportAll(language: string) {
+        const lang = await this.selectLanguage(language);        
+        try {
+            const isPT = language === "pt-BR";
+            console.log(isPT ? "Iniciando processo de exportação completa..." : "Starting full export process...");
 
+            // --- 1. Criar as Views e Gerar os Arquivos CSV ---
+            await this.createExportSegmentsView(lang);
+            await this.createExportDrillingsView(lang);
+            await this.createExportLithologiesView(lang);
+            await this.createExportImagesView(); // Se necessário
 
-async exportAll(language: string) {
-    try {
-        console.log("Iniciando processo de exportação completa...");
+            const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', 0);
+            const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', 0);
+            const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', 0);
 
-        // --- 1. Criar as Views e Gerar os Arquivos CSV ---
-        await this.createExportSegmentsView(language);
-        await this.createExportDrillingsView(language);
-        await this.createExportLithologiesView(language);
-        await this.createExportImagesView(); // Se necessário
+            // --- 2. Preparar a Lista de Arquivos para o ZIP ---
+            // Assumindo que o resultado de exportTableToCSV tem uma propriedade 'uri' com o caminho do arquivo
+            const csvFilesToZip: CsvFile[] = [
+                { path: resultDrillings, fileName: 'drillings.csv' },
+                { path: resultSegments, fileName: 'segments.csv' },
+                { path: resultLithologies, fileName: 'lithologies.csv' },
+            ];
 
-        const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', 0);
-        const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', 0);
-        const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', 0);
+            const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', 0); //id = 0 para todas as imagens
 
-        // --- 2. Preparar a Lista de Arquivos para o ZIP ---
-        // Assumindo que o resultado de exportTableToCSV tem uma propriedade 'uri' com o caminho do arquivo
-        const csvFilesToZip: CsvFile[] = [
-            { path: resultDrillings, fileName: 'drillings.csv' },
-            { path: resultSegments, fileName: 'segments.csv' },
-            { path: resultLithologies, fileName: 'lithologies.csv' },
-        ];
+            // --- 3. Chamar a Função para Gerar o ZIP ---
+            console.log("Criando arquivo ZIP com todos os CSVs...");
+            const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs);
+            console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
-        const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', 0); //id = 0 para todas as imagens
-
-        // --- 3. Chamar a Função para Gerar o ZIP ---
-        console.log("Criando arquivo ZIP com todos os CSVs...");
-        const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip,resultImgs);
-        console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
-
-        // --- 4. Excluir os Arquivos CSV Originais ---
-        console.log("Excluindo arquivos CSV temporários...");
-        for (const csvFile of csvFilesToZip) {
-            try {
-                await FileSystem.deleteAsync(csvFile.path);
-                console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
-            } catch (deleteError) {
-                console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
+            // --- 4. Excluir os Arquivos CSV Originais ---
+            console.log("Excluindo arquivos CSV temporários...");
+            for (const csvFile of csvFilesToZip) {
+                try {
+                    await FileSystem.deleteAsync(csvFile.path);
+                    console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
+                } catch (deleteError) {
+                    console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
+                }
             }
+
+            console.log("Processo de exportação finalizado.");
+            // return zipFilePath;
+
+        } catch (error) {
+            console.error('Ocorreu um erro geral durante a exportação:', error);
         }
-
-        console.log("Processo de exportação finalizado.");
-        // return zipFilePath;
-
-    } catch (error) {
-        console.error('Ocorreu um erro geral durante a exportação:', error);
     }
-}
 
-    // async exportAll(language: string) {
-    //     // criar as views
-    //     // await this.createExportView(language)
-    //     await this.createExportSegmentsView(language)
-    //     await this.createExportDrillingsView(language)
-    //     await this.createExportLithologiesView(language)
-    //     await this.createExportImagesView()
-    //     const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', 0);
-    //     const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', 0);
-    //     const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', 0);
-
-    //     function sleep(ms: number) {
-    //         return new Promise(resolve => setTimeout(resolve, ms));
-    //     }
-    //     await sleep(5000)
-    //     console.log("Exportar xabla " + language);
-
-    // }
-
-    
+    // -------------------------------------------------------------------  
+    private selectLanguage(language: string): Promise<LanguageCode> {
+        const isPT = language === "pt-BR";
+        return new Promise((resolve) => {
+            Alert.alert(
+                isPT ? "Selecione o idioma" : "Select language",
+                isPT ? "Escolha uma das opções abaixo:" : "Choose one of the options below:",
+                [
+                    {
+                        text: isPT ? "🇺🇸  Inglês" : "🇺🇸  English",
+                        onPress: () => resolve("en-US"),
+                    },
+                    {
+                        text: isPT ? "🇧🇷  Português" : "🇧🇷  Portuguese",
+                        onPress: () => resolve("pt-BR"),
+                    }
+                ],
+                { cancelable: false }
+            );
+        });
+    }
 
     // -------------------------------------------------------------------
     private async createExportView(language: string): Promise<void> {
+        language = language.replace('-', '');        
         try {
             await CrudService.dropView("export");
             const sql = `
@@ -116,11 +123,11 @@ async exportAll(language: string) {
               s.*,
               m.${language} AS umidade, 
               c.${language} AS cor,
-              g.${language} AS granulometria,
+              gi.${language} AS MINIMUM_GRANULOMETRY,
+              ga.${language} AS MAXIMUM_GRANULOMETRY,
               h.${language} AS dureza,
               i.${language} AS cimentacao,
               r.${language} AS esfericidade,
-              s2.${language} AS seletividade_granulometrica,
               w.${language} AS deslamagem
               FROM 
               lithologies l 
@@ -142,7 +149,7 @@ async exportAll(language: string) {
         }
     }
 
-     private async createExportSegmentsView(language: string): Promise<void> {
+    private async createExportSegmentsView(language: string): Promise<void> {
         language = language.replace('-', '');
         try {
             await CrudService.dropView("segmentsExport");
