@@ -13,6 +13,11 @@ function formatDate(date: Date) {
 }
 
 export class EnergyFuelsDrillingExtractor implements DataExtractor {
+    private isPT: boolean;
+
+    constructor(language: string) {
+        this.isPT = language === 'pt-BR';
+    }    
     // -----------------------------------------------------------    
     async extract(info: any): Promise<void> {
         // console.warn('Extract Info');
@@ -45,7 +50,10 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
             await this.saveLithologies(segmentsIds[i], lithos);
         }
         console.log(`Registro com ID ${lastDrillingId} inserido com sucesso.`);
-        Alert.alert('Sucesso', `Registro com ID ${lastDrillingId} foi criado.`);
+        Alert.alert(
+            this.isPT ? 'Sucesso' : 'Success',
+            this.isPT ? `Registro criado.` : `Record created.`
+        );
     }
 
     // -----------------------------------------------------------

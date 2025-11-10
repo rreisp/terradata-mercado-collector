@@ -3,17 +3,22 @@ import { DataRemover } from "@/core/types/data-remover";
 import { Alert } from "react-native";
 
 export class EnergyFuelsDrillingRemover implements DataRemover {
+    private isPT: boolean;
+
+    constructor(language: string) {
+        this.isPT = language === 'pt-BR';
+    }
+
     async remove(rootItemId: number): Promise<void> {
-        // console.warn(rootItemId);
-        Alert.alert('Remover item', `ID do item: ${rootItemId}`);
         try {
             await CrudService.delete('drillings', 'id = ?', [rootItemId]);
-            // setDrillings((prevDrillings) => prevDrillings.filter(drilling => drilling.id !== rootItemId));
             console.log(`Registro com ID ${rootItemId} removido com sucesso.`);
-            Alert.alert('Sucesso', `Registro com ID ${rootItemId} foi removido.`);
+            Alert.alert(
+                this.isPT ? 'Sucesso' : 'Success',
+                this.isPT ? `Registro removido.` : `Record removed.`
+            );
         } catch (error) {
-            console.error('Erro ao remover o registro:', error);
-            // O tratamento de erro já está dentro do CrudService.delete
+            console.error(this.isPT ? 'Erro ao remover o registro:' : 'Error while removing record:', error);
         }
     }
 }

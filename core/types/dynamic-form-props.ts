@@ -5,8 +5,8 @@ export type DynamicFormProps = {
     schemaId: string;
     editMode: boolean;
     itemId: number;
-    extract: (values: any[]) => Promise<void>;
-    load: (rootItemId: number) => Promise<{ [key: string]: any }>;
-    update: (values: any[]) => Promise<void>;
-    validate: (field: Field, language: string) => Yup.ObjectSchema<any>,
+    onExport: (values: any[]) => Promise<void>;
+    onLoad: (rootItemId: number) => Promise<{ [key: string]: any }>;
+    onUpdate: (values: any[]) => Promise<void>;
+    onValidate: (field: Field, language: string) => Yup.ObjectSchema<any>,
 };

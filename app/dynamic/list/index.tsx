@@ -18,14 +18,14 @@ import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
 
-const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, onExportAll }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportAll }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalContent, setModalContent] = useState("");
-    const insets = useSafeAreaInsets();
+    // const [modalContent, setModalContent] = useState("");
+    // const insets = useSafeAreaInsets();
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -43,7 +43,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
             const data = await onList(language);
             setRecords(data);
         } catch (error) {
-            console.error(isPT ? 'Erro ao carregar registros:' : 'Error loading records.', error);
+            console.error(isPT ? 'Erro ao carregar registros:' : 'Error loading records: ', error);
         } finally {
             setLoading(false);
         }
@@ -75,15 +75,15 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
             setRecords((prevRecords) => prevRecords.filter(record => record.id !== rootItemId));
         };
 
-        const message = language === "pt-BR" ?
-            `Tem certeza que deseja remover o item com o ID ${rootItemId}?` : `Are you sure you want to remove the item with ID ${rootItemId}?`;
+        const message = isPT ?
+            `Tem certeza que deseja remover o item?` : `Are you sure you want to remove the item?`;
 
         Alert.alert(
-            'Confirmação de Exclusão',
+            isPT ? 'Confirmação de Exclusão' : 'Confirmation of Deletion',
             message,
             [
-                { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
-                { text: language === "pt-BR" ? 'Excluir' : "Remove", style: 'destructive', onPress: doDelete }
+                { text: isPT ? 'Cancelar' : "Cancel", style: 'cancel' },
+                { text: isPT ? 'Excluir' : "Remove", style: 'destructive', onPress: doDelete }
             ],
             { cancelable: true }
         );
@@ -95,7 +95,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
 
     async function handleExport(rootItemId: number): Promise<void> {
         setLoading(true);
-        await onExport(rootItemId, language);
+        await onExport(rootItemId);
         setLoading(false);
     }
 
@@ -103,8 +103,8 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
         const doExportAll = async () => {
             setModalVisible(false);
             setLoading(true);
-            await onExportAll(language);
-            Alert.alert(isPT ? 'Registro exportado com sucesso!' : 'Record exported successfully!');
+            await onExportAll();
+            Alert.alert(isPT ? 'Registros exportados.' : 'Records exported.');
             setLoading(false);
         };
 
@@ -112,8 +112,8 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
             isPT ? 'Atenção!' : 'Atention!',
             isPT ? 'Esta operação pode demorar. Deseja continuar?' : 'This operation may take some time. Do you wish to continue?',
             [
-                { text: language === "pt-BR" ? 'Cancelar' : "Cancel", style: 'cancel' },
-                { text: language === "pt-BR" ? 'Confirmar' : "Ok", style: 'destructive', onPress: doExportAll }
+                { text: isPT ? 'Cancelar' : "Cancel", style: 'cancel' },
+                { text: isPT ? 'Confirmar' : "Ok", style: 'destructive', onPress: doExportAll }
             ],
             { cancelable: true }
         );
@@ -123,6 +123,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
         const doReset = () => {
             setModalVisible(false);
             onReset();
+            onInit();
             setModalVisible(false);
             setRecords([]);
         };
@@ -216,7 +217,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
                                     })}
                                 </View>
                             </View>
-                            
+
                             <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                 <Pressable
                                     accessibilityRole="button"
@@ -233,7 +234,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
                                     <Icon name="edit" size={16} color="white" />
                                 </Pressable>
                             </View>
-                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end",  }]}>
+                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end", }]}>
                                 <Pressable
                                     accessibilityRole="button"
                                     style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}
@@ -254,14 +255,13 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onExport, o
             <Modal isVisible={modalVisible} backdropColor="white" backdropOpacity={constants.opacity}>
                 <View>
                     <View style={{ marginBottom: 12 }}>
-                        <Button title={isPT ? "Exportar tudo" : "Export all"} onPress={handleExportAll} />
+                        <Button title={isPT ? "💾 Exportar todos os registros" : "💾 Export all records"} onPress={handleExportAll} />
                     </View>
 
                     <View style={{ marginBottom: 12 }}>
-                        <Button title={isPT ? "Resetar" : "Reset"} onPress={handleReset} />
+                        <Button title={isPT ? "🗑️ Resetar banco de dados" : "🗑️ Reset database"} onPress={handleReset} />
                     </View>
-
-                    <Button title="Fechar" onPress={() => setModalVisible(false)} />
+                    <Button title={isPT ? "❎ Fechar" : "❎ Close"} onPress={() => setModalVisible(false)} />
                 </View>
             </Modal>
         </SafeAreaContainer>

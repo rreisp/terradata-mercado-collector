@@ -12,7 +12,7 @@ const EF_Micah = ({ index, parent }) => {
     const { values, setFieldValue, errors } = useFormikContext();
 
     const fieldPath = `${parent}.micahPct[${index}]`;
-    const validatorInstance = new EnergyFuelsDrillingValidator();
+    const validatorInstance = new EnergyFuelsDrillingValidator(language);
 
     // Obtém o schema completo de ef_depth_research
     const fieldSchema = validatorInstance.ef_depth_research({ type: 'ef_depth_research' }, language);

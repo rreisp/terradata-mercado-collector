@@ -18,6 +18,7 @@ import SanitizedTextInput, { removeAccentsAndSpecialChars } from "../components/
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();
     const { value, onChange } = formik;
+    const isPT = isPT;
 
     const error = formik.errors?.[field.id];
 
@@ -33,7 +34,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <MultiCameraInput editMode={editMode} name={field.id} quality={constants.imgQuality} />
+                    <MultiCameraInput editMode={editMode} name={field.id} quality={constants.imgQuality} language={language.replace("-","")} />
                 </View>
             );
         case "number":
@@ -49,7 +50,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     />
                     {/* {easting === '' && ( */}
                     <Text style={GlobalStyles.errorText}>
-                        {language === 'pt-BR' ? "Campo obrigatório" : "Required field"}
+                        {isPT ? "Campo obrigatório" : "Required field"}
                     </Text>
                     {/* )} */}
                 </View>

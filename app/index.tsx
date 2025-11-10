@@ -4,11 +4,10 @@ import {
   Image, 
   Pressable, 
   StyleSheet, 
-  ActivityIndicator, // --- NOVO ---
-  Alert               // --- NOVO ---
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import { colors } from '@/core/constants/colors';
-import { constants } from '@/core/constants/constants';
 import { Link } from 'expo-router';
 import GlobalStyles from '@/core/constants/styles';
 import CountryFlag from "react-native-country-flag";

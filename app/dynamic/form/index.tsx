@@ -21,7 +21,7 @@ import { colors } from "@/core/constants/colors";
 import schemaRegistry from "@/app-instance/schemas";
 import { logos } from '@/app-instance/logos';
 
-const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, validate }: DynamicFormProps) => {
+const DynamicForm = ({ schemaId, editMode, itemId, onExport, onLoad, onUpdate, onValidate }: DynamicFormProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -40,7 +40,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                 if (!(field.id in valuesToSet)) {
                     valuesToSet[field.id] = "";
                 }
-                const validator = getValidatorInstance(validate, field, language, editMode);
+                const validator = getValidatorInstance(onValidate, field, language, editMode);
                 if (validator) {
                     newValidationShape[field.id] = validator;
                 }
@@ -71,7 +71,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
 
                     // 2. Carrega os valores iniciais (se for modo de edição)
                     if (editMode) {
-                        valuesToSet = await load(itemId);
+                        valuesToSet = await onLoad(itemId);
                     } else {
                         valuesToSet = {};
                     }
@@ -97,7 +97,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
             return () => {
                 mounted = false;
             };
-        }, [schemaId, editMode, language, load, itemId, isOnline])
+        }, [schemaId, editMode, language, onLoad, itemId, isOnline])
     );
 
     const openList = () => {
@@ -123,10 +123,10 @@ const DynamicForm = ({ schemaId, editMode, itemId, extract, load, update, valida
                     onSubmit={async (values, { resetForm }) => {
                         // console.warn(values)
                         if (!editMode) {
-                            await extract(values);
+                            await onExport(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
                         } else {
-                            await update(values);
+                            await onUpdate(values);
                             navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
                         }
                         resetForm();

@@ -2,8 +2,6 @@
 import { DataUpdater } from "@/core/types/data-updater";
 import { CrudService } from "@/core/services/crud.service";
 import { ImageRecord } from '@/app-instance/types/image-record';
-// import { enviarBancoPorEmail } from "@/app/core/services/email.service";
-// import { exportarBancoComSAF } from "@/app/core/services/file-copy.service";
 import { Alert } from 'react-native';
 import { LithologyRecord } from "@/app-instance/types/lithology-record";
 
@@ -15,11 +13,13 @@ function formatDate(date: Date) {
 }
 
 export class EnergyFuelsDrillingUpdater implements DataUpdater {
+    private isPT: boolean;
+
+    constructor(language: string) {
+        this.isPT = language === 'pt-BR';
+    }
     // -----------------------------------------------------------    
     async update(info: any): Promise<void> {
-        // console.warn('Update Info');
-        // console.log(info);
-
         // informação básica da perfuração
         const drilling = this.extractDrillingInfo(info);
         // console.log(drilling);
@@ -32,7 +32,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
         const segmentsWithId = segments.map((segment, index) => ({
             ...segment,
             id: segmentIds[index],
-        }));   
+        }));
         segmentIds = await this.updateSegments(drilling!.id, segmentsWithId);
 
         // imagens de cada segmento
@@ -48,7 +48,10 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
         }
 
         console.log(`Registro com ID ${drilling!.id} atualizado com sucesso.`);
-        Alert.alert('Sucesso', `Registro com ID ${drilling!.id} foi atualizado.`);
+        Alert.alert(
+            this.isPT ? 'Sucesso' : 'Success',
+            this.isPT ? `Registro atualizado.` : `Record updated.` 
+        );
     }
 
     // -----------------------------------------------------------

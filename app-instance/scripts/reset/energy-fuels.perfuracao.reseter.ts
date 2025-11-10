@@ -3,19 +3,19 @@ import { CrudService } from "@/core/services/crud.service";
 
 export class EnergyFuelsDrillingReseter implements DataReseter {
   async reset(): Promise<void> {
-    CrudService.truncate("lithologies");
-    CrudService.truncate("images");
-    CrudService.truncate("segments");
-    CrudService.truncate("drillings");
+    await CrudService.drop("images");
+    await CrudService.drop("lithologies");
+    await CrudService.drop("segments");
+    await CrudService.drop("drillings");
 
-    // CrudService.truncate("moisture");
-    // CrudService.truncate("hardness");
-    // CrudService.truncate("wash");
-    // CrudService.truncate("color");
-    // CrudService.truncate("induration");
-    // CrudService.truncate("min_grainsize");
-    // CrudService.truncate("max_grainsize");
-    // CrudService.truncate("roundness");
-    // CrudService.truncate("lithology");
+    // await CrudService.drop("moisture");
+    // await CrudService.drop("hardness");
+    // await CrudService.drop("wash");
+    // await CrudService.drop("color");
+    // await CrudService.drop("induration");
+    // await CrudService.drop("min_grainsize");
+    // await CrudService.drop("max_grainsize");
+    // await CrudService.drop("roundness");
+    // await CrudService.drop("lithology");
   }
 }

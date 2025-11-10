@@ -73,7 +73,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                 <View key={segmentId} style={styles.sectionContent}>
                     <View style={GlobalStyles.fieldContainer}>
                         <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Fotos do segmento ${index + 1}` : `Photos from segment ${index + 1}`}:</Text>
-                        <MultiCameraInput handleDelete={handleRemovePhoto} name={`${parent}.photos[${index}]`} />
+                        <MultiCameraInput handleDelete={handleRemovePhoto} name={`${parent}.photos[${index}]`} language={language.replace("-","")} />
                     </View>
                     <View style={[GlobalStyles.row, { marginTop: DEFAULT_MARGIN }]}>
                         <View style={GlobalStyles.col}>

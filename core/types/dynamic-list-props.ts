@@ -5,5 +5,6 @@ export type DynamicListProps = {
     onExport: (rootItemId: number, language: string) => Promise<any>;
     onExportAll: (language: string) => Promise<any>;    
     onList: (language: string) =>  Promise<any[]>;
+    onInit: () => Promise<void>;
     onReset: () => Promise<void>;
 };

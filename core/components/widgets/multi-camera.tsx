@@ -10,11 +10,13 @@ type MultiCameraInputProps = {
     quality?: number;
     maxPhotos?: number;
     handleDelete: (id: number) => void;
+    language: string;
 };
 
-export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos, quality, handleDelete }) => {
+export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPhotos, quality, handleDelete, language }) => {
     const { setFieldValue } = useFormikContext();
     const [field, meta] = useField<ImageRecord[]>(name);
+    const isPT = language === 'ptBR';
 
     // Certifica-se de que o valor inicial do campo seja um array
     React.useEffect(() => {
@@ -26,13 +28,19 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 
     const handleLaunchCamera = async () => {
         if (maxPhotos && field?.value?.length >= maxPhotos) {
-            Alert.alert('Limite de Fotos', `Você atingiu o limite de ${maxPhotos} fotos.`);
+            Alert.alert(
+                isPT ? 'Limite de Fotos' : 'Photos limit',
+                isPT ? `Você atingiu o limite de ${maxPhotos} fotos.` : `You have reached the limit of ${maxPhotos} photos.`
+            );
             return;
         }
 
         const permission = await ImagePicker.requestCameraPermissionsAsync();
         if (!permission.granted) {
-            Alert.alert('Permissão Necessária', 'Precisamos da permissão da câmera para tirar fotos.');
+            Alert.alert(
+                isPT ? 'Permissão Necessária' : 'Permission Required',
+                isPT ? 'Precisamos da permissão da câmera para tirar fotos.' : 'We need camera permission to take photos.'
+            );
             return;
         }
 
@@ -60,15 +68,15 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
 
     const handleRemovePhoto = (indexToRemove: number) => {
         Alert.alert(
-            'Remover Foto',
-            'Tem certeza que deseja remover esta foto?',
+            isPT ? 'Remover Foto' : "Remove photo",
+            isPT ? 'Tem certeza que deseja remover essa foto?' : 'Are you sure you want to remove this photo?',
             [
                 {
-                    text: 'Cancelar',
+                    text: isPT ? 'Cancelar' : 'Cancel',
                     style: 'cancel',
                 },
                 {
-                    text: 'Remover',
+                    text: isPT ? 'Remover' : 'Remove',
                     onPress: () => {
                         const updatedPhotos = field.value.filter((_, index) => index !== indexToRemove);
                         setFieldValue(name, updatedPhotos);
@@ -85,7 +93,7 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({ name, maxPho
     return (
         <View style={styles.container}>
             <Button
-                title={field?.value?.length > 0 ? "Adicionar Mais Fotos" : "Tirar Foto"}
+                title={field?.value?.length > 0 ? (isPT ? "Adicionar mais fotos" : "Add more photos") : (isPT ? "Tirar foto" : "Take photo")}
                 onPress={handleLaunchCamera}
                 disabled={maxPhotos && field?.value?.length >= maxPhotos} // Desabilita o botão se o limite for atingido
             />

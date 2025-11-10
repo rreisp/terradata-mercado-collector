@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
         width: "100%",
         borderColor: "#ccc",
         borderRadius: 5,
-        backgroundColor: colors.white
+        backgroundColor: colors.white,
+        color: "#000"
     }
 });
 

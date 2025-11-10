@@ -113,7 +113,7 @@ export default StyleSheet.create({
         alignItems: 'flex-end',     // alinha horizontalmente
     },
     // picker: { borderWidth: 0, padding: 8 },
-    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7 },
+    picker: { borderWidth: 0, marginVertical: -9, marginHorizontal: -7, color: "#000" },
     pickerContainer: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5 },
     section: {
         flexDirection: 'row',

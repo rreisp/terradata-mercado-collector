@@ -6,12 +6,14 @@ import NumericInput from '@/core/components/widgets/numeric';
 
 import * as Yup from 'yup';
 import { EnergyFuelsDrillingValidator } from '@/app-instance/scripts/validate';
+import { useLanguage } from '@/core/contexts/LanguageContext';
 
 const EF_HMS = ({ index, parent }) => {
+    const { language } = useLanguage();    
     const { values, errors, setFieldValue, setFieldTouched, validateForm} = useFormikContext<any>();
 
     // instancia o validator e pega as regras de hms
-    const validatorInstance = new EnergyFuelsDrillingValidator();
+    const validatorInstance = new EnergyFuelsDrillingValidator(language);
     const fieldSchema = validatorInstance.ef_depth_research({ type: 'ef_depth_research' }, 'pt-BR');
     const hmsSchema: Yup.NumberSchema = fieldSchema.fields['hms'].innerType;
 
