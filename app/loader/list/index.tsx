@@ -27,7 +27,7 @@ const ListLoader = () => {
     const initializerRegistry: Record<string, new () => DataInitializer> = {
         ...Initializers,
     };
-    const readerRegistry: Record<string, new () => DataReader> = {
+    const readerRegistry: Record<string, new (language: string) => DataReader> = {
         ...Readers,
     };
     const removerRegistry: Record<string, new (language: string) => DataRemover> = {
@@ -39,7 +39,7 @@ const ListLoader = () => {
 
     const exporter = new exporterRegistry[schemaId + "Exporter"](language);
     const intializer = new initializerRegistry[schemaId + "Initializer"]();
-    const reader = new readerRegistry[schemaId + "Reader"]();
+    const reader = new readerRegistry[schemaId + "Reader"](language);
     const remover = new removerRegistry[schemaId + "Remover"](language);
     const reseter = new reseterRegistry[schemaId + "Reseter"]();
 
