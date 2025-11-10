@@ -34,7 +34,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
     const { values, setFieldValue } = useFormikContext();
 
     const DEFAULT_START = 0;
-    const DEFAULT_END = 100;
+    const DEFAULT_END = 1;
 
     const DEFAULT_MARGIN = constants.margin;
 
@@ -59,7 +59,7 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                     <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Segmento ${index + 1}` : `Segment ${index + 1}`}</Text>
                 </View>
                 <View style={GlobalStyles.col8}>
-                    <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values?.[parent]?.depth?.[index]?.from}cm {language === 'pt-BR' ? `até` : `to`} {values?.[parent]?.depth?.[index]?.to || ''}cm</Text>
+                    <Text>{language === 'pt-BR' ? `de` : `from`} {index == 0 ? 0 : values?.[parent]?.depth?.[index]?.from}m {language === 'pt-BR' ? `até` : `to`} {values?.[parent]?.depth?.[index]?.to || ''}m</Text>
                 </View>
                 <View style={[GlobalStyles.col1, styles.right]}>
                     <Icon

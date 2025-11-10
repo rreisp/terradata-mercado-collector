@@ -25,7 +25,7 @@ const EF_Depth = ({ index, parent }) => {
 
     useEffect(() => {
         if (currentTo === undefined) {
-            setFieldValue(`${parent}.depth[${index}].to`, String(Number(previousTo) + 100));
+            setFieldValue(`${parent}.depth[${index}].to`, String(Number(previousTo) + 1));
         }
     }, []);
 
@@ -44,7 +44,7 @@ const EF_Depth = ({ index, parent }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>
-                {language === 'pt-BR' ? 'Profundidade' : 'Depth'} (cm):
+                {language === 'pt-BR' ? 'Profundidade' : 'Depth'} (m):
             </Text>
             <View style={[GlobalStyles.row]}>
                 <View style={[GlobalStyles.col6]}>
@@ -53,7 +53,7 @@ const EF_Depth = ({ index, parent }) => {
                             ...GlobalStyles.input,
                             ...GlobalStyles.disabledInput
                         }}                    
-                        step={1}
+                        step={0.01}
                         value={String(currentFrom ?? '')}
                         placeholder={language === 'pt-BR' ? 'De' : 'From'}                        
                         min={0}
@@ -61,11 +61,11 @@ const EF_Depth = ({ index, parent }) => {
                             handleChangeFrom(value)
                         }
                         editable={false}
-                    />
+                    /> 
                 </View>
                 <View style={GlobalStyles.col6}>
                     <NumericInput
-                        step={1}
+                        step={0.01}
                         value={String(currentTo ?? '')}
                         placeholder={language === 'pt-BR' ? 'Até' : 'To'}                        
                         min={0}

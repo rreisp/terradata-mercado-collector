@@ -87,12 +87,12 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             depth: Yup.array().of(
                 Yup.object({
                     from: Yup.number()
-                        .integer(integerMsg)
+                        // .integer(integerMsg)
                         .min(0, greaterOrEqualToMsg + ' 0')
                         .required(requiredMsg),
                     to: Yup.number()
-                        .integer(integerMsg)
-                        .min(1, greaterThanMsg + ' 0')
+                        // .integer(integerMsg)
+                        .min(0.01, greaterThanMsg + ' 0')
                         .required(requiredMsg)
                 }).test(
                     'fromTo',
@@ -283,11 +283,11 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                             .nullable(),
                         from: Yup.number()
                             .required(this.isPt ? "Campos obrigatórios" : "Required fields",)
-                            .integer(integerMsg)
+                            // .integer(integerMsg)
                             .min(0, greaterThanMsg + ' 0'),
                         to: Yup.number()
                             .required(this.isPt ? "Campos obrigatórios" : "Required fields",)
-                            .integer(integerMsg)
+                            // .integer(integerMsg)
                             .min(0, greaterThanMsg + ' 0')
                             .test(
                                 'depth-to-gte-from',

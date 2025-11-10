@@ -11,39 +11,6 @@ import { CrudService } from '@/core/services/crud.service';
 const EF_Lithology = ({ index, parent, start, end, options }) => {
     const { language } = useLanguage();
     const { values, setFieldValue, errors } = useFormikContext();
-
-    const opcoes = {
-        "pt-BR": [
-            "Selecione",
-            "Grupo Barreiras",
-            "Argila",
-            "Argila arenosa",
-            "Silte",
-            "Areia argilosa",
-            "Areia siltosa",
-            "Areia",
-            "Areia cascalhosa",
-            "Solo",
-            "Calcário",
-            "Rocha"
-        ],
-        "en-US": [
-            "Select",
-            "Barreiras Group",
-            "Clay",
-            "Sandy clay",
-            "Silt",
-            "Clayey sand",
-            "Silty sand",
-            "Sand",
-            "Gravelly sand",
-            "Soil",
-            "Limestone",
-            "Rock"
-        ]
-    };
-
-    // const valorInicialTipo = opcoes[language].indexOf(opcoes[language][0]);
     const valorInicialTipo = 0;
     const pathBase = `${parent}.lithologies`;
     const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
@@ -155,24 +122,24 @@ const EF_Lithology = ({ index, parent, start, end, options }) => {
                                     <View style={[GlobalStyles.row, styles.row]}>
                                         <View style={[GlobalStyles.col3, { flexDirection: 'row' }]}>
                                             <NumericInput
+                                                step={0.01}
                                                 placeholder={language === 'pt-BR' ? `De` : `From`}
                                                 value={item.from}
                                                 onChange={(text: string) => {
                                                     handleChangeFrom(subIndex, text);
                                                 }}
-                                                step={1}
                                                 style={[GlobalStyles.input, styles.input]}
                                             />
                                         </View>
 
                                         <View style={[GlobalStyles.col3, { flexDirection: 'row' }]}>
                                             <NumericInput
+                                                step={0.01}
                                                 placeholder={language === 'pt-BR' ? `Até` : `To`}
                                                 value={item.to}
                                                 onChange={(text: string) => {
                                                     handleChangeTo(subIndex, text);
                                                 }}
-                                                step={1}
                                                 style={[GlobalStyles.input, styles.input]}
                                             />
                                         </View>
