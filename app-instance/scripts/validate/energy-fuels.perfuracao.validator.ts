@@ -6,22 +6,17 @@ import { CrudService } from "@/core/services/crud.service";
 import { DrillingRecord } from "@/app-instance/types/drilling-record";
 
 export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implements DataValidator {
-    private isPT: boolean;
-    private language: string;
-
     private titleRegex = /^[A-Z]{2}\d{3}-\d{3}$/;
     private tenementRegex = /^\d{3}\.\d{3}\/\d{4}$/;
 
     constructor(language: string) {
-        super()
-        this.language = language;
-        this.isPT = language === 'pt-BR';
+        super(language)
     }
 
     validate(field: Field, editMode: boolean): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
-        const requiredMsg = this.message('required', this.language);
+        const requiredMsg = this.message('required');
         const formatMsg = this.isPt ? 'O formato deve ser ' : 'The format should be ';
-        const duplicateTitleValueMsg = this.isPt ? 'Perfuração já registrado' : 'Drilling already registered';
+        const duplicateTitleValueMsg = this.isPt ? 'Perfuração já registrada' : 'Drilling already registered';
         const finalGreaterThanInitialMsg = this.isPt ? 'A data final deve ser maior ou igual a inicial' : 'The end date must be greater than or equal to the start date';
 
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
@@ -65,22 +60,21 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         if (field.id in validators) {
             validator = validators[field.id];
         } else {
-            validator = this.createValidator(field, this.language);
+            validator = this.createValidator(field);
         }
         return validator;
     }
 
     //  
     ef_depth_research(field: Field): Yup.ObjectSchema<any> {
-        const integerMsg = this.message('integer', this.language);
-        const requiredMsg = this.message('required', this.language);
-        const greaterThanMsg = this.message('greaterThan', this.language);
-        const greaterOrEqualToMsg = this.message('greaterOrEqualTo', this.language);
-        const minimumMsg = this.message('minimum', this.language);
-        const maximumMsg = this.message('maximum', this.language);
-        const finalGreaterThanInitialMsg = this.isPt ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
-        const selectOptionMsg = this.message('selectOption', this.language);
-
+        const integerMsg = this.message('integer');
+        const requiredMsg = this.message('required');
+        const greaterThanMsg = this.message('greaterThan');
+        const greaterOrEqualToMsg = this.message('greaterOrEqualTo');
+        const minimumMsg = this.message('minimum');
+        const maximumMsg = this.message('maximum');
+        const finalGreaterThanInitialMsg = this.isPT ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
+        const selectOptionMsg = this.message('selectOption');
 
         let validator = Yup.object({
             // --------------------------------------------
@@ -107,7 +101,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             recovery: Yup.array().of(
                 Yup.number()
                     .min(0, minimumMsg + ' 0')
-                    .max(100, this.message('maximum', this.language) + ' 100')
+                    .max(100, this.message('maximum') + ' 100')
                     .required(requiredMsg)
             ),
             // --------------------------------------------  
@@ -173,7 +167,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        this.message('max2DecimalPlaces', this.language),
+                        this.message('max2DecimalPlaces'),
                         (value) =>
                             value === undefined || value === null
                                 ? true
@@ -188,7 +182,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        this.message('max2DecimalPlaces', this.language),
+                        this.message('max2DecimalPlaces'),
                         (value) =>
                             value === undefined || value === null
                                 ? true
@@ -203,7 +197,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        this.message('max2DecimalPlaces', this.language),
+                        this.message('max2DecimalPlaces'),
                         (value) =>
                             value === undefined || value === null
                                 ? true
@@ -218,7 +212,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        this.message('max2DecimalPlaces', this.language),
+                        this.message('max2DecimalPlaces'),
                         (value) =>
                             value === undefined || value === null
                                 ? true
@@ -233,7 +227,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .max(100, maximumMsg + ' 100')
                     .test(
                         'max-2-decimals',
-                        this.message('max2DecimalPlaces', this.language),
+                        this.message('max2DecimalPlaces'),
                         (value) =>
                             value === undefined || value === null
                                 ? true
@@ -247,7 +241,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     .moreThan(0, greaterThanMsg + ' 0')
                     .test(
                         'max-2-decimals',
-                        this.message('max2DecimalPlaces', this.language),
+                        this.message('max2DecimalPlaces'),
                         (value) => (value === undefined || value === null) ? true : /^\d+(\.\d{1,2})?$/.test(String(value))
                     )
                     .required(requiredMsg)
@@ -282,11 +276,11 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                             .optional()
                             .nullable(),
                         from: Yup.number()
-                            .required(this.isPt ? "Campos obrigatórios" : "Required fields",)
+                            .required(requiredMsg)
                             // .integer(integerMsg)
                             .min(0, greaterThanMsg + ' 0'),
                         to: Yup.number()
-                            .required(this.isPt ? "Campos obrigatórios" : "Required fields",)
+                            .required(requiredMsg)
                             // .integer(integerMsg)
                             .min(0, greaterThanMsg + ' 0')
                             .test(

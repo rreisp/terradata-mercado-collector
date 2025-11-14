@@ -62,8 +62,8 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             // --- 2. Preparar a Lista de Arquivos para o ZIP ---
             // Assumindo que o resultado de exportTableToCSV tem uma propriedade 'uri' com o caminho do arquivo
             const csvFilesToZip: CsvFile[] = [
-                { path: resultDrillings, fileName: 'drillings.csv' },
-                { path: resultSegments, fileName: 'segments.csv' },
+                { path: resultDrillings, fileName: 'collars.csv' },
+                { path: resultSegments, fileName: 'drilling_logs.csv' },
                 { path: resultLithologies, fileName: 'lithologies.csv' },
             ];
 
