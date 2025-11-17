@@ -19,9 +19,12 @@ import * as Initializers from "@/app-instance/scripts/init";
 
 import { getLicenseStatus } from "@/core/services/license.service";
 import ActivationScreen from "@/core/components/widgets/activationScreen"; 
+import { getLocales } from 'expo-localization';
 
 export default function Index() {
   const { setLanguage } = useLanguage();
+  const idiomaDoSistema = getLocales()[0].languageCode;
+
   // --- LÓGICA DE LICENÇA ---
   // 'loading' para ser mais específico
   const [isCheckingLicense, setIsCheckingLicense] = useState(true);
@@ -110,8 +113,8 @@ export default function Index() {
           CAPTURE<Text style={{ color: colors.grey }}>WISE</Text>
         </Text>
 
-        <Text style={GlobalStyles.textMuted}>
-          POWERED BY TERRADATA
+        <Text style={[GlobalStyles.textMuted, {fontSize: 10, fontStyle: 'italic'}]}>
+          {idiomaDoSistema === 'pt' ? 'DESENVOLVIDO POR' : 'DESIGNED BY'} TERRADATA
         </Text>
 
         <View style={[GlobalStyles.row, styles.row]}>

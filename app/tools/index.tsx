@@ -103,7 +103,7 @@ const Tools = () => {
                                 }}
                                 style={styles.picker}
                             >
-                                <Picker.Item label={language === 'pt-BR' ? "SELECIONE" : "CHOOSE"} value={null} />
+                                <Picker.Item label={language === 'pt-BR' ? "SELECIONE UMA FERRAMENTA" : "CHOOSE A TOOL"} value={null} />
                                 {availableForms.map((form) => (
                                     <Picker.Item key={form.id} label={form.title} value={form.id} />
                                 ))}
