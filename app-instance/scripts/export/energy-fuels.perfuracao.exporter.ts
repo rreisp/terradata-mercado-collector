@@ -24,11 +24,18 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
     async export(itemId: number): Promise<void> {
         const lang = await this.selectLanguage(this.language);
         if (lang) {
-            await this.createExportView(lang)
-            await this.createExportImagesView()
+            // await this.createExportView(lang)
+            // await this.createExportImagesView()
+            await this.createExportSegmentsView(lang);
+            await this.createExportDrillingsView(lang);
+            await this.createExportLithologiesView(lang);
+            await this.createExportImagesView();
             try {
                 const table = "drillings"
                 const resultCsv = await ExportCsvService.exportTableToCSV('export', itemId);
+                const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', itemId);
+                const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', itemId);
+                const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', itemId);
                 console.log(resultCsv);
                 const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', itemId);
                 const resultZip = await ExportCsvService.exportZIP(resultCsv, `${table}.csv`, resultImgs);
