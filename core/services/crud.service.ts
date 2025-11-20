@@ -364,4 +364,17 @@ export class CrudService {
             return false;
         }
     }
+
+    static async getTitleHole(id: number): Promise<string> {
+        const sql = `SELECT title FROM drillings WHERE id = ?`;
+        return db.getAllAsync(sql, [id])
+            .then((rows) => {
+                if (rows && rows.length > 0) {
+                    return rows[0].title;
+                }
+                // Se não encontrou nenhuma linha, retorna uma string vazia
+                return '';
+            });
+    }
+
 }

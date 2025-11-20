@@ -19,6 +19,16 @@ export async function getTableData(tableName: string, id: number) {
     return result; // já é um array de objetos
 }
 
+export async function getTableData2(tableName: string, title: string) {
+    //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
+    let fieldName = 'ID_HOLE=';
+    if(tableName=='lithologiesExport'){
+        fieldName = 'DRILLING_ID=';
+    }
+    const result = CrudService.list(tableName, [fieldName], [title]);
+    return result; // já é um array de objetos
+}
+
 export async function getAllTableData(tableName: string) {
     //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
     const result = CrudService.list(tableName,[]);
@@ -71,20 +81,35 @@ export async function exportTableToCSV(tableName: string, id: number) {
     // }).catch((error) => {
     //   console.error('Erro ao salvar imagens:', error);
     // });
+    if (id !== 0) {
+        const idHole = await CrudService.getTitleHole(id);
+        try{
+            const data = await getTableData2(tableName, idHole);
+            const csv = convertToCSV(data);
+            const fileUri = await saveCSVFile(`${tableName}_${idHole}.csv`, csv);
+            console.log("Arquivo salvo em:", fileUri);
+            return fileUri;
+        } catch (error) {
+            console.error("Erro ao exportar tabela:", error);
+            throw error;
+        }
 
-    try {
-        const data = await getAllTableData(tableName);
-        const csv = convertToCSV(data);
-        const fileUri = await saveCSVFile(`${tableName}.csv`, csv);
-        console.log("Arquivo salvo em:", fileUri);
-        return fileUri;
-    } catch (error) {
-        console.error("Erro ao exportar tabela:", error);
-        throw error;
+    } else {
+
+        try {
+            const data = await getAllTableData(tableName);
+            const csv = convertToCSV(data);
+            const fileUri = await saveCSVFile(`${tableName}.csv`, csv);
+            console.log("Arquivo salvo em:", fileUri);
+            return fileUri;
+        } catch (error) {
+            console.error("Erro ao exportar tabela:", error);
+            throw error;
+        }
     }
 }
 
-export async function exportZIP(
+export async function exportZIP_old(
     csvFilePath: string,
     csvFileName: string,
     imagePaths: string[] = [] // Novo parâmetro
@@ -143,8 +168,8 @@ export async function exportZIP(
 
 export async function exportAllZIP(
     csvFiles: CsvFile[],
-    imagePaths: string[] = []
-): Promise<void | string> {
+    imagePaths: string[] = [],
+    exportType: string): Promise<void | string> {
     const zip = new JSZip();
 
     try {
@@ -168,7 +193,7 @@ export async function exportAllZIP(
 
         // --- 3. Gerar e Salvar o Arquivo ZIP ---
         const zipFile = await zip.generateAsync({ type: 'base64' });
-        const zipPath = FileSystem.documentDirectory +'exportAll_'+ getDateTimeString() +'.zip';
+        const zipPath = FileSystem.documentDirectory +'export'+exportType+'_'+ getDateTimeString() +'.zip';
         await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
 
         console.log(`Arquivo ZIP criado em: ${zipPath}`);

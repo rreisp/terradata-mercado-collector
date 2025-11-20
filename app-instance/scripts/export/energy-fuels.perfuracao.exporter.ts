@@ -24,6 +24,8 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
     async export(itemId: number): Promise<void> {
         const lang = await this.selectLanguage(this.language);
         if (lang) {
+            // Obtém o ID do Furo
+
             // await this.createExportView(lang)
             // await this.createExportImagesView()
             await this.createExportSegmentsView(lang);
@@ -32,19 +34,37 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             await this.createExportImagesView();
             try {
                 const table = "drillings"
-                const resultCsv = await ExportCsvService.exportTableToCSV('export', itemId);
+                // const resultCsv = await ExportCsvService.exportTableToCSV('export', itemId);
                 const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', itemId);
                 const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', itemId);
                 const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', itemId);
-                console.log(resultCsv);
+                // console.log(resultCsv);
                 const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', itemId);
-                const resultZip = await ExportCsvService.exportZIP(resultCsv, `${table}.csv`, resultImgs);
-                console.log(resultZip);
-                // console.log(`Registro com ID ${id} removido com sucesso.`);
-                Alert.alert(
-                    this.isPT ? 'Sucesso' : 'Success',
-                    this.isPT ? `Registro exportado.` : `Record exported.`
-                );
+                const csvFilesToZip: CsvFile[] = [
+                    { path: resultDrillings, fileName: 'collars.csv' },
+                    { path: resultSegments, fileName: 'drilling_logs.csv' },
+                    { path: resultLithologies, fileName: 'lithologies.csv' },
+                ];
+                // --- 3. Chamar a Função para Gerar o ZIP ---
+                console.log("Criando arquivo ZIP com todos os CSVs...");
+                const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs,'Single');
+                console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
+
+                // --- 4. Excluir os Arquivos CSV Originais ---
+                console.log("Excluindo arquivos CSV temporários...");
+                for (const csvFile of csvFilesToZip) {
+                    try {
+                        await FileSystem.deleteAsync(csvFile.path);
+                        console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
+                    } catch (deleteError) {
+                        console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
+                    }
+                    // console.log(`Registro com ID ${id} removido com sucesso.`);
+                    Alert.alert(
+                        this.isPT ? 'Sucesso' : 'Success',
+                        this.isPT ? `Registro exportado.` : `Record exported.`
+                    );
+                }
             } catch (error) {
                 console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
             }
@@ -78,7 +98,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 
             // --- 3. Chamar a Função para Gerar o ZIP ---
             console.log("Criando arquivo ZIP com todos os CSVs...");
-            const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs);
+            const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs,'All');
             console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
             // --- 4. Excluir os Arquivos CSV Originais ---
