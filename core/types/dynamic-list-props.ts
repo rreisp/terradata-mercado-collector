@@ -3,6 +3,7 @@ export type DynamicListProps = {
     columns: string[];
     onDelete: (rootItemId: number) => Promise<void>;
     onExport: (rootItemId: number) => Promise<any>;
+    onExportPDF: (rootItemId: number) => Promise<any>;
     onExportAll: () => Promise<any>;    
     onList: (language: string) =>  Promise<any[]>;
     onInit: () => Promise<void>;

@@ -18,7 +18,7 @@ import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
 
-const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportAll }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportPDF, onExportAll }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -98,6 +98,12 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
         await onExport(rootItemId);
         setLoading(false);
     }
+
+    async function handleExportPDF(rootItemId: number): Promise<void> {
+        setLoading(true);
+        await onExportPDF(rootItemId);
+        setLoading(false);
+    }    
 
     async function handleExportAll(): Promise<void> {
         const doExportAll = async () => {
@@ -201,7 +207,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                     contentContainerStyle={{ paddingBottom: 2, marginRight: 5 }}
                     renderItem={({ item }) => (
                         <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                            <View style={[GlobalStyles.col9]}>
+                            <View style={[GlobalStyles.col8]}>
                                 <View style={[GlobalStyles.row]}>
                                     {columns.map((field, index) => {
                                         const colStyle = {
@@ -216,6 +222,15 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                                         );
                                     })}
                                 </View>
+                            </View>
+
+                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
+                                <Pressable
+                                    accessibilityRole="button"
+                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                    onPress={() => handleExportPDF(item.id)}>
+                                    <Icon name="file-pdf-o" size={16} color="white" />
+                                </Pressable>
                             </View>
 
                             <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>

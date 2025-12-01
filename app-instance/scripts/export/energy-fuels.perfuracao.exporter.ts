@@ -1,8 +1,10 @@
 import { DataExporter } from "@/core/types/data-exporter";
 import * as ExportCsvService from '@/core/services/export-csv.service';
+import * as ExportPDFService from '@/core/services/export-pdf.service';
 import { CrudService } from "@/core/services/crud.service";
 import * as FileSystem from 'expo-file-system';
 import { Alert } from "react-native";
+import { EnergyFuelsDrillingReport } from "@/app-instance/template/drilling-report";
 
 // Interface para definir a estrutura dos arquivos CSV
 interface CsvFile {
@@ -47,7 +49,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 ];
                 // --- 3. Chamar a Função para Gerar o ZIP ---
                 console.log("Criando arquivo ZIP com todos os CSVs...");
-                const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs,'Single');
+                const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'Single');
                 console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
                 // --- 4. Excluir os Arquivos CSV Originais ---
@@ -65,6 +67,25 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                         this.isPT ? `Registro exportado.` : `Record exported.`
                     );
                 }
+            } catch (error) {
+                console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
+            }
+        }
+    }
+
+    async exportPDF(itemId: number): Promise<void> {
+        const lang = await this.selectLanguage(this.language);
+        if (lang) {
+            await this.createExportSegmentsView(lang);
+            await this.createExportDrillingsView(lang);
+            await this.createExportLithologiesView(lang);
+            await this.createExportImagesView();
+            try {
+                const drillings = await ExportPDFService.getData('drillingsExport', itemId); 
+                const segments = (await ExportPDFService.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId); 
+                const lithologies = await ExportPDFService.getData('lithologiesExport', 0);                                  
+                const document = new EnergyFuelsDrillingReport()
+                document.generate(lang, drillings![0], segments, lithologies)
             } catch (error) {
                 console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
             }
@@ -98,7 +119,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 
             // --- 3. Chamar a Função para Gerar o ZIP ---
             console.log("Criando arquivo ZIP com todos os CSVs...");
-            const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs,'All');
+            const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'All');
             console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
             // --- 4. Excluir os Arquivos CSV Originais ---
@@ -146,62 +167,6 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         });
     }
 
-    // -------------------------------------------------------------------
-    private async createExportView(language: string): Promise<void> {
-        language = language.replace('-', '');
-        try {
-            await CrudService.dropView("export");
-            const sql = `
-            SELECT 
-              l.fgk_segment AS SEGMENT_ID,
-              l.id AS ID_LITO,
-              l.depth_from AS _FROM,
-              l.depth_to AS _TO,
-              l2.${language} AS LITHOLOGY_TYPE,
-              d.id AS d_id, 
-              d.title AS ID_HOLE ,
-              d.easting AS EASTING ,
-              d.elevation AS ELEVATION ,
-              d.tenement AS MINING_TENEMENT,
-              d.landowner AS LANDOWNER ,
-              d.start_date AS BEGIN_DATE ,
-              d.end_date AS END_DATE ,
-              d.interruption_reason AS JUSTIFICATION ,
-              s.clay AS CLAY,
-              s.micah AS MICAH,
-              s.shells AS SHELLS,
-              s.organic_matter AS ORGANIC_MATTER,
-              s.lithic_fragments AS LITHIC_FRAGMENTS,
-              s.hms AS HMS,
-              s.comments AS COMMENTS,
-              m.${language} AS HUMIDITY, 
-              c.${language} AS COLOR,
-              gi.${language} AS MINIMUM_GRANULOMETRY,
-              ga.${language} AS MAXIMUM_GRANULOMETRY,
-              h.${language} AS HARDNESS,
-              i.${language} AS INDURATION,
-              r.${language} AS ROUDNESS,
-              w.${language} AS WASH
-              FROM 
-              lithologies l 
-              LEFT JOIN lithology l2 on l.fgk_lithology_type = l2.id
-              LEFT JOIN segments s on s.id =l.fgk_segment 
-              LEFT JOIN drillings d on d.id = s.fgk_drilling  
-              LEFT JOIN moisture m on s.fgk_moisture =m.id 
-              LEFT JOIN color c on c.id = s.fgk_color 
-              LEFT JOIN min_grainsize gi on gi.id = s.fgk_min_grainsize 
-              LEFT JOIN max_grainsize ga on ga.id = s.fgk_max_grainsize               
-              LEFT JOIN hardness h on h.id = s.fgk_hardness 
-              LEFT JOIN induration i on i.id = s.fgk_induration 
-              LEFT JOIN roundness r on r.id = s.fgk_roundness 
-              LEFT JOIN wash w on w.id = s.fgk_wash;
-            `;
-            await CrudService.createView('export', sql);
-        } catch (error) {
-            console.log('erro ao criar a view ', error);
-        }
-    }
-
     private async createExportSegmentsView(language: string): Promise<void> {
         language = language.replace('-', '');
         try {
@@ -209,13 +174,15 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             const sql = `
             SELECT 
                 d.title AS ID_HOLE,
+                s.fgk_drilling AS DRILLING_ID,
                 s.id AS SEGMENT_ID,
                 s.depth_from AS _FROM,
                 s.depth_to AS _TO,
                 s.recovery AS RECOVERY,
+                m.${language} AS MOISTURE,
                 h.${language} AS HARDNESS,
                 w.${language} AS WASH,
-                c.${language} AS COLOUR,
+                c.${language} AS COLOR,
                 i.${language} AS INDURATION,
                 mg.${language} AS MINIMUM_GRANULOMETRY,
                 mg2.${language} AS MAXIMUM_GRANULOMETRY,
