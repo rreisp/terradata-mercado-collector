@@ -174,11 +174,9 @@ export async function exportAllZIP(
 ): Promise<void | string> {
     
     // 1. Definir caminhos
-    // Criamos uma pasta temporária única para esta exportação para evitar conflitos
     const stagingFolderName = `staging_${new Date().getTime()}`; 
     const stagingDir = `${FileSystem.cacheDirectory}${stagingFolderName}/`;
     
-    // Caminho final do ZIP (como você fazia antes)
     const zipFileName = `export${exportType}_${getDateTimeString()}.zip`;
     const zipPath = `${FileSystem.documentDirectory}${zipFileName}`;
 
@@ -215,8 +213,6 @@ export async function exportAllZIP(
         }
 
         // --- 5. Executar o ZIP Nativo ---
-        // A mágica acontece aqui: O código nativo zipa a pasta inteira direto para o arquivo final.
-        // Sem Base64, sem estouro de memória.
         console.log("Comprimindo arquivos (Nativo)...");
         await zip(stagingDir, zipPath);
         console.log(`Arquivo ZIP criado em: ${zipPath}`);
@@ -239,9 +235,7 @@ export async function exportAllZIP(
         console.error('Erro ao criar o arquivo ZIP:', error);
         throw error;
     } finally {
-        // --- 7. Limpeza (Crucial) ---
-        // Sempre apagamos a pasta temporária onde copiamos os arquivos,
-        // independente de sucesso ou erro, para não lotar o celular do usuário.
+        // --- 7. Limpeza ---
         try {
             await FileSystem.deleteAsync(stagingDir, { idempotent: true });
             console.log("Pasta temporária de staging limpa.");
