@@ -74,6 +74,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
+    "react-native-zip-archive": "^7.0.2",
     "react-super-responsive-table": "^6.0.2",
     "wa-sqlite": "^1.0.0",
     "yup": "^1.6.1",

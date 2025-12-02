@@ -4,6 +4,7 @@ import JSZip from 'jszip';
 import RNFS from 'react-native-fs';
 import { CrudService } from '@/core/services/crud.service';
 import * as Sharing from 'expo-sharing';
+import { zip } from 'react-native-zip-archive';
 
 // Interface para definir a estrutura dos arquivos CSV
 interface CsvFile {
@@ -169,51 +170,84 @@ export async function exportZIP_old(
 export async function exportAllZIP(
     csvFiles: CsvFile[],
     imagePaths: string[] = [],
-    exportType: string): Promise<void | string> {
-    const zip = new JSZip();
+    exportType: string
+): Promise<void | string> {
+    
+    // 1. Definir caminhos
+    // Criamos uma pasta temporária única para esta exportação para evitar conflitos
+    const stagingFolderName = `staging_${new Date().getTime()}`; 
+    const stagingDir = `${FileSystem.cacheDirectory}${stagingFolderName}/`;
+    
+    // Caminho final do ZIP (como você fazia antes)
+    const zipFileName = `export${exportType}_${getDateTimeString()}.zip`;
+    const zipPath = `${FileSystem.documentDirectory}${zipFileName}`;
 
     try {
-        console.log(`Adicionando ${csvFiles.length} arquivos CSV...`);
+        console.log(`Iniciando exportação nativa via Staging em: ${stagingDir}`);
+
+        // 2. Criar o diretório de Staging (Intermediário)
+        // Se já existir algo lá, garante que cria limpo
+        await FileSystem.makeDirectoryAsync(stagingDir, { intermediates: true });
+
+        // --- 3. Copiar CSVs para a pasta de Staging ---
+        console.log(`Copiando ${csvFiles.length} arquivos CSV...`);
         for (const csvFile of csvFiles) {
-            const csvContent = await FileSystem.readAsStringAsync(csvFile.path);
-            zip.file(csvFile.fileName, csvContent);
-            console.log(`CSV '${csvFile.fileName}' adicionado.`);
+            await FileSystem.copyAsync({
+                from: csvFile.path,
+                to: stagingDir + csvFile.fileName
+            });
+            console.log(`CSV '${csvFile.fileName}' copiado.`);
         }
+
+        // --- 4. Copiar Imagens para a pasta de Staging ---
         if (imagePaths.length > 0) {
-            console.log(`Adicionando ${imagePaths.length} arquivos de imagem...`);
+            console.log(`Copiando ${imagePaths.length} arquivos de imagem...`);
             for (const path of imagePaths) {
+                // Pega apenas o nome do arquivo (ex: foto.jpg)
                 const fileName = path.substring(path.lastIndexOf('/') + 1);
-                const imageContentBase64 = await FileSystem.readAsStringAsync(path, {
-                    encoding: FileSystem.EncodingType.Base64,
+                
+                await FileSystem.copyAsync({
+                    from: path,
+                    to: stagingDir + fileName
                 });
-                zip.file(fileName, imageContentBase64, { base64: true });
-                console.log(`Imagem '${fileName}' adicionada.`);
+                console.log(`Imagem '${fileName}' copiada.`);
             }
         }
 
-        // --- 3. Gerar e Salvar o Arquivo ZIP ---
-        const zipFile = await zip.generateAsync({ type: 'base64' });
-        const zipPath = FileSystem.documentDirectory +'export'+exportType+'_'+ getDateTimeString() +'.zip';
-        await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
-
+        // --- 5. Executar o ZIP Nativo ---
+        // A mágica acontece aqui: O código nativo zipa a pasta inteira direto para o arquivo final.
+        // Sem Base64, sem estouro de memória.
+        console.log("Comprimindo arquivos (Nativo)...");
+        await zip(stagingDir, zipPath);
         console.log(`Arquivo ZIP criado em: ${zipPath}`);
-        // Verifica se o compartilhamento está disponível no dispositivo
+
+        // --- 6. Compartilhar ---
         if (!(await Sharing.isAvailableAsync())) {
             alert("O compartilhamento de arquivos não está disponível no seu dispositivo.");
             return;
         }
 
-        // Abre a planilha de compartilhamento nativa
         await Sharing.shareAsync(zipPath, {
-            mimeType: 'application/zip', // Ajuda o S.O. a entender o tipo de arquivo
-            dialogTitle: 'Exportar dados compactados', // Título para o diálogo no Android
-            UTI: 'public.zip-archive' // Identificador para iOS
+            mimeType: 'application/zip',
+            dialogTitle: 'Exportar dados compactados',
+            UTI: 'public.zip-archive'
         });
+
         return zipPath;
 
     } catch (error) {
         console.error('Erro ao criar o arquivo ZIP:', error);
         throw error;
+    } finally {
+        // --- 7. Limpeza (Crucial) ---
+        // Sempre apagamos a pasta temporária onde copiamos os arquivos,
+        // independente de sucesso ou erro, para não lotar o celular do usuário.
+        try {
+            await FileSystem.deleteAsync(stagingDir, { idempotent: true });
+            console.log("Pasta temporária de staging limpa.");
+        } catch (cleanupError) {
+            console.warn("Falha ao limpar pasta temporária:", cleanupError);
+        }
     }
 }
 
