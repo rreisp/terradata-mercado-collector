@@ -1,7 +1,4 @@
-import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
-import JSZip from 'jszip';
-import RNFS from 'react-native-fs';
 import { CrudService } from '@/core/services/crud.service';
 import * as Sharing from 'expo-sharing';
 import { zip } from 'react-native-zip-archive';
@@ -107,63 +104,6 @@ export async function exportTableToCSV(tableName: string, id: number) {
             console.error("Erro ao exportar tabela:", error);
             throw error;
         }
-    }
-}
-
-export async function exportZIP_old(
-    csvFilePath: string,
-    csvFileName: string,
-    imagePaths: string[] = [] // Novo parâmetro
-): Promise<string> {
-    const zip = new JSZip();
-
-    try {
-        // --- 1. Adicionar o Arquivo CSV ---
-        const csvContent = await FileSystem.readAsStringAsync(csvFilePath);
-        zip.file(csvFileName, csvContent);
-        console.log(`CSV '${csvFileName}' adicionado.`);
-
-        // --- 2. Adicionar os Arquivos de Imagem (Novidade) ---
-        if (imagePaths.length > 0) {
-            console.log(`Adicionando ${imagePaths.length} arquivos de imagem...`);
-
-            // Itera sobre cada caminho de imagem
-            for (const path of imagePaths) {
-                // Obtém o nome do arquivo a partir do caminho completo
-                // O substring(lastIndexOf('/')) garante que pegamos o nome do arquivo
-                const fileName = path.substring(path.lastIndexOf('/') + 1);
-
-                // Lê o conteúdo binário do arquivo em Base64
-                // Usamos Base64 porque o JSZip lida melhor com dados binários através dele
-                const imageContentBase64 = await FileSystem.readAsStringAsync(path, {
-                    encoding: FileSystem.EncodingType.Base64,
-                });
-
-                // Adiciona o arquivo ao ZIP, informando que o conteúdo está em Base64
-                zip.file(fileName, imageContentBase64, { base64: true });
-                console.log(`Imagem '${fileName}' adicionada.`);
-            }
-        }
-
-
-        // --- 3. Gerar e Salvar o Arquivo ZIP ---
-        const zipFile = await zip.generateAsync({ type: 'base64' });
-        const dateExport = new Date().toISOString().split('T')[0];
-        const timeExport = new Date().toISOString().split('T')[1].replace(/:/g, '-').split('.')[0];
-        const zipPath = FileSystem.documentDirectory+'export_'+getDateTimeString()+'.zip';
-        await FileSystem.writeAsStringAsync(zipPath, zipFile, { encoding: FileSystem.EncodingType.Base64 });
-
-        console.log(`Arquivo ZIP criado em: ${zipPath}`);
-        await Sharing.shareAsync(zipPath, {
-            mimeType: 'application/zip', // Ajuda o S.O. a entender o tipo de arquivo
-            dialogTitle: 'Exportar dados compactados', // Título para o diálogo no Android
-            UTI: 'public.zip-archive' // Identificador para iOS
-        });
-        return zipPath;
-
-    } catch (error) {
-        console.error('Erro ao criar o arquivo ZIP:', error);
-        throw error;
     }
 }
 

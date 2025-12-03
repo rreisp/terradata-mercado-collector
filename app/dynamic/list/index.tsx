@@ -13,10 +13,14 @@ import { DynamicListProps } from "@/core/types/dynamic-list-props";
 
 import schemaRegistry from "@/app-instance/schemas";
 
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+// import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
+import Constants from "expo-constants";
+
+const { version } = Constants.expoConfig ?? {};
+const buildStamp = Constants.expoConfig?.extra?.buildStamp;
 
 const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportPDF, onExportAll }: DynamicListProps) => {
     const { language } = useLanguage();
@@ -277,6 +281,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                         <Button title={isPT ? "🗑️ Resetar banco de dados" : "🗑️ Reset database"} onPress={handleReset} />
                     </View>
                     <Button title={isPT ? "❎ Fechar" : "❎ Close"} onPress={() => setModalVisible(false)} />
+                    <Text style={[GlobalStyles.textMuted, { marginTop: 5, fontSize: 10, fontStyle: 'italic'}]}>{isPT ? 'Versão ' : 'Version'} {version} {buildStamp}</Text>
                 </View>
             </Modal>
         </SafeAreaContainer>
