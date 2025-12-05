@@ -117,7 +117,7 @@ export async function exportAllZIP(
     const stagingFolderName = `staging_${new Date().getTime()}`; 
     const stagingDir = `${FileSystem.cacheDirectory}${stagingFolderName}/`;
     
-    const zipFileName = `export${exportType}_${getDateTimeString()}.zip`;
+    const zipFileName = `export_${exportType}_${getDateTimeString()}.zip`;
     const zipPath = `${FileSystem.documentDirectory}${zipFileName}`;
 
     try {

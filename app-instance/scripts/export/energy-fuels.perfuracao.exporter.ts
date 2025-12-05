@@ -36,6 +36,8 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             await this.createExportImagesView();
             try {
                 const table = "drillings"
+                // obtem o título do furo para colocar no nome do arquivo
+                const idHole = await CrudService.getTitleHole(itemId);
                 // const resultCsv = await ExportCsvService.exportTableToCSV('export', itemId);
                 const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', itemId);
                 const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', itemId);
@@ -49,7 +51,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 ];
                 // --- 3. Chamar a Função para Gerar o ZIP ---
                 console.log("Criando arquivo ZIP com todos os CSVs...");
-                const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'Single');
+                const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
                 console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
                 // --- 4. Excluir os Arquivos CSV Originais ---
@@ -198,7 +200,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 LEFT JOIN drillings d ON s.fgk_drilling = d.id
                 LEFT join moisture m on s.fgk_moisture =m.id 
                 LEFT join color c on c.id = s.fgk_color 
-                LEFT join min_grainsize mg on s.fgk_max_grainsize  = mg.id 
+                LEFT join min_grainsize mg on s.fgk_min_grainsize  = mg.id 
                 LEFT JOIN max_grainsize mg2 ON s.fgk_max_grainsize = mg2.id 
                 LEFT join hardness h on h.id = s.fgk_hardness 
                 LEFT join induration i on i.id = s.fgk_induration 
