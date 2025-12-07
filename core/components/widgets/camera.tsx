@@ -21,7 +21,7 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.33,
+            quality: 0.13,
             base64: true,
         });
 

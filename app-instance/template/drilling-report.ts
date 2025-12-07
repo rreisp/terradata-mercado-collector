@@ -1,26 +1,59 @@
 import * as Sharing from 'expo-sharing';
 import * as Print from "expo-print";
+import * as FileSystem from "expo-file-system";
 
 export class EnergyFuelsDrillingReport {
 
     public async generate(lang: string, drilling: any, segments: any, lithologies: any) {
-        const html = `
-            <html>
-            <header>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-            </header>
-            <body>            
-                ${this.renderDrillingInfo(lang, drilling)}
-                ${this.renderSegmentInfo(lang, segments, lithologies)}
-            </body>
-            </html>
-        `
-        const { uri } = await Print.printToFileAsync({ html });
 
+        // 🔹 Função auxiliar para formatar a data como YYYYMMDDHHmm
+        const formatTimestamp = () => {
+            const now = new Date();
+
+            const YYYY = now.getFullYear();
+            const MM = String(now.getMonth() + 1).padStart(2, "0");
+            const DD = String(now.getDate()).padStart(2, "0");
+            const HH = String(now.getHours()).padStart(2, "0");
+            const mm = String(now.getMinutes()).padStart(2, "0");
+
+            return `${YYYY}${MM}${DD}_${HH}h${mm}`;
+        };
+
+        const html = `
+        <html>
+        <header>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+        </header>
+        <body>            
+            ${this.renderDrillingInfo(lang, drilling)}
+            ${this.renderSegmentInfo(lang, segments, lithologies)}
+        </body>
+        </html>
+    `;
+
+        // 1. Gera PDF temporário
+        const { uri } = await Print.printToFileAsync({
+            html,
+            base64: false,
+        });
+
+        // 2. Nome final com timestamp elegante
+        const timestamp = formatTimestamp();
+        const fileName = `${drilling.ID_HOLE}_${timestamp}.pdf`;
+        const finalPath = FileSystem.documentDirectory + fileName;
+
+        // 3. Renomeia / move
+        await FileSystem.moveAsync({
+            from: uri,
+            to: finalPath,
+        });
+
+        // 4. Compartilha
         if (await Sharing.isAvailableAsync()) {
-            await Sharing.shareAsync(uri);
+            await Sharing.shareAsync(finalPath);
         }
-        return uri;
+
+        return finalPath;
     }
 
     private renderDrillingInfo(language: string, drilling: any) {
@@ -39,6 +72,12 @@ export class EnergyFuelsDrillingReport {
                 <div style="width: 33%;">
                     <b>${isPT ? 'Superficiário' : 'Landowner'}:</b><br/>${drilling.LANDOWNER}
                 </div>                             
+            </div>
+
+            <div style="display: flex; width: 100%;  padding: 3px 0px;${style}">
+                <div style="width: 100%;">
+                    <b>${isPT ? 'Data(s)' : 'Date(s)'}:</b><br/>${drilling.BEGIN_DATE}${drilling.BEGIN_DATE !== drilling.END_DATE ? ' a ' + drilling.END_DATE : ''}
+                </div>                
             </div>
 
             <div style="display: flex; width: 100%;  padding: 3px 0px;${style}">
