@@ -52,6 +52,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 // --- 3. Chamar a Função para Gerar o ZIP ---
                 console.log("Criando arquivo ZIP com todos os CSVs...");
                 const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
+                // const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, idHole);
                 console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
                 // --- 4. Excluir os Arquivos CSV Originais ---
@@ -83,9 +84,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             await this.createExportLithologiesView(lang);
             await this.createExportImagesView();
             try {
-                const drillings = await ExportPDFService.getData('drillingsExport', itemId); 
-                const segments = (await ExportPDFService.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId); 
-                const lithologies = await ExportPDFService.getData('lithologiesExport', 0);                                  
+                const drillings = await ExportPDFService.getData('drillingsExport', itemId);
+                const segments = (await ExportPDFService.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId);
+                const lithologies = await ExportPDFService.getData('lithologiesExport', 0);
                 const document = new EnergyFuelsDrillingReport()
                 document.generate(lang, drillings![0], segments, lithologies)
             } catch (error) {
@@ -103,7 +104,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             await this.createExportSegmentsView(lang);
             await this.createExportDrillingsView(lang);
             await this.createExportLithologiesView(lang);
-            await this.createExportImagesView(); // Se necessário
+            // await this.createExportImagesView(); // Se necessário
 
             const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', 0);
             const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', 0);
@@ -117,10 +118,12 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 { path: resultLithologies, fileName: 'lithologies.csv' },
             ];
 
-            const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', 0); //id = 0 para todas as imagens
+            // const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', 0); //id = 0 para todas as imagens
+            const resultImgs = [];
 
             // --- 3. Chamar a Função para Gerar o ZIP ---
             console.log("Criando arquivo ZIP com todos os CSVs...");
+            // const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'All');
             const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'All');
             console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
@@ -129,9 +132,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             for (const csvFile of csvFilesToZip) {
                 try {
                     await FileSystem.deleteAsync(csvFile.path);
-                    console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
+                    console.log(this.isPT ? `Arquivo ${csvFile.fileName} excluído com sucesso.` : `File ${csvFile.fileName} successfully deleted.`);
                 } catch (deleteError) {
-                    console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
+                    console.error(this.isPT ? `Falha ao excluir o arquivo ${csvFile.fileName}:` : `Failed to delete file ${csvFile.fileName}:`, deleteError);
                 }
             }
 
@@ -139,7 +142,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             // return zipFilePath;
 
         } catch (error) {
-            console.error('Ocorreu um erro geral durante a exportação:', error);
+            console.error(this.isPT ? 'Ocorreu um erro geral durante a exportação:' : 'A general error occurred during the export:', error);
         }
     }
 
