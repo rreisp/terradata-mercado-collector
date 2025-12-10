@@ -273,7 +273,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
     private async createExportImagesView(): Promise<void> {
         await CrudService.dropView("export_images");
         try {
-            const sql = `SELECT i.*,d.title AS ID_HOLE,  s.fgk_drilling AS d_id 
+            const sql = `SELECT i.*,d.title AS ID_HOLE,  s.fgk_drilling AS d_id, s.depth_from, s.depth_to 
               FROM images i 
               LEFT JOIN segments s on i.fgk_segment = s.id
 			  LEFT JOIN drillings d on d.id = s.fgk_drilling

@@ -11,16 +11,16 @@ interface CsvFile {
 
 // const db = SQLite.openDatabaseSync('app.db');
 
-export async function getTableData(tableName: string, id: number) {
+export async function getTableData(tableName: string, id: number, orderBy: string) {
     //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
-    const result = CrudService.list(tableName, ["d_id="], [id]);
+    const result = CrudService.list(tableName, ["d_id="], [id], orderBy);
     return result; // já é um array de objetos
 }
 
 export async function getTableData2(tableName: string, title: string) {
     //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
     let fieldName = 'ID_HOLE=';
-    if(tableName=='lithologiesExport'){
+    if (tableName == 'lithologiesExport') {
         fieldName = 'DRILLING_ID=';
     }
     const result = CrudService.list(tableName, [fieldName], [title]);
@@ -29,7 +29,7 @@ export async function getTableData2(tableName: string, title: string) {
 
 export async function getAllTableData(tableName: string) {
     //   const result = await db.getAllAsync(`SELECT * FROM ${tableName} WHERE d_id = ${id}`);
-    const result = CrudService.list(tableName,[]);
+    const result = CrudService.list(tableName, []);
     return result; // já é um array de objetos
 }
 
@@ -81,7 +81,7 @@ export async function exportTableToCSV(tableName: string, id: number) {
     // });
     if (id !== 0) {
         const idHole = await CrudService.getTitleHole(id);
-        try{
+        try {
             const data = await getTableData2(tableName, idHole);
             const csv = convertToCSV(data);
             const fileUri = await saveCSVFile(`${tableName}_${idHole}.csv`, csv);
@@ -112,11 +112,11 @@ export async function exportAllZIP(
     imagePaths: string[] = [],
     exportType: string
 ): Promise<void | string> {
-    
+
     // 1. Definir caminhos
-    const stagingFolderName = `staging_${new Date().getTime()}`; 
+    const stagingFolderName = `staging_${new Date().getTime()}`;
     const stagingDir = `${FileSystem.cacheDirectory}${stagingFolderName}/`;
-    
+
     const zipFileName = `export_${exportType}_${getDateTimeString()}.zip`;
     const zipPath = `${FileSystem.documentDirectory}${zipFileName}`;
 
@@ -143,7 +143,7 @@ export async function exportAllZIP(
             for (const path of imagePaths) {
                 // Pega apenas o nome do arquivo (ex: foto.jpg)
                 const fileName = path.substring(path.lastIndexOf('/') + 1);
-                
+
                 await FileSystem.copyAsync({
                     from: path,
                     to: stagingDir + fileName
@@ -192,10 +192,11 @@ export async function saveImagesFromTable(tableName: string, tableId: number): P
     const savedFilePaths: string[] = [];
     let results: any[] = [];
     try {
-        if(tableId === 0){
+        if (tableId === 0) {
             results = await getAllTableData(tableName);
-        }else{
-            results = await getTableData(tableName, tableId);
+        } else {
+            const orderBy = "fgk_segment ASC"
+            results = await getTableData(tableName, tableId, orderBy);
         }
 
         if (!results || results.length === 0) {
@@ -203,9 +204,19 @@ export async function saveImagesFromTable(tableName: string, tableId: number): P
             return [];
         }
 
+        let segmentId = 0;
+        let index = 1;
         for (const row of results) {
+            if(segmentId != row.fgk_segment){
+                segmentId = row.fgk_segment
+                index = 1
+            } else {
+                index++;
+            }
             const base64Data = row.img;
-            const fileId = row.ID_HOLE+'_'+row.fgk_segment+'_'+row.id;
+            // const fileId = row.ID_HOLE+'_'+row.fgk_segment+'_'+row.id;
+            // const fileId = `${row.ID_HOLE}_from${row.depth_from}_to${row.depth_to}_pic${row.id}`;
+            const fileId = `${row.ID_HOLE}_from${row.depth_from}_to${row.depth_to}_pic${index}`;
 
             if (base64Data && fileId) {
 
