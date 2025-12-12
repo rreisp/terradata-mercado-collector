@@ -56,9 +56,34 @@ export class EnergyFuelsDrillingReport {
         return finalPath;
     }
 
+    private formatDateEN(dateStr: string) {
+        if (!dateStr) return '';
+
+        const [day, month, year] = dateStr.split('/');
+
+        const date = new Date(`${year}-${month}-${day}T00:00:00`);
+
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: '2-digit',
+            year: 'numeric'
+        });
+
+        return formatter.format(date).toString();
+    }
+
     private renderDrillingInfo(language: string, drilling: any) {
         const isPT = language === 'pt-BR'
         const style = "background-color: #fff0d1;"
+
+        const beginDate = isPT
+            ? drilling.BEGIN_DATE
+            : this.formatDateEN(drilling.BEGIN_DATE);
+
+        const endDate = isPT
+            ? drilling.END_DATE
+            : this.formatDateEN(drilling.END_DATE);
+
         return `
             <div style="display: flex; width: 100%;  padding: 3px 0px;${style}"><br/></div>
 
@@ -76,7 +101,8 @@ export class EnergyFuelsDrillingReport {
 
             <div style="display: flex; width: 100%;  padding: 3px 0px;${style}">
                 <div style="width: 100%;">
-                    <b>${isPT ? 'Data(s)' : 'Date(s)'}:</b><br/>${drilling.BEGIN_DATE}${drilling.BEGIN_DATE !== drilling.END_DATE ? ' a ' + drilling.END_DATE : ''}
+                    <b>${isPT ? 'Data(s)' : 'Date(s)'}:</b><br/>
+                    ${beginDate}${beginDate !== endDate ? ' a ' + endDate : ''}
                 </div>                
             </div>
 
