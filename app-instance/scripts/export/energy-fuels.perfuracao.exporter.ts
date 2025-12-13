@@ -180,7 +180,6 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             SELECT 
                 d.title AS ID_HOLE,
                 s.fgk_drilling AS DRILLING_ID,
-                s.id AS SEGMENT_ID,
                 s.depth_from AS _FROM,
                 s.depth_to AS _TO,
                 s.recovery AS RECOVERY,
@@ -220,6 +219,16 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         language = language.replace('-', '');
         try {
             await CrudService.dropView("drillingsExport");
+            const isEnglish = language.toLowerCase().includes('en');
+            // se for Inglês converte para o padrão americano, senão mantém o formato original
+            const beginDateColumn = isEnglish 
+            ? "(substr(d.start_date, 4, 2) || '-' || substr(d.start_date, 1, 2) || '-' || substr(d.start_date, 7, 4)) AS BEGIN_DATE"
+            : "d.start_date AS BEGIN_DATE";
+
+            const endDateColumn = isEnglish 
+            ? "(substr(d.end_date, 4, 2) || '-' || substr(d.end_date, 1, 2) || '-' || substr(d.end_date, 7, 4)) AS END_DATE"
+            : "d.end_date AS END_DATE";
+
             const sql = `
             SELECT 
                 d.title AS ID_HOLE,
@@ -228,8 +237,8 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 d.elevation AS ELEVATION,
                 d.tenement AS MINING_TENEMENT,
                 d.landowner AS LANDOWNER,
-                d.start_date AS BEGIN_DATE,
-                d.end_date AS END_DATE,
+                ${beginDateColumn},
+                ${endDateColumn},
                 d.interruption_reason AS JUSTIFICATION
                 FROM drillings d 
                 ORDER BY d.title;
@@ -252,7 +261,6 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             const sql = `
             SELECT 
                 d.title AS DRILLING_ID,
-                s.id AS SEGMENT_ID,
                 l.id AS ID_LITO,
                 l.depth_from AS _FROM,
                 l.depth_to AS _TO,
