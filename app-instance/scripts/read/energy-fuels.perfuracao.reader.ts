@@ -15,7 +15,7 @@ export class EnergyFuelsDrillingReader implements DataReader {
     const adaptedDrillings = drillings.map((item) => ({
       id: item.id,
       title: item.title,
-      dates: this.formatDates(item.start_date, item.end_date, this.language)
+      dates: this.formatDates(item.start_date, item.end_date)
     }));
     return adaptedDrillings;
   }
@@ -35,8 +35,8 @@ export class EnergyFuelsDrillingReader implements DataReader {
     }
   }
 
-  private formatDates(start: string, end: string, language: string = "pt-BR"): string {
-    if (start === end) return this.formatDate(start)
-    return this.formatDate(start) + (language === "pt-BR" ? " a " : " to ") + this.formatDate(end)
+  private formatDates(start: string, end: string): string {
+    if (start === end) return this.formatDate(start, this.language)
+    return this.formatDate(start, this.language) + (this.language === "pt-BR" ? " a " : " to ") + this.formatDate(end, this.language)
   }
 }
