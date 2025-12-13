@@ -18,7 +18,7 @@ import SanitizedTextInput, { removeAccentsAndSpecialChars } from "../components/
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();
     const { value, onChange } = formik;
-    const isPT = isPT;
+    const isPT = language === 'pt-BR';
 
     const error = formik.errors?.[field.id];
 
@@ -27,7 +27,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <CameraInput name={field.id} />
+                    <CameraInput editMode={editMode} name={field.id} quality={constants.imgQuality} language={language.replace("-","")}/>
                 </View>
             );
         case "photos":

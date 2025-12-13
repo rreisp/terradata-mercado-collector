@@ -6,9 +6,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 type CameraInputProps = {
     name: string;
+    quality?: number;
+    // handleDelete: (id: number) => void;
+    language: string;
 };
 
-export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
+export const CameraInput: React.FC<CameraInputProps> = ({ name, quality, language}) => {
     const { setFieldValue } = useFormikContext();
     const [field, meta] = useField(name);
 
@@ -21,7 +24,7 @@ export const CameraInput: React.FC<CameraInputProps> = ({ name }) => {
 
         const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 0.2,
+            quality: quality,
             base64: true,
         });
 
