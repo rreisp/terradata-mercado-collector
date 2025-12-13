@@ -222,11 +222,11 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             const isEnglish = language.toLowerCase().includes('en');
             // se for Inglês converte para o padrão americano, senão mantém o formato original
             const beginDateColumn = isEnglish 
-            ? "(substr(d.start_date, 4, 2) || '-' || substr(d.start_date, 1, 2) || '-' || substr(d.start_date, 7, 4)) AS BEGIN_DATE"
+            ? "(substr(d.start_date, 4, 2) || '/' || substr(d.start_date, 1, 2) || '/' || substr(d.start_date, 7, 4)) AS BEGIN_DATE"
             : "d.start_date AS BEGIN_DATE";
 
             const endDateColumn = isEnglish 
-            ? "(substr(d.end_date, 4, 2) || '-' || substr(d.end_date, 1, 2) || '-' || substr(d.end_date, 7, 4)) AS END_DATE"
+            ? "(substr(d.end_date, 4, 2) || '/' || substr(d.end_date, 1, 2) || '/' || substr(d.end_date, 7, 4)) AS END_DATE"
             : "d.end_date AS END_DATE";
 
             const sql = `
