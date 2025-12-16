@@ -1,8 +1,8 @@
 import { DataExporter } from "@/core/types/data-exporter";
 import { CrudService } from "@/core/services/crud.service";
 import { CSVService } from "@/core/services/csv.service";
+import { PDFService } from "@/core/services/pdf.service";
 import { ZIPService } from '@/core/services/zip.service';
-import * as ExportPDFService from '@/core/services/export-pdf.service';
 import * as FileSystem from 'expo-file-system';
 import { Alert } from "react-native";
 import { EnergyFuelsDrillingReport } from "@/app-instance/template/drilling-report";
@@ -77,9 +77,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 await this.createExportImagesView();
 
                 // obter os dados e preparar o relatório           
-                const drillings = await ExportPDFService.getData('drillingsExport', itemId);
-                const segments = (await ExportPDFService.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId);
-                const lithologies = await ExportPDFService.getData('lithologiesExport', 0);
+                const drillings = await PDFService.getData('drillingsExport', itemId);
+                const segments = (await PDFService.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId);
+                const lithologies = await PDFService.getData('lithologiesExport', 0);
                 const drillingReportDoc = new EnergyFuelsDrillingReport()
                 drillingReportDoc.generate(lang, drillings![0], segments, lithologies)
             } catch (error) {
