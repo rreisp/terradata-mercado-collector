@@ -1,0 +1,1 @@
+export type LanguageCode = "pt-BR" | "en-US";

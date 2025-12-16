@@ -1,18 +1,13 @@
 import { DataExporter } from "@/core/types/data-exporter";
-import * as ExportCsvService from '@/core/services/export-csv.service';
-import * as ExportPDFService from '@/core/services/export-pdf.service';
 import { CrudService } from "@/core/services/crud.service";
+import { CSVService } from "@/core/services/csv.service";
+import { ZIPService } from '@/core/services/zip.service';
+import * as ExportPDFService from '@/core/services/export-pdf.service';
 import * as FileSystem from 'expo-file-system';
 import { Alert } from "react-native";
 import { EnergyFuelsDrillingReport } from "@/app-instance/template/drilling-report";
-
-// Interface para definir a estrutura dos arquivos CSV
-interface CsvFile {
-    path: string;
-    fileName: string;
-}
-
-export type LanguageCode = "pt-BR" | "en-US";
+import { CsvFile } from "@/core/types/data/csv-file";
+import { LanguageCode } from "@/core/types/data/language-code";
 
 export class EnergyFuelsDrillingExporter implements DataExporter {
     private language: string;
@@ -26,37 +21,32 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
     async export(itemId: number): Promise<void> {
         const lang = await this.selectLanguage(this.language);
         if (lang) {
-            // Obtém o ID do Furo
-
-            // await this.createExportView(lang)
-            // await this.createExportImagesView()
             await this.createExportSegmentsView(lang);
             await this.createExportDrillingsView(lang);
             await this.createExportLithologiesView(lang);
             await this.createExportImagesView();
             try {
                 const table = "drillings"
-                // obtem o título do furo para colocar no nome do arquivo
+                // obtem o título do furo para nomear o arquivo
                 const idHole = await CrudService.getTitleHole(itemId);
-                // const resultCsv = await ExportCsvService.exportTableToCSV('export', itemId);
-                const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', itemId);
-                const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', itemId);
-                const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', itemId);
-                // console.log(resultCsv);
-                const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', itemId);
-                const csvFilesToZip: CsvFile[] = [
-                    { path: resultDrillings, fileName: 'collars.csv' },
-                    { path: resultSegments, fileName: 'drilling_logs.csv' },
-                    { path: resultLithologies, fileName: 'lithologies.csv' },
-                ];
-                // --- 3. Chamar a Função para Gerar o ZIP ---
-                console.log("Criando arquivo ZIP com todos os CSVs...");
-                const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
-                // const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, idHole);
-                console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
-                // --- 4. Excluir os Arquivos CSV Originais ---
-                console.log("Excluindo arquivos CSV temporários...");
+                // obter e preparar a lista de arquivos para o ZIP  
+                const drillingsTempCSV = await CSVService.exportTableToCSV('drillingsExport', itemId);
+                const segmentsTempCSV = await CSVService.exportTableToCSV('segmentsExport', itemId);
+                const lithologiesTempCSV = await CSVService.exportTableToCSV('lithologiesExport', itemId);
+                const resultImgs = await CSVService.saveImagesFromTable('export_images', itemId);
+
+                const csvFilesToZip: CsvFile[] = [
+                    { path: drillingsTempCSV, fileName: 'collars.csv' },
+                    { path: segmentsTempCSV, fileName: 'drilling_logs.csv' },
+                    { path: lithologiesTempCSV, fileName: 'lithologies.csv' },
+                ];
+
+                // gerar o ZIP
+                const zipFilePath = await ZIPService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
+                // console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
+
+                // excluir os arquivos CSV originais
                 for (const csvFile of csvFilesToZip) {
                     try {
                         await FileSystem.deleteAsync(csvFile.path);
@@ -64,7 +54,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                     } catch (deleteError) {
                         console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
                     }
-                    // console.log(`Registro com ID ${id} removido com sucesso.`);
+
                     Alert.alert(
                         this.isPT ? 'Sucesso' : 'Success',
                         this.isPT ? `Registro exportado.` : `Record exported.`
@@ -79,16 +69,19 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
     async exportPDF(itemId: number): Promise<void> {
         const lang = await this.selectLanguage(this.language);
         if (lang) {
-            await this.createExportSegmentsView(lang);
-            await this.createExportDrillingsView(lang);
-            await this.createExportLithologiesView(lang);
-            await this.createExportImagesView();
             try {
+                // criar as views e gerar os arquivos CSV         
+                await this.createExportSegmentsView(lang);
+                await this.createExportDrillingsView(lang);
+                await this.createExportLithologiesView(lang);
+                await this.createExportImagesView();
+
+                // obter os dados e preparar o relatório           
                 const drillings = await ExportPDFService.getData('drillingsExport', itemId);
                 const segments = (await ExportPDFService.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId);
                 const lithologies = await ExportPDFService.getData('lithologiesExport', 0);
-                const document = new EnergyFuelsDrillingReport()
-                document.generate(lang, drillings![0], segments, lithologies)
+                const drillingReportDoc = new EnergyFuelsDrillingReport()
+                drillingReportDoc.generate(lang, drillings![0], segments, lithologies)
             } catch (error) {
                 console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
             }
@@ -100,35 +93,28 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         try {
             console.log(this.isPT ? "Iniciando processo de exportação completa..." : "Starting full export process...");
 
-            // --- 1. Criar as Views e Gerar os Arquivos CSV ---
+            // criar as views e gerar os arquivos CSV    
             await this.createExportSegmentsView(lang);
             await this.createExportDrillingsView(lang);
             await this.createExportLithologiesView(lang);
-            // await this.createExportImagesView(); // Se necessário
 
-            const resultDrillings = await ExportCsvService.exportTableToCSV('drillingsExport', 0);
-            const resultSegments = await ExportCsvService.exportTableToCSV('segmentsExport', 0);
-            const resultLithologies = await ExportCsvService.exportTableToCSV('lithologiesExport', 0);
+            // obter e preparar a lista de arquivos para o ZIP              
+            const drillingsTempCSV = await CSVService.exportTableToCSV('drillingsExport');
+            const segmentsTempCSV = await CSVService.exportTableToCSV('segmentsExport');
+            const lithologiesTempCSV = await CSVService.exportTableToCSV('lithologiesExport');
 
-            // --- 2. Preparar a Lista de Arquivos para o ZIP ---
-            // Assumindo que o resultado de exportTableToCSV tem uma propriedade 'uri' com o caminho do arquivo
+            // obter e preparar a lista de arquivos para o ZIP  
             const csvFilesToZip: CsvFile[] = [
-                { path: resultDrillings, fileName: 'collars.csv' },
-                { path: resultSegments, fileName: 'drilling_logs.csv' },
-                { path: resultLithologies, fileName: 'lithologies.csv' },
+                { path: drillingsTempCSV, fileName: 'collars.csv' },
+                { path: segmentsTempCSV, fileName: 'drilling_logs.csv' },
+                { path: lithologiesTempCSV, fileName: 'lithologies.csv' },
             ];
 
-            // const resultImgs = await ExportCsvService.saveImagesFromTable('export_images', 0); //id = 0 para todas as imagens
-            const resultImgs = [];
+            // gerar o ZIP
+            const zipFilePath = await ZIPService.exportAllZIP(csvFilesToZip);
+            // console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
-            // --- 3. Chamar a Função para Gerar o ZIP ---
-            console.log("Criando arquivo ZIP com todos os CSVs...");
-            // const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'All');
-            const zipFilePath = await ExportCsvService.exportAllZIP(csvFilesToZip, resultImgs, 'All');
-            console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
-
-            // --- 4. Excluir os Arquivos CSV Originais ---
-            console.log("Excluindo arquivos CSV temporários...");
+            // excluir os arquivos CSV originais
             for (const csvFile of csvFilesToZip) {
                 try {
                     await FileSystem.deleteAsync(csvFile.path);
@@ -139,7 +125,6 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             }
 
             console.log("Processo de exportação finalizado.");
-            // return zipFilePath;
 
         } catch (error) {
             console.error(this.isPT ? 'Ocorreu um erro geral durante a exportação:' : 'A general error occurred during the export:', error);
@@ -221,13 +206,13 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             await CrudService.dropView("drillingsExport");
             const isEnglish = language.toLowerCase().includes('en');
             // se for Inglês converte para o padrão americano, senão mantém o formato original
-            const beginDateColumn = isEnglish 
-            ? "(substr(d.start_date, 4, 2) || '/' || substr(d.start_date, 1, 2) || '/' || substr(d.start_date, 7, 4)) AS BEGIN_DATE"
-            : "d.start_date AS BEGIN_DATE";
+            const beginDateColumn = isEnglish
+                ? "(substr(d.start_date, 4, 2) || '/' || substr(d.start_date, 1, 2) || '/' || substr(d.start_date, 7, 4)) AS BEGIN_DATE"
+                : "d.start_date AS BEGIN_DATE";
 
-            const endDateColumn = isEnglish 
-            ? "(substr(d.end_date, 4, 2) || '/' || substr(d.end_date, 1, 2) || '/' || substr(d.end_date, 7, 4)) AS END_DATE"
-            : "d.end_date AS END_DATE";
+            const endDateColumn = isEnglish
+                ? "(substr(d.end_date, 4, 2) || '/' || substr(d.end_date, 1, 2) || '/' || substr(d.end_date, 7, 4)) AS END_DATE"
+                : "d.end_date AS END_DATE";
 
             const sql = `
             SELECT 

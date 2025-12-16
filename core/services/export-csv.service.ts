@@ -1,13 +1,8 @@
 import * as FileSystem from 'expo-file-system';
 import { CrudService } from '@/core/services/crud.service';
 import * as Sharing from 'expo-sharing';
-import { zip } from 'react-native-zip-archive';
-
-// Interface para definir a estrutura dos arquivos CSV
-interface CsvFile {
-    path: string;
-    fileName: string;
-}
+// import { zip } from 'react-native-zip-archive';
+import { CsvFile } from '../types/data/csv-file';
 
 // const db = SQLite.openDatabaseSync('app.db');
 
@@ -73,7 +68,7 @@ export async function saveCSVFile(filename: string, content: string) {
 }
 
 
-export async function exportTableToCSV(tableName: string, id: number) {
+export async function exportTableToCSV(tableName: string, id: number = 0) {
     // saveImagesFromTable('export_images', id).then((filePaths) => {
     //   console.log('Imagens salvas:', filePaths);
     // }).catch((error) => {
@@ -106,85 +101,6 @@ export async function exportTableToCSV(tableName: string, id: number) {
         }
     }
 }
-
-export async function exportAllZIP(
-    csvFiles: CsvFile[],
-    imagePaths: string[] = [],
-    exportType: string
-): Promise<void | string> {
-
-    // 1. Definir caminhos
-    const stagingFolderName = `staging_${new Date().getTime()}`;
-    const stagingDir = `${FileSystem.cacheDirectory}${stagingFolderName}/`;
-
-    const zipFileName = `export_${exportType}_${getDateTimeString()}.zip`;
-    const zipPath = `${FileSystem.documentDirectory}${zipFileName}`;
-
-    try {
-        console.log(`Iniciando exportação nativa via Staging em: ${stagingDir}`);
-
-        // 2. Criar o diretório de Staging (Intermediário)
-        // Se já existir algo lá, garante que cria limpo
-        await FileSystem.makeDirectoryAsync(stagingDir, { intermediates: true });
-
-        // --- 3. Copiar CSVs para a pasta de Staging ---
-        console.log(`Copiando ${csvFiles.length} arquivos CSV...`);
-        for (const csvFile of csvFiles) {
-            await FileSystem.copyAsync({
-                from: csvFile.path,
-                to: stagingDir + csvFile.fileName
-            });
-            console.log(`CSV '${csvFile.fileName}' copiado.`);
-        }
-
-        // --- 4. Copiar Imagens para a pasta de Staging ---
-        if (imagePaths.length > 0) {
-            console.log(`Copiando ${imagePaths.length} arquivos de imagem...`);
-            for (const path of imagePaths) {
-                // Pega apenas o nome do arquivo (ex: foto.jpg)
-                const fileName = path.substring(path.lastIndexOf('/') + 1);
-
-                await FileSystem.copyAsync({
-                    from: path,
-                    to: stagingDir + fileName
-                });
-                console.log(`Imagem '${fileName}' copiada.`);
-            }
-        }
-
-        // --- 5. Executar o ZIP Nativo ---
-        console.log("Comprimindo arquivos (Nativo)...");
-        await zip(stagingDir, zipPath);
-        console.log(`Arquivo ZIP criado em: ${zipPath}`);
-
-        // --- 6. Compartilhar ---
-        if (!(await Sharing.isAvailableAsync())) {
-            alert("O compartilhamento de arquivos não está disponível no seu dispositivo.");
-            return;
-        }
-
-        await Sharing.shareAsync(zipPath, {
-            mimeType: 'application/zip',
-            dialogTitle: 'Exportar dados compactados',
-            UTI: 'public.zip-archive'
-        });
-
-        return zipPath;
-
-    } catch (error) {
-        console.error('Erro ao criar o arquivo ZIP:', error);
-        throw error;
-    } finally {
-        // --- 7. Limpeza ---
-        try {
-            await FileSystem.deleteAsync(stagingDir, { idempotent: true });
-            console.log("Pasta temporária de staging limpa.");
-        } catch (cleanupError) {
-            console.warn("Falha ao limpar pasta temporária:", cleanupError);
-        }
-    }
-}
-
 
 export async function saveImagesFromTable(tableName: string, tableId: number): Promise<string[]> {
 
