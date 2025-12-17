@@ -121,37 +121,45 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
     private async loadDrilling(itemId: number) {
         const drilling = (await CrudService.list<DrillingRecord>(
             "drillings",
-            ["id="],
-            [itemId]
+            {
+                where: ["id = ?"],
+                params: [itemId]
+            }
         ))[0];
         return drilling;
     }
 
     private async loadSegments(drillingId: number) {
-        const segments = (await CrudService.list<SegmentRecord>(
+        const segments = await CrudService.list<SegmentRecord>(
             "segments",
-            ["fgk_drilling="],
-            [drillingId]
-        ));
+            {
+                where: ["fgk_drilling = ?"],
+                params: [drillingId]
+            }
+        );
         return segments;
     }
 
     private async loadLithologies(segmentId: number) {
-        const lithologies = (await CrudService.list<LithologyRecord>(
+        const lithologies = await CrudService.list<LithologyRecord>(
             "lithologies",
-            ["fgk_segment="],
-            [segmentId],
-            'depth_to ASC'
-        ));
+            {
+                where: ["fgk_segment = ?"],
+                params: [segmentId],
+                orderBy: "depth_to ASC"
+            }
+        );
         return lithologies;
     }
 
     private async loadImages(segmentId: number) {
-        const images = (await CrudService.list<ImageRecord>(
+        const images = await CrudService.list<ImageRecord>(
             "images",
-            ["fgk_segment="],
-            [segmentId]
-        ));
+            {
+                where: ["fgk_segment = ?"],
+                params: [segmentId]
+            }
+        );
         return images;
     }
 }

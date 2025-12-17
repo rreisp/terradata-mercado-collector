@@ -27,14 +27,16 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <CameraInput editMode={editMode} name={field.id} quality={constants.imgQuality} language={language.replace("-","")}/>
+                    {/* TODO: adequar a função handleDelete */}                    
+                    <CameraInput name={field.id} language={language.replace("-","")}/>
                 </View>
             );
         case "photos":
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <MultiCameraInput editMode={editMode} name={field.id} quality={constants.imgQuality} language={language.replace("-","")} />
+                    {/* TODO: adequar a função handleDelete */}
+                    <MultiCameraInput name={field.id} handleDelete={()=>{}} language={language.replace("-","")} />
                 </View>
             );
         case "number":

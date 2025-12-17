@@ -15,9 +15,9 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
 
     validate(field: Field, editMode: boolean): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
         const requiredMsg = this.message('required');
-        const formatMsg = this.isPt ? 'O formato deve ser ' : 'The format should be ';
-        const duplicateTitleValueMsg = this.isPt ? 'Perfuração já registrada' : 'Drilling already registered';
-        const finalGreaterThanInitialMsg = this.isPt ? 'A data final deve ser maior ou igual a inicial' : 'The end date must be greater than or equal to the start date';
+        const formatMsg = this.isPT ? 'O formato deve ser ' : 'The format should be ';
+        const duplicateTitleValueMsg = this.isPT ? 'Perfuração já registrada' : 'Drilling already registered';
+        const finalGreaterThanInitialMsg = this.isPT ? 'A data final deve ser maior ou igual a inicial' : 'The end date must be greater than or equal to the start date';
 
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
         const validators = {
@@ -307,9 +307,11 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
     async getDrilling(title: string) {
         const result = await CrudService.list<DrillingRecord>(
             "drillings",
-            ["title="],
-            [title]
-        )
+            {
+                where: ["title = ?"],
+                params: [title]
+            }
+        );
 
         return result
     }

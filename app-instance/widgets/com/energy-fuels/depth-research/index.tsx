@@ -16,7 +16,7 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
     const [options, setOptions] = useState<Record<string, { id: number; value: string }[]>>({});
 
     const getOptions = async (table: string): Promise<Option[]> => {
-        const lista = await CrudService.list<any>(table, [], []);
+        const lista = await CrudService.list<any>(table, {});
         const mapped = lista.map((item) => ({
             id: item.id,
             description: language === "pt-BR" ? item.ptBR : item.enUS
@@ -49,10 +49,10 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
 
     useEffect(() => {
         loadOptions([
-            "moisture", 
+            "moisture",
             "hardness",
             "wash",
-            "color", 
+            "color",
             "induration",
             "roundness",
             "min_grainsize",

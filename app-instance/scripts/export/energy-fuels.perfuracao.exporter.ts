@@ -77,10 +77,10 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 
                 // obter os dados e preparar o relatório           
                 const drillings = await this.getData('drillingsExport', itemId);
-                const segments = (await this.getData('segmentsExport', 0)).filter(item => item.DRILLING_ID === itemId);
-                const lithologies = await this.getData('lithologiesExport', 0);
-                const drillingReportDoc = new EnergyFuelsDrillingReport()
-                drillingReportDoc.generate(lang, drillings![0], segments, lithologies)
+                const segments = (await this.getData('segmentsExport')).filter(item => item.DRILLING_ID === itemId);
+                const lithologies = await this.getData('lithologiesExport');
+                const drillingReportDoc = new EnergyFuelsDrillingReport(lang)
+                drillingReportDoc.generate(drillings![0], segments, lithologies)
             }
         } catch (error) {
             console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
@@ -164,6 +164,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             SELECT 
                 d.title AS ID_HOLE,
                 s.fgk_drilling AS DRILLING_ID,
+                s.id AS SEGMENT_ID,
                 s.depth_from AS _FROM,
                 s.depth_to AS _TO,
                 s.recovery AS RECOVERY,
@@ -245,6 +246,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             const sql = `
             SELECT 
                 d.title AS DRILLING_ID,
+                s.id AS SEGMENT_ID,                
                 l.id AS ID_LITO,
                 l.depth_from AS _FROM,
                 l.depth_to AS _TO,
@@ -289,14 +291,18 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      * @returns Array de objetos com os dados filtrados.
      */
     private async getTableDataByHoleTitle(tableName: string, title: string): Promise<any[]> {
-        let fieldName = 'ID_HOLE=';
+        let fieldName = 'ID_HOLE';
         // Lógica para determinar o campo de filtro com base no nome da tabela
         if (tableName === 'lithologiesExport') {
-            fieldName = 'DRILLING_ID=';
+            fieldName = 'DRILLING_ID';
         }
 
         // Chamada ao CrudService
-        const result = CrudService.list(tableName, [fieldName], [title]);
+        // const result = CrudService.list(tableName, [fieldName], [title]);
+        const result = await CrudService.list(tableName, {
+            where: [`${fieldName} = ?`],
+            params: [title]
+        });
         return result;
     }
 
@@ -309,7 +315,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      */
     private async getAllTableData(tableName: string): Promise<any[]> {
         // Chamada ao CrudService sem filtros
-        const result = CrudService.list(tableName, []);
+        const result = await CrudService.list(tableName, {});
         return result;
     }
 
@@ -322,7 +328,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      * @param id ID do registro principal (d_id). Se 0, busca todos os dados.
      * @returns Promise que resolve com um array de objetos (dados da tabela).
      */
-    public async getData(tableName: string, id: number): Promise<any[]> {
+    public async getData(tableName: string, id: number = 0): Promise<any[]> {
 
         if (id !== 0) {
             // Lógica para buscar dados de um furo específico (ID !== 0)
@@ -410,11 +416,14 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             // Lógica original de getTableData
             // const result = CrudService.list(tableName, ["d_id="], [id], orderBy);
             // Assumindo que CrudService.list lida com a busca
-            const result = CrudService.list(tableName, ["d_id="], [id]);
+            const result = await CrudService.list(tableName, {
+                where: ["d_id = ?"],
+                params: [id]
+            });
             return result;
         } else {
             // Lógica original de getAllTableData
-            const result = CrudService.list(tableName, []);
+            const result = await CrudService.list(tableName, {});
             return result;
         }
     }
@@ -438,7 +447,11 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 results = await this.getTableData(tableName);
             } else {
                 const orderBy = "fgk_segment ASC"
-                results = await CrudService.list(tableName, ["d_id="], [tableId], orderBy);
+                results = await CrudService.list(tableName, {
+                    where: ["d_id = ?"],
+                    params: [tableId],
+                    orderBy
+                });
             }
 
             if (!results || results.length === 0) {

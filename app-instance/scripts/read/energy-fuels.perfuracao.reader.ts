@@ -11,7 +11,9 @@ export class EnergyFuelsDrillingReader implements DataReader {
   }
 
   async read(): Promise<AdaptedDrillingRecord[]> {
-    const drillings = await CrudService.list<DrillingRecord>('drillings');
+    const drillings = await CrudService.list<DrillingRecord>('drillings', {
+      columns: ["id","title", "start_date", "end_date"]
+    });
     const adaptedDrillings = drillings.map((item) => ({
       id: item.id,
       title: item.title,

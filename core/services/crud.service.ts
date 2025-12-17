@@ -34,7 +34,7 @@ export class CrudService {
         try {
             // Usa db.getAllAsync diretamente.
             // As leituras no SQLite são não-bloqueantes para outras leituras.
-            if( params.length === 0 ) {
+            if (params.length === 0) {
                 return await db.getAllAsync<T>(sql);
             }
             return await db.getAllAsync<T>(sql, params);
@@ -105,19 +105,32 @@ export class CrudService {
         }
     }
 
-    
     static async list<T>(
         tableName: string,
-        where: string[] = [],
-        whereParams: any[] = [],
-        orderBy?: string,
-        limit?: number,
-        offset?: number
+        options?: {
+            columns?: string[];      // evita SELECT *
+            where?: string[];
+            params?: any[];
+            orderBy?: string;
+            limit?: number;          // sempre limitado
+            offset?: number;
+        }
     ): Promise<T[]> {
-        let sql = `SELECT * FROM ${tableName}`;
+
+        const {
+            columns = ["*"],
+            where = [],
+            params = [],
+            orderBy,
+            limit = 100,             // limite seguro padrão
+            offset = 0
+        } = options || {};
+
+        const queryParams: any[] = [...params];
+
+        let sql = `SELECT ${columns.join(", ")} FROM ${tableName}`;
 
         if (where.length > 0) {
-            sql += " WHERE ";
             const conditions = where.map((condition) => {
                 const trimmed = condition.trim();
                 if (/[=<>]|LIKE|IN/i.test(trimmed)) {
@@ -125,30 +138,71 @@ export class CrudService {
                 }
                 return `${trimmed} = ?`;
             });
-            sql += conditions.join(" AND ");
+
+            sql += ` WHERE ${conditions.join(" AND ")}`;
         }
 
         if (orderBy) {
             sql += ` ORDER BY ${orderBy}`;
         }
 
-        if (limit) {
-            sql += ` LIMIT ?`;
-            whereParams.push(limit);
-        }
-
-        if (offset) {
-            sql += ` OFFSET ?`;
-            whereParams.push(offset);
-        }
+        // paginação obrigatória
+        sql += ` LIMIT ? OFFSET ?`;
+        queryParams.push(limit, offset);
 
         try {
-            return await this.executeSql<T>(sql, whereParams);
+            return await this.executeSql<T>(sql, queryParams);
         } catch (error) {
-            console.warn("SQL:", sql, "PARAMS:", whereParams);
+            console.warn("SQL:", sql);
+            console.warn("PARAMS:", queryParams);
             throw error;
         }
     }
+
+
+    // static async list<T>(
+    //     tableName: string,
+    //     where: string[] = [],
+    //     whereParams: any[] = [],
+    //     orderBy?: string,
+    //     limit?: number,
+    //     offset?: number
+    // ): Promise<T[]> {
+    //     let sql = `SELECT * FROM ${tableName}`;
+
+    //     if (where.length > 0) {
+    //         sql += " WHERE ";
+    //         const conditions = where.map((condition) => {
+    //             const trimmed = condition.trim();
+    //             if (/[=<>]|LIKE|IN/i.test(trimmed)) {
+    //                 return trimmed.endsWith("?") ? trimmed : `${trimmed} ?`;
+    //             }
+    //             return `${trimmed} = ?`;
+    //         });
+    //         sql += conditions.join(" AND ");
+    //     }
+
+    //     if (orderBy) {
+    //         sql += ` ORDER BY ${orderBy}`;
+    //     }
+
+    //     if (limit) {
+    //         sql += ` LIMIT ?`;
+    //         whereParams.push(limit);
+    //     }
+
+    //     if (offset) {
+    //         sql += ` OFFSET ?`;
+    //         whereParams.push(offset);
+    //     }
+
+    //     try {
+    //         return await this.executeSql<T>(sql, whereParams);
+    //     } catch (error) {
+    //         console.warn("SQL:", sql, "PARAMS:", whereParams);
+    //         throw error;
+    //     }
+    // }
 
     static async findById<T>(tableName: string, id: number): Promise<T[]> {
         const sql = `SELECT * FROM ${tableName} WHERE id = ?`;
@@ -337,7 +391,7 @@ export class CrudService {
             throw error;
         }
     }
-    
+
     static async createView(name: string, code: string): Promise<void> {
         const sqlDrop = `DROP VIEW IF EXISTS ${name}`;
         // const sql = `CREATE VIEW IF NOT EXISTS ${name} AS ${code}`;
