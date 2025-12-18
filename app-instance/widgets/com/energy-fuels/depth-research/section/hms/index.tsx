@@ -47,8 +47,8 @@ const EF_HMS = ({ index, parent }) => {
             <Text style={GlobalStyles.label}>HMS (%):</Text>
             <View>
                 <NumericInput
-                    step={0.1}
-                    min={(hmsSchema as any)._exclusive?.moreThan ?? 0}
+                    step={0.01}
+                    min={0}
                     max={100}
                     value={val}
                     onChange={handleChange}
