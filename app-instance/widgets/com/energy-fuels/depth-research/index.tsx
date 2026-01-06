@@ -75,7 +75,8 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
     };
 
     const handleRemoveElement = (id: number) => {
-        const confirmAndRemove = () => {
+        // 1. Tornar a função de remoção assíncrona (async)
+        const confirmAndRemove = async () => {
             const index = segmentIds.findIndex(el => el.id === id);
             if (index !== -1) {
                 // Crie um novo array de ids sem o elemento removido
@@ -92,14 +93,39 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
                         newEfDepthTest[key] = array.filter((_, i) => i !== index);
                     }
                 }
-                // Atualize o estado local dos ids
+
+                // Atualize o estado local dos ids e do Formik
                 setSegmentIds(newSegmentIds);
-                // Atualize o Formik para refletir as mudanças em todos os arrays
                 setFieldValue('ef_depth_test', newEfDepthTest);
+
+                // remover das tabelas de segmentos, litologias e imagens
+                try {
+                    await CrudService.delete(
+                        "segments",
+                        "id = ?",
+                        [id]
+                    );
+
+                    await CrudService.delete(
+                        "images",
+                        "fgk_segment = ?",
+                        [id]
+                    ); 
+                    
+                    await CrudService.delete(
+                        "lithologies",
+                        "fgk_segment = ?",
+                        [id]
+                    );                     
+                } catch (e) {
+                    console.log("Erro ao remover segmento do banco de dados:", e);
+                }
+
             }
         };
 
         const msg = (language === 'pt-BR' ? `Tem certeza que deseja remover o segmento?` : `Are you sure you want to remove the segment?`);
+        // O restante da lógica de confirmação (web/mobile) permanece a mesma
         if (Platform.OS === 'web') {
             const confirmed = window.confirm(msg);
             if (confirmed) confirmAndRemove();
@@ -126,13 +152,13 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
                         <Section editMode={editMode} index={index} segmentId={segment.id} parent={parent} options={options} />
                         <View>
                             {/* {index == segmentIds.length - 1 && index > 0 && */}
-                                {/* <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}> */}
-                                <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)}>
-                                    <View style={GlobalStyles.row}>
-                                        <Icon name="trash" size={16} color="#fff" style={styles.icon} />
-                                        <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER SEGMENTO ${index + 1}` : `REMOVE SEGMENT ${index + 1}`}</Text>
-                                    </View>
-                                </TouchableOpacity>
+                            {/* <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}> */}
+                            <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)}>
+                                <View style={GlobalStyles.row}>
+                                    <Icon name="trash" size={16} color="#fff" style={styles.icon} />
+                                    <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER SEGMENTO ${index + 1}` : `REMOVE SEGMENT ${index + 1}`}</Text>
+                                </View>
+                            </TouchableOpacity>
                             {/* } */}
                         </View>
                     </View>
