@@ -125,14 +125,15 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
                     <View key={segment.id}>
                         <Section editMode={editMode} index={index} segmentId={segment.id} parent={parent} options={options} />
                         <View>
-                            {index == segmentIds.length - 1 && index > 0 &&
-                                <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}>
+                            {/* {index == segmentIds.length - 1 && index > 0 && */}
+                                {/* <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)} disabled={index !== segmentIds.length - 1}> */}
+                                <TouchableOpacity style={[(index == segmentIds.length - 1 ? GlobalStyles.warnButton : GlobalStyles.disabledButton), { marginVertical: 1 }]} onPress={() => handleRemoveElement(segment.id)}>
                                     <View style={GlobalStyles.row}>
                                         <Icon name="trash" size={16} color="#fff" style={styles.icon} />
                                         <Text style={styles.buttonText}>{language === 'pt-BR' ? `REMOVER SEGMENTO ${index + 1}` : `REMOVE SEGMENT ${index + 1}`}</Text>
                                     </View>
                                 </TouchableOpacity>
-                            }
+                            {/* } */}
                         </View>
                     </View>
                 ))
