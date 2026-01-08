@@ -193,7 +193,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 LEFT join induration i on i.id = s.fgk_induration 
                 LEFT join roundness r on r.id = s.fgk_roundness 
                 LEFT join wash w on w.id = s.fgk_wash;
-                ORDER BY s.depth_from;
+                ORDER BY d.title, s.depth_from;
             `;
             await CrudService.createView('segmentsExport', sql);
         } catch (error) {
