@@ -1,5 +1,6 @@
 {
   "form_id": "teste_ef_depth_report",
+  "formReturn": "LIST",
   "title": {
     "pt-BR": "⚒️ ENERGY FUELS - RELATÓRIO DE PERFURAÇÃO",
     "en-US": "⚒️ ENERGY FUELS - DRILLING REPORT"

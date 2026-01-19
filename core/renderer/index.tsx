@@ -116,15 +116,6 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     </View>
                 </View>
             );
-        case "ef_depth_research":
-            return (
-                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
-                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <View>
-                        <EF_DepthResearch editMode={editMode ?? false} parent={field.id} />
-                    </View>
-                </View>
-            );
         case "coordinate_3d":
             return (
                 <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
@@ -135,6 +126,16 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             return (
                 <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <DateRangeInput parent={field.id} error={error} />
+                </View>
+            );
+        // customizados
+        case "ef_depth_research":
+            return (
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                    <View>
+                        <EF_DepthResearch editMode={editMode ?? false} parent={field.id} />
+                    </View>
                 </View>
             );
         // Adicione outros componentes especiais aqui quando necessário

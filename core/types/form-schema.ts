@@ -5,6 +5,7 @@ import { ResponsiveSize } from "./responsive-size";
 
 export type FormSchema = {
     formId: string;
+    formReturn: 'FORM' | 'LIST';
     title: LocalizedString;
     description: LocalizedString;
     logo?: string;

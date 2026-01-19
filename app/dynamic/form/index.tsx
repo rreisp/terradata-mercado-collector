@@ -22,6 +22,7 @@ import schemaRegistry from "@/app-instance/schemas";
 import { logos } from '@/app-instance/logos';
 
 const DynamicForm = ({ schemaId, editMode, itemId, onExport, onLoad, onUpdate, onValidate }: DynamicFormProps) => {
+    const [formKey, setFormKey] = useState(0);
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -118,38 +119,42 @@ const DynamicForm = ({ schemaId, editMode, itemId, onExport, onLoad, onUpdate, o
         return (
             <SafeAreaContainer>
                 <Formik
+                    key={formKey}
                     initialValues={initialValues}
                     validationSchema={Yup.object(validationShape)}
                     onSubmit={async (values, { resetForm }) => {
-                        // console.warn(values)
-                        if (!editMode) {
-                            await onExport(values);
-                            navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
-                        } else {
-                            await onUpdate(values);
-                            navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
+                        try {
+                            // console.warn(values)
+                            if (!editMode) {
+                                await onExport(values);
+                            } else {
+                                await onUpdate(values);
+                            }
+                            setFormKey(prev => prev + 1);
+                            resetForm();
+                            Alert.alert(
+                                'Atenção!',
+                                'Informações enviadas com sucesso.', // <- this part is optional, you can pass an empty string
+                                [
+                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                                ],
+                                { cancelable: false },
+                            );
+
+                            if (formSchema?.formReturn === "FORM") {
+                                // navigation.navigate('loader/form/index', { schemaId: schemaId }, { pop: true });
+                                navigation.dispatch(
+                                    StackActions.replace('loader/form/index', { schemaId })
+                                );
+                            } else {
+                                navigation.navigate('loader/list/index', { schemaId: schemaId }, { pop: true });
+                            }
                         }
-                        resetForm();
+                        catch (e) {
+                            console.log(e);
+                        }
                     }}
                     validateOnMount={true}
-
-                // onSubmit={(values, { setSubmitting }) => {
-                //     fetch(formSchema.url, {
-                //         method: formSchema.method,
-                //         headers: { 'Content-Type': 'application/json' },
-                //         body: JSON.stringify(values)
-                //     })
-                //         .then(res => res.json())
-                //         .then(() => {
-                //             setModalContent(formSchema.modal.success.message);
-                //             setModalVisible(true);
-                //         })
-                //         .catch(() => {
-                //             setModalContent(formSchema.modal.error.message);
-                //             setModalVisible(true);
-                //         })
-                //         .finally(() => setSubmitting(false));
-                // }}
                 >
                     {({ handleSubmit, validateForm, isSubmitting, values, setFieldValue, setFieldTouched, errors, touched }) => (
                         <>
@@ -254,6 +259,7 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 16,
         marginBottom: 20,
+        textAlign: 'center'
     },
     modal: {
         backgroundColor: "white",
