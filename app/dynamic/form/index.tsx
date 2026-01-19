@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable } from "react-native";
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Pressable, Alert } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { StackActions, useFocusEffect, useNavigation } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';

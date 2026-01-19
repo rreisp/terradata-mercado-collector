@@ -17,6 +17,20 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         this.isPT = language === 'pt-BR';
     }
 
+
+    private async getTitleHole(id: number): Promise<string> {
+        const sql = `SELECT title FROM drillings WHERE id = ?`;
+        return CrudService.executeSql(sql, [id])
+            .then((rows) => {
+                if (rows && rows.length > 0) {
+                    return rows[0].title;
+                }
+                // Se não encontrou nenhuma linha, retorna uma string vazia
+                return '';
+            });
+    }
+
+
     async export(itemId: number): Promise<void> {
         const lang = await this.selectLanguage(this.language);
         if (lang) {
@@ -27,7 +41,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             try {
                 const table = "drillings"
                 // obtem o título do furo para nomear o arquivo
-                const idHole = await CrudService.getTitleHole(itemId);
+                const idHole = await this.getTitleHole(itemId);
 
                 // obter e preparar a lista de arquivos para o ZIP  
                 const drillingsTempCSV = await this.exportTableToCSV('drillingsExport', itemId);
@@ -335,7 +349,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             // Lógica para buscar dados de um furo específico (ID !== 0)
             try {
                 // 1. Obter o título/nome do furo usando o ID principal
-                const idHole = await CrudService.getTitleHole(id);
+                const idHole = await this.getTitleHole(id);
 
                 // 2. Buscar dados da tabela filtrando pelo nome do furo
                 const data = await this.getTableDataByHoleTitle(tableName, idHole);
@@ -373,7 +387,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         try {
             if (d_id !== 0) {
                 // 1. Obter o título do furo
-                const idHole = await CrudService.getTitleHole(d_id);
+                const idHole = await this.getTitleHole(d_id);
                 // 2. Obter dados filtrados pelo título/nome do furo
                 data = await this.getTableDataByHoleTitle(tableName, idHole);
                 filename = `${tableName}_${idHole}.csv`;
