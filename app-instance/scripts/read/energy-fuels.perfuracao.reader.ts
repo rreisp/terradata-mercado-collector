@@ -11,34 +11,58 @@ export class EnergyFuelsDrillingReader implements DataReader {
   }
 
   async read(): Promise<AdaptedDrillingRecord[]> {
-    const drillings = await CrudService.list<DrillingRecord>('drillings', {
-      columns: ["id","title", "start_date", "end_date"]
-    });
-    const adaptedDrillings = drillings.map((item) => ({
-      id: item.id,
-      title: item.title,
-      dates: this.formatDates(item.start_date, item.end_date)
-    }));
-    return adaptedDrillings;
+    try {
+      const drillings = await CrudService.list<DrillingRecord>('drillings', {
+        columns: ["id", "title", "start_date", "end_date"]
+      });
+      const adaptedDrillings = drillings.map((item) => ({
+        id: item.id,
+        title: item.title,
+        dates: this.formatDates(item.start_date, item.end_date)
+      }));
+      return adaptedDrillings;
+    } catch (e) {
+      console.error("EnergyFuelsDrillingReader.read")
+      console.log(e)
+      return []
+    }
   }
 
   columns(): string[] {
-    return ["title", "dates"];
+    try {
+      return ["title", "dates"];
+    } catch (e) {
+      console.error("EnergyFuelsDrillingReader.columns")
+      console.log(e)
+      return []
+    }
   }
 
   private formatDate(date: string, lang: string = "pt-BR"): string {
-    const day = date.substring(0, 2);
-    const mth = date.substring(3, 5);
-    const year = date.substring(6, 10);
-    if (lang === "pt-BR") {
-      return day + "/" + mth + "/" + year;
-    } else {
-      return mth + "/" + day + "/" + year;
+    try {
+      const day = date.substring(0, 2);
+      const mth = date.substring(3, 5);
+      const year = date.substring(6, 10);
+      if (lang === "pt-BR") {
+        return day + "/" + mth + "/" + year;
+      } else {
+        return mth + "/" + day + "/" + year;
+      }
+    } catch (e) {
+      console.error("EnergyFuelsDrillingReader.formatDate")
+      console.log(e)
+      return ''
     }
   }
 
   private formatDates(start: string, end: string): string {
-    if (start === end) return this.formatDate(start, this.language)
-    return this.formatDate(start, this.language) + (this.language === "pt-BR" ? " a " : " to ") + this.formatDate(end, this.language)
+    try {
+      if (start === end) return this.formatDate(start, this.language)
+      return this.formatDate(start, this.language) + (this.language === "pt-BR" ? " a " : " to ") + this.formatDate(end, this.language)
+    } catch (e) {
+      console.error("EnergyFuelsDrillingReader.formatDate")
+      console.log(e)
+      return ''
+    }
   }
 }

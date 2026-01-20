@@ -17,8 +17,9 @@ export class EnergyFuelsDrillingRemover implements DataRemover {
                 this.isPT ? 'Sucesso' : 'Success',
                 this.isPT ? `Registro removido.` : `Record removed.`
             );
-        } catch (error) {
-            console.error(this.isPT ? 'Erro ao remover o registro:' : 'Error while removing record:', error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingRemover.remove")
+            console.log(e)
         }
     }
 }

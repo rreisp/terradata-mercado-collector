@@ -17,65 +17,73 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         this.isPT = language === 'pt-BR';
     }
 
-
     private async getTitleHole(id: number): Promise<string> {
-        const sql = `SELECT title FROM drillings WHERE id = ?`;
-        return CrudService.executeSql(sql, [id])
-            .then((rows) => {
-                if (rows && rows.length > 0) {
-                    return rows[0].title;
-                }
-                // Se não encontrou nenhuma linha, retorna uma string vazia
-                return '';
-            });
+        try {
+            const sql = `SELECT title FROM drillings WHERE id = ?`;
+            return CrudService.executeSql(sql, [id])
+                .then((rows) => {
+                    if (rows && rows.length > 0) {
+                        return rows[0].title;
+                    }
+                });
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.getTitleHole")
+            console.log(e)
+        }
+        // Se não encontrou nenhuma linha, retorna uma string vazia
+        return '';
     }
 
-
     async export(itemId: number): Promise<void> {
-        const lang = await this.selectLanguage(this.language);
-        if (lang) {
-            await this.createExportSegmentsView(lang);
-            await this.createExportDrillingsView(lang);
-            await this.createExportLithologiesView(lang);
-            await this.createExportImagesView();
-            try {
-                const table = "drillings"
-                // obtem o título do furo para nomear o arquivo
-                const idHole = await this.getTitleHole(itemId);
+        try {
+            const lang = await this.selectLanguage(this.language);
+            if (lang) {
+                await this.createExportSegmentsView(lang);
+                await this.createExportDrillingsView(lang);
+                await this.createExportLithologiesView(lang);
+                await this.createExportImagesView();
+                try {
+                    const table = "drillings"
+                    // obtem o título do furo para nomear o arquivo
+                    const idHole = await this.getTitleHole(itemId);
 
-                // obter e preparar a lista de arquivos para o ZIP  
-                const drillingsTempCSV = await this.exportTableToCSV('drillingsExport', itemId);
-                const segmentsTempCSV = await this.exportTableToCSV('segmentsExport', itemId);
-                const lithologiesTempCSV = await this.exportTableToCSV('lithologiesExport', itemId);
-                const resultImgs = await this.saveImagesFromTable('export_images', itemId);
+                    // obter e preparar a lista de arquivos para o ZIP  
+                    const drillingsTempCSV = await this.exportTableToCSV('drillingsExport', itemId);
+                    const segmentsTempCSV = await this.exportTableToCSV('segmentsExport', itemId);
+                    const lithologiesTempCSV = await this.exportTableToCSV('lithologiesExport', itemId);
+                    const resultImgs = await this.saveImagesFromTable('export_images', itemId);
 
-                const csvFilesToZip: CsvFile[] = [
-                    { path: drillingsTempCSV, fileName: 'collars.csv' },
-                    { path: segmentsTempCSV, fileName: 'drilling_logs.csv' },
-                    { path: lithologiesTempCSV, fileName: 'lithologies.csv' },
-                ];
+                    const csvFilesToZip: CsvFile[] = [
+                        { path: drillingsTempCSV, fileName: 'collars.csv' },
+                        { path: segmentsTempCSV, fileName: 'drilling_logs.csv' },
+                        { path: lithologiesTempCSV, fileName: 'lithologies.csv' },
+                    ];
 
-                // gerar o ZIP
-                const zipFilePath = await ZIPService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
-                // console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
+                    // gerar o ZIP
+                    const zipFilePath = await ZIPService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
+                    // console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
 
-                // excluir os arquivos CSV originais
-                for (const csvFile of csvFilesToZip) {
-                    try {
-                        await FileSystem.deleteAsync(csvFile.path);
-                        console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
-                    } catch (deleteError) {
-                        console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
+                    // excluir os arquivos CSV originais
+                    for (const csvFile of csvFilesToZip) {
+                        try {
+                            await FileSystem.deleteAsync(csvFile.path);
+                            console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
+                        } catch (deleteError) {
+                            console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
+                        }
+
+                        Alert.alert(
+                            this.isPT ? 'Sucesso' : 'Success',
+                            this.isPT ? `Registro exportado.` : `Record exported.`
+                        );
                     }
-
-                    Alert.alert(
-                        this.isPT ? 'Sucesso' : 'Success',
-                        this.isPT ? `Registro exportado.` : `Record exported.`
-                    );
+                } catch (error) {
+                    console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
                 }
-            } catch (error) {
-                console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
             }
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.export")
+            console.log(e)
         }
     }
 
@@ -96,8 +104,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 const drillingReportDoc = new EnergyFuelsDrillingReport(lang)
                 drillingReportDoc.generate(drillings![0], segments, lithologies)
             }
-        } catch (error) {
-            console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.exportPDF")
+            console.log(e)
         }
     }
 
@@ -136,11 +145,10 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                     console.error(this.isPT ? `Falha ao excluir o arquivo ${csvFile.fileName}:` : `Failed to delete file ${csvFile.fileName}:`, deleteError);
                 }
             }
-
             console.log("Processo de exportação finalizado.");
-
-        } catch (error) {
-            console.error(this.isPT ? 'Ocorreu um erro geral durante a exportação:' : 'A general error occurred during the export:', error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.exportAll")
+            console.log(e)
         }
     }
 
@@ -210,8 +218,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 ORDER BY d.title, s.depth_from;
             `;
             await CrudService.createView('segmentsExport', sql);
-        } catch (error) {
-            console.log('erro ao criar a view segmentsExport ', error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.createExportSegmentsView")
+            console.log(e)
         }
     }
 
@@ -244,8 +253,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 ORDER BY d.title;
             `;
             await CrudService.createView('drillingsExport', sql);
-        } catch (error) {
-            console.log('erro ao criar a view drillingsExport ', error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.createExportDrillingsView")
+            console.log(e)
         }
     }
 
@@ -274,8 +284,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         `;
 
             await CrudService.createView(viewName, sql);
-        } catch (error) {
-            console.error(`Erro ao criar a view ${viewName}:`, error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.createExportLithologiesView")
+            console.log(e)
         }
     }
 
@@ -288,8 +299,9 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 			  LEFT JOIN drillings d on d.id = s.fgk_drilling
               `;
             await CrudService.createView('export_images', sql);
-        } catch (error) {
-            console.log('erro ao criar a view ', error);
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.createExportImagesView")
+            console.log(e)
         }
     }
 
@@ -306,19 +318,25 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      * @returns Array de objetos com os dados filtrados.
      */
     private async getTableDataByHoleTitle(tableName: string, title: string): Promise<any[]> {
-        let fieldName = 'ID_HOLE';
-        // Lógica para determinar o campo de filtro com base no nome da tabela
-        if (tableName === 'lithologiesExport') {
-            fieldName = 'DRILLING_ID';
-        }
+        try {
+            let fieldName = 'ID_HOLE';
+            // Lógica para determinar o campo de filtro com base no nome da tabela
+            if (tableName === 'lithologiesExport') {
+                fieldName = 'DRILLING_ID';
+            }
 
-        // Chamada ao CrudService
-        // const result = CrudService.list(tableName, [fieldName], [title]);
-        const result = await CrudService.list(tableName, {
-            where: [`${fieldName} = ?`],
-            params: [title]
-        });
-        return result;
+            // Chamada ao CrudService
+            // const result = CrudService.list(tableName, [fieldName], [title]);
+            const result = await CrudService.list(tableName, {
+                where: [`${fieldName} = ?`],
+                params: [title]
+            });
+            return result;
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.getTableDataByHoleTitle")
+            console.log(e)
+            return []
+        }
     }
 
     /**
@@ -329,9 +347,15 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      * @returns Array de objetos com todos os dados da tabela.
      */
     private async getAllTableData(tableName: string): Promise<any[]> {
-        // Chamada ao CrudService sem filtros
-        const result = await CrudService.list(tableName, {});
-        return result;
+        try {
+            // Chamada ao CrudService sem filtros
+            const result = await CrudService.list(tableName, {});
+            return result;
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.getAllTableData")
+            console.log(e)
+            return []
+        }
     }
 
     /**
@@ -344,10 +368,10 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      * @returns Promise que resolve com um array de objetos (dados da tabela).
      */
     public async getData(tableName: string, id: number = 0): Promise<any[]> {
+        try {
+            if (id !== 0) {
+                // Lógica para buscar dados de um furo específico (ID !== 0)
 
-        if (id !== 0) {
-            // Lógica para buscar dados de um furo específico (ID !== 0)
-            try {
                 // 1. Obter o título/nome do furo usando o ID principal
                 const idHole = await this.getTitleHole(id);
 
@@ -355,21 +379,15 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 const data = await this.getTableDataByHoleTitle(tableName, idHole);
                 return data;
 
-            } catch (error) {
-                console.error(`Erro ao buscar dados para o ID ${id} na tabela ${tableName}:`, error);
-                // Re-lança o erro para ser tratado pela camada superior
-                throw error;
-            }
-
-        } else {
-            // Lógica para buscar todos os dados (ID === 0)
-            try {
+            } else {
+                // Lógica para buscar todos os dados (ID === 0)
                 const data = await this.getAllTableData(tableName);
                 return data;
-            } catch (error) {
-                console.error(`Erro ao buscar todos os dados da tabela ${tableName}:`, error);
-                throw error;
             }
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.getAllTableData")
+            console.log(e)
+            return []
         }
     }
 
@@ -412,9 +430,10 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             console.log(`Arquivo CSV salvo: ${fileUri}`);
             return fileUri;
 
-        } catch (error) {
-            console.error(`Erro ao exportar tabela '${tableName}':`, error);
-            throw error;
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.exportTableToCSV")
+            console.log(e)
+            return ''
         }
     }
 
@@ -427,19 +446,25 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
      * @returns Array de objetos com os dados da tabela.
      */
     private async getTableData(tableName: string, id?: number): Promise<any[]> {
-        if (id) {
-            // Lógica original de getTableData
-            // const result = CrudService.list(tableName, ["d_id="], [id], orderBy);
-            // Assumindo que CrudService.list lida com a busca
-            const result = await CrudService.list(tableName, {
-                where: ["d_id = ?"],
-                params: [id]
-            });
-            return result;
-        } else {
-            // Lógica original de getAllTableData
-            const result = await CrudService.list(tableName, {});
-            return result;
+        try {
+            if (id) {
+                // Lógica original de getTableData
+                // const result = CrudService.list(tableName, ["d_id="], [id], orderBy);
+                // Assumindo que CrudService.list lida com a busca
+                const result = await CrudService.list(tableName, {
+                    where: ["d_id = ?"],
+                    params: [id]
+                });
+                return result;
+            } else {
+                // Lógica original de getAllTableData
+                const result = await CrudService.list(tableName, {});
+                return result;
+            }
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.getTableData")
+            console.log(e)
+            return []
         }
     }
 
@@ -524,9 +549,10 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             console.log(`Processo finalizado. ${savedFilePaths.length} imagens salvas.`);
             return savedFilePaths;
 
-        } catch (error) {
-            console.error(`Erro geral ao processar a tabela ${tableName}:`, error);
-            throw error;
+        } catch (e) {
+            console.error("EnergyFuelsDrillingExporter.saveImagesFromTable")
+            console.log(e)
+            return []
         }
     }
 

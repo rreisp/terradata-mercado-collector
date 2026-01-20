@@ -3,17 +3,23 @@ import { CrudService } from "@/core/services/crud.service";
 
 export class EnergyFuelsDrillingInitializer implements DataInitializer {
   async init(): Promise<void> {
-    await this.createDrillingsTable();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await this.createSegmentsTable();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await this.createImagesTable();
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await this.createLithologiesTable();
+    try {
+      await this.createDrillingsTable();
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await this.createSegmentsTable();
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await this.createImagesTable();
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await this.createLithologiesTable();
 
-    await new Promise(resolve => setTimeout(resolve, 100));
-    await this.createOptionsTables();
-    await new Promise(resolve => setTimeout(resolve, 100));  }
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await this.createOptionsTables();
+      await new Promise(resolve => setTimeout(resolve, 100));
+    } catch (e) {
+      console.error("EnergyFuelsDrillingInitializer.init")
+      console.log(e)
+    }
+  }
 
   // -------------------------------------------------------------------
   private async createDrillingsTable(): Promise<void> {
@@ -30,9 +36,9 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       end_date TEXT,
       interruption_reason TEXT
     `);
-      // console.log('Tabela drillings criada (ou já existia).');
-    } catch (error) {
-      console.error('Erro ao criar a tabela drillings:', error);
+    } catch (e) {
+      console.error("EnergyFuelsDrillingInitializer.createDrillingsTable")
+      console.log(e)
     }
   }
 
@@ -63,8 +69,9 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       FOREIGN KEY (fgk_drilling) REFERENCES drillings(id)
     `);
       // console.log('Tabela segments criada (ou já existia).');
-    } catch (error) {
-      console.error('Erro ao criar a tabela segments:', error);
+    } catch (e) {
+      console.error("EnergyFuelsDrillingInitializer.createSegmentsTable")
+      console.log(e)
     }
   }
 
@@ -78,8 +85,9 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       FOREIGN KEY (fgk_segment) REFERENCES segments(id)      
     `);
       // console.log('Tabela images criada (ou já existia).');
-    } catch (error) {
-      console.error('Erro ao criar a tabela images:', error);
+    } catch (e) {
+      console.error("EnergyFuelsDrillingInitializer.createImagesTable")
+      console.log(e)
     }
   }
 
@@ -95,8 +103,9 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       FOREIGN KEY (fgk_segment) REFERENCES segments(id)
     `);
       // console.log('Tabela lithologies criada (ou já existia).');
-    } catch (error) {
-      console.error('Erro ao criar a tabela lithologies:', error);
+    } catch (e) {
+      console.error("EnergyFuelsDrillingInitializer.createLithologiesTable")
+      console.log(e)
     }
   }
 

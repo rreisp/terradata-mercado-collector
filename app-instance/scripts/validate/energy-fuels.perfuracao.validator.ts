@@ -305,14 +305,19 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
     }
 
     async getDrilling(title: string) {
-        const result = await CrudService.list<DrillingRecord>(
-            "drillings",
-            {
-                where: ["title = ?"],
-                params: [title]
-            }
-        );
+        try {
+            const result = await CrudService.list<DrillingRecord>(
+                "drillings",
+                {
+                    where: ["title = ?"],
+                    params: [title]
+                }
+            );
 
-        return result
+            return result
+        } catch (e) {
+            console.error("EnergyFuelsDrillingValidator.getDrilling")
+            console.log(e)
+        }
     }
 }
