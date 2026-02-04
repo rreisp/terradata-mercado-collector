@@ -1,27 +1,34 @@
-import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
 
-export async function enviarBancoPorEmail() {
-    try {
-        const dbPath = `${FileSystem.documentDirectory}SQLite/app.db`;
+export type EmailPayload = {
+    recipients?: string[];
+    subject: string;
+    body?: string;
+    attachments?: string[];
+};
 
-        // Verifica se o MailComposer está disponível
-        const isAvailable = await MailComposer.isAvailableAsync();
-        if (!isAvailable) {
-            alert('O recurso de envio de e-mail não está disponível neste dispositivo.');
-            return;
+export class EmailService {
+    static async isAvailable(): Promise<boolean> {
+        return MailComposer.isAvailableAsync();
+    }
+
+    static async send({
+        recipients = [],
+        subject,
+        body = '',
+        attachments = [],
+    }: EmailPayload): Promise<void> {
+        const available = await this.isAvailable();
+
+        if (!available) {
+            throw new Error('E-mail não disponível no dispositivo');
         }
 
-        // Envia o e-mail com o banco em anexo
         await MailComposer.composeAsync({
-            recipients: ['rreisp@gmail.com'], // altere conforme necessário
-            subject: 'Backup do banco de dados',
-            body: 'Segue em anexo o arquivo do banco de dados app.db.',
-            attachments: [dbPath],
+            recipients,
+            subject,
+            body,
+            attachments,
         });
-
-        console.log('E-mail enviado com sucesso');
-    } catch (error) {
-        console.error('Erro ao tentar enviar o e-mail:', error);
     }
 }

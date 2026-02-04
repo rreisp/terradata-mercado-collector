@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
-import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, Platform, ActivityIndicator } from "react-native";
+import { View, Text, Button, Image, StyleSheet, Pressable, FlatList, Alert, ActivityIndicator } from "react-native";
+import * as Sharing from 'expo-sharing';
 import Modal from "react-native-modal";
 import GlobalStyles from '@/core/constants/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -18,6 +19,8 @@ import SafeAreaContainer from "@/core/components/safe-container";
 import { useFocusEffect } from '@react-navigation/native';
 import { logos } from '@/app-instance/logos';
 import Constants from "expo-constants";
+import { EmailService } from "@/core/services/email.service";
+import { BackupService } from "@/core/services/backup.service";
 
 const { version } = Constants.expoConfig ?? {};
 const buildStamp = Constants.expoConfig?.extra?.buildStamp;
@@ -107,7 +110,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
         setLoading(true);
         await onExportPDF(rootItemId);
         setLoading(false);
-    }    
+    }
 
     async function handleExportAll(): Promise<void> {
         const doExportAll = async () => {
@@ -149,6 +152,54 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
             ],
             { cancelable: true }
         );
+    }
+
+    async function handleExportDatabase() {
+        try {
+            const backupUri = await BackupService.exportDatabase();
+
+            Alert.alert(
+                isPT ? 'Exportar banco de dados' : 'Export database',
+                isPT ? 'O que você deseja fazer com o arquivo?' : 'What do you want to do with the file?',
+                [
+                    {
+                        text: isPT ? 'Salvar / Compartilhar' : 'Save / Share',
+                        onPress: async () => {
+                            if (!(await Sharing.isAvailableAsync())) {
+                                Alert.alert(isPT ? 'Erro' : 'Error', isPT ? 'Compartilhamento não disponível' : 'Sharing not available');
+                                return;
+                            }
+
+                            await Sharing.shareAsync(backupUri, {
+                                mimeType: 'application/octet-stream',
+                                dialogTitle: isPT ? 'Exportar banco de dados' : 'Export database',
+                            });
+                        },
+                    },
+                    {
+                        text: 'Enviar por e-mail',
+                        onPress: async () => {
+                            try {
+                                await EmailService.send({
+                                    subject: isPT ? 'Backup do banco de dados' : 'Database backup',
+                                    body: isPT ? 'Segue em anexo o backup do banco de dados.' : 'The database backup is attached.',
+                                    attachments: [backupUri],
+                                });
+                            } catch (error) {
+                                Alert.alert(isPT ? 'Erro' : 'Error', isPT ? 'E-mail não configurado no dispositivo' : 'E-mail not configured in the device');
+                            }
+                        },
+                    },
+                    {
+                        text: isPT ? 'Cancelar' : 'Cancel',
+                        style: 'cancel',
+                    },
+                ]
+            );
+        } catch (error) {
+            Alert.alert(isPT ? 'Erro' : 'Error', isPT ? 'Erro ao exportar o banco de dados' : 'Error while exporting database');
+            throw error;
+        }
     }
 
     const goBack = () => {
@@ -278,10 +329,15 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                     </View>
 
                     <View style={{ marginBottom: 12 }}>
+                        <Button title={isPT ? "🗃️ Exportar banco de dados" : "🗃️ Export database"} onPress={handleExportDatabase} />
+                    </View>
+
+                    <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗑️ Resetar banco de dados" : "🗑️ Reset database"} onPress={handleReset} />
                     </View>
+
                     <Button title={isPT ? "❎ Fechar" : "❎ Close"} onPress={() => setModalVisible(false)} />
-                    <Text style={[GlobalStyles.textMuted, { marginTop: 5, fontSize: 10, fontStyle: 'italic'}]}>{isPT ? 'Versão ' : 'Version'} {version} {buildStamp}</Text>
+                    <Text style={[GlobalStyles.textMuted, { marginTop: 5, fontSize: 10, fontStyle: 'italic' }]}>{isPT ? 'Versão ' : 'Version'} {version} {buildStamp}</Text>
                 </View>
             </Modal>
         </SafeAreaContainer>

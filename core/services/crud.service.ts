@@ -261,17 +261,6 @@ export class CrudService {
         }
     }
 
-    static async exportDatabase() {
-        try {
-            const dbPath = (SQLite as any).getDatabaseFileLocation('app.db');
-            console.log('Caminho absoluto do banco de dados:', dbPath);
-        } catch (error) {
-            //logDetailedError('Erro ao obter caminho do banco de dados', undefined, [], error);
-            Alert.alert('Erro', formatErrorMessage('Erro ao obter caminho do banco de dados', error));
-            throw error;
-        }
-    }
-
     static async exportToCsv(table: string, ids: number[]): Promise<string> {
         if (!ids.length) {
             throw new Error("A lista de IDs não pode estar vazia.");
@@ -318,6 +307,7 @@ export class CrudService {
         }
     }
 
+    // TODO: documentar e revisar exportToCsv2 x exportToCsv
     static async exportToCsv2(table: string, id: number): Promise<string> {
         const sql = `SELECT * FROM ${table} WHERE d_id = ?`;
 
