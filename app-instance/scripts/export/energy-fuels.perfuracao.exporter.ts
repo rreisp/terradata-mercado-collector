@@ -214,7 +214,8 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 LEFT join hardness h on h.id = s.fgk_hardness 
                 LEFT join induration i on i.id = s.fgk_induration 
                 LEFT join roundness r on r.id = s.fgk_roundness 
-                LEFT join wash w on w.id = s.fgk_wash;
+                LEFT join wash w on w.id = s.fgk_wash
+                WHERE d.title IS NOT NULL
                 ORDER BY d.title, s.depth_from;
             `;
             await CrudService.createView('segmentsExport', sql);
@@ -280,6 +281,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             LEFT JOIN segments s ON l.fgk_segment = s.id 
             LEFT JOIN drillings d ON s.fgk_drilling = d.id 
             LEFT JOIN lithology l2 ON l2.id = l.fgk_lithology_type
+            WHERE d.title IS NOT NULL
             ORDER BY d.title, d.id;
         `;
 
@@ -297,6 +299,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
               FROM images i 
               LEFT JOIN segments s on i.fgk_segment = s.id
 			  LEFT JOIN drillings d on d.id = s.fgk_drilling
+              WHERE d.title IS NOT NULL
               `;
             await CrudService.createView('export_images', sql);
         } catch (e) {
