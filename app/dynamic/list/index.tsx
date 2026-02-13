@@ -328,9 +328,9 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                         <Button title={isPT ? "💾 Exportar todos os registros" : "💾 Export all records"} onPress={handleExportAll} />
                     </View>
 
-                    <View style={{ marginBottom: 12 }}>
+                    {/* <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗃️ Exportar banco de dados" : "🗃️ Export database"} onPress={handleExportDatabase} />
-                    </View>
+                    </View> */}
 
                     <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗑️ Resetar banco de dados" : "🗑️ Reset database"} onPress={handleReset} />
