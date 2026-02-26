@@ -8,6 +8,7 @@ import { DataRemover } from "@/core/types/data-remover";
 import { DataReseter } from "@/core/types/data-reseter";
 
 import * as Exporters from "@/app-instance/scripts/export";
+import * as Importers from "@/app-instance/scripts/import";
 import * as Initializers from "@/app-instance/scripts/init";
 import * as Readers from "@/app-instance/scripts/read";
 import * as Removers from "@/app-instance/scripts/delete";
@@ -15,6 +16,7 @@ import * as Reseters from "@/app-instance/scripts/reset";
 
 import DynamicList from '../../dynamic/list/index';
 import { OperationModeProvider } from "@/core/contexts/OperationModeContext";
+import { DataImporter } from "@/core/types/data-importer";
 
 const ListLoader = () => {
     const { language } = useLanguage();
@@ -23,6 +25,9 @@ const ListLoader = () => {
 
     const exporterRegistry: Record<string, new (language: string) => DataExporter> = {
         ...Exporters,
+    };
+    const importerRegistry: Record<string, new (language: string) => DataImporter> = {
+        ...Importers,
     };
     const initializerRegistry: Record<string, new () => DataInitializer> = {
         ...Initializers,
@@ -37,6 +42,7 @@ const ListLoader = () => {
         ...Reseters,
     };
 
+    const importer = new importerRegistry[schemaId + "Importer"](language);
     const exporter = new exporterRegistry[schemaId + "Exporter"](language);
     const intializer = new initializerRegistry[schemaId + "Initializer"]();
     const reader = new readerRegistry[schemaId + "Reader"](language);
@@ -52,6 +58,7 @@ const ListLoader = () => {
                     onExport={exporter.export.bind(exporter)}
                     onExportPDF={exporter.exportPDF.bind(exporter)}
                     onExportAll={exporter.exportAll.bind(exporter)}
+                    onImportDatabase={importer.importDatabase.bind(importer)}
                     onInit={intializer.init.bind(intializer)}
                     onDelete={remover.remove.bind(remover)}
                     onList={reader.read.bind(reader)}

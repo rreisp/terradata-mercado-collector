@@ -25,7 +25,7 @@ import { BackupService } from "@/core/services/backup.service";
 const { version } = Constants.expoConfig ?? {};
 const buildStamp = Constants.expoConfig?.extra?.buildStamp;
 
-const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportPDF, onExportAll }: DynamicListProps) => {
+const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportPDF, onExportAll, onImportDatabase }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
@@ -153,6 +153,16 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
             { cancelable: true }
         );
     }
+
+    async function handleImportDatabase() {
+        try {
+            onImportDatabase();
+        } catch (error) {
+            Alert.alert(isPT ? 'Erro' : 'Error', isPT ? 'Erro ao importar o banco de dados' : 'Error while importing database');
+            throw error;
+        }
+    }
+
 
     async function handleExportDatabase() {
         try {
@@ -328,9 +338,13 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                         <Button title={isPT ? "💾 Exportar todos os registros" : "💾 Export all records"} onPress={handleExportAll} />
                     </View>
 
-                    {/* <View style={{ marginBottom: 12 }}>
+                    <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗃️ Exportar banco de dados" : "🗃️ Export database"} onPress={handleExportDatabase} />
-                    </View> */}
+                    </View>
+
+                    <View style={{ marginBottom: 12 }}>
+                        <Button title={isPT ? "🗃️ Importar banco de dados" : "🗃️ Import database"} onPress={handleImportDatabase} />
+                    </View>                    
 
                     <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗑️ Resetar banco de dados" : "🗑️ Reset database"} onPress={handleReset} />
