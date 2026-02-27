@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import { Alert } from 'react-native';
 
-const db = SQLite.openDatabaseSync('app.db');
+let db = SQLite.openDatabaseSync('app.db');
 
 type Params = (string | number | null | undefined)[];
 
@@ -406,6 +406,23 @@ export class CrudService {
         } catch (error) {
             console.error("Erro ao verificar tabela:", error);
             return false;
+        }
+    }
+    static async closeConnection() {
+        try {
+            db.closeSync(); 
+            console.log("Conexão com o banco fechada para importação.");
+        } catch (error) {
+            console.log("Erro ao fechar o banco:", error);
+        }
+    }
+
+    static async reopenConnection() {
+        try {
+            db = SQLite.openDatabaseSync('app.db');
+            console.log("Conexão com o banco reaberta após importação.");
+        } catch (error) {
+            console.log("Erro ao reabrir o banco:", error);
         }
     }
 }
