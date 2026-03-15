@@ -7,22 +7,31 @@ export class CSVService {
      * @param data Array de objetos (dados da tabela).
      * @returns String formatada em CSV.
      */
+
     static convertToCSV(data: any[], separator: string = ","): string {
-        if (!data || data.length === 0) return "";
+    if (!data || data.length === 0) return "";
 
-        // Garante que todas as chaves sejam usadas como cabeçalho
-        const allKeys = new Set<string>();
-        data.forEach(row => Object.keys(row).forEach(key => allKeys.add(key)));
-        const headers = Array.from(allKeys).join(separator);
+    // Garante que todas as chaves sejam usadas como cabeçalho
+    const allKeys = new Set<string>();
+    data.forEach(row => Object.keys(row).forEach(key => allKeys.add(key)));
+    const headers = Array.from(allKeys).join(separator);
 
-        const rows = data.map((row) =>
-            Array.from(allKeys)
-                .map((key) => `"${row[key] ?? ""}"`) // Garante que a ordem dos valores siga a ordem dos headers
-                .join(separator)
-        );
+    const rows = data.map((row) =>
+        Array.from(allKeys)
+            .map((key) => {
+                let value = row[key];
+                // Verifica se o valor é texto. Se for, limpa as quebras de linha.
+                if (typeof value === 'string') {
+                    value = value.replace(/[\r\n]+/g, ' ');
+                }
 
-        return [headers, ...rows].join("\n");
-    }
+                return `"${value ?? ""}"`; 
+            })
+            .join(separator)
+    );
+
+    return [headers, ...rows].join("\n");
+}
 
     /**
      * @private
