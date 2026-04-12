@@ -83,7 +83,6 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         value={value || ''}
                         onChangeText={(text) => onChange(field.id, text)}
                         style={GlobalStyles.input}
-                        secureTextEntry={field.type === "password"}
                         maxLength={field.max} onSanitize={removeAccentsAndSpecialChars} />
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
