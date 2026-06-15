@@ -15,8 +15,8 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 import { useField, useFormikContext } from 'formik';
 import { MaterialIcons } from '@expo/vector-icons';
-
 import { ImageRecord } from '@/app-instance/types/image-record';
+import GlobalStyles from '@/core/constants/styles';
 
 type MultiCameraInputProps = {
     name: string;
@@ -190,8 +190,8 @@ export const MultiCameraInput: React.FC<MultiCameraInputProps> = ({
                 </ScrollView>
             )}
 
-            {meta.touched && meta.error && (
-                <Text style={styles.errorText}>{meta.error}</Text>
+            {meta.error && (
+                <Text style={GlobalStyles.errorText}>{meta.error}</Text>
             )}
         </View>
     );

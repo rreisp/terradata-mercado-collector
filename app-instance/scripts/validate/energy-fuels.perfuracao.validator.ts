@@ -41,6 +41,8 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                 .matches(this.tenementRegex, formatMsg + '000.000/0000'),
             landowner: Yup.string()
                 .required(requiredMsg),
+            responsible: Yup.string()
+                .required(requiredMsg),                
             ef_dates: Yup.object({
                 start: Yup.date()
                     .required(requiredMsg),
@@ -75,6 +77,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         const maximumMsg = this.message('maximum');
         const finalGreaterThanInitialMsg = this.isPT ? 'O valor final deve ser maior do que o inicial' : 'The final value must be greater than the initial value';
         const selectOptionMsg = this.message('selectOption');
+        const atLeastOnePhotoMsg = this.isPT ? 'Não é permitido registrar segmentos sem fotos.' : 'Segments without images cannot be registered.';
 
         let validator = Yup.object({
             // --------------------------------------------
@@ -148,6 +151,13 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
             ),
             // --------------------------------------------  
             maxGrainsize: Yup.array().of(
+                Yup.number()
+                    .integer(integerMsg)
+                    .min(1, selectOptionMsg)
+                    .required(requiredMsg)
+            ),
+            // --------------------------------------------  
+            sorting: Yup.array().of(
                 Yup.number()
                     .integer(integerMsg)
                     .min(1, selectOptionMsg)
@@ -261,6 +271,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                             .required(requiredMsg)
                     })
                 )
+                .min(1, atLeastOnePhotoMsg)
             ),
             // -------------------------------------------- 
             lithologies: Yup.array().of(

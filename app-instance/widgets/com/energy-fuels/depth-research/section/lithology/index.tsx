@@ -14,6 +14,7 @@ const EF_Lithology = ({ index, parent, start, end, options }) => {
     const valorInicialTipo = 0;
     const pathBase = `${parent}.lithologies`;
     const lithologiesArray = values?.[parent]?.lithologies?.[index] ?? [];
+    const MAX_LITHOLOGY_LENTH = 3;
 
     const fieldsErrors = errors?.[parent]?.lithologies?.[index];
 
@@ -99,12 +100,24 @@ const EF_Lithology = ({ index, parent, start, end, options }) => {
                                 <TouchableOpacity
                                     style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
                                     onPress={() => {
-                                        push({
-                                            from: null,
-                                            to: null,
-                                            type: valorInicialTipo,
-                                            fgk_segment: (values?.[parent]?.segmentIds ? values?.[parent]?.segmentIds[index] : undefined)
-                                        });
+                                        if (lithologiesArray.length < MAX_LITHOLOGY_LENTH) {
+                                            push({
+                                                from: null,
+                                                to: null,
+                                                type: valorInicialTipo,
+                                                fgk_segment: (
+                                                    values?.[parent]?.segmentIds
+                                                        ? values?.[parent]?.segmentIds[index]
+                                                        : undefined
+                                                )
+                                            });
+                                        } else {
+                                            Alert.alert(
+                                                language === 'pt-BR' ? 'Atenção' : 'Atention',
+                                                language === 'pt-BR' ? 
+                                                'São permitidas até '+ MAX_LITHOLOGY_LENTH + ' litologias.' : 'A maximum of '+ MAX_LITHOLOGY_LENTH + ' lithologies are allowed.'
+                                            );
+                                        }
                                     }}
                                 >
                                     <Icon name="plus" size={16} color="#fff" />

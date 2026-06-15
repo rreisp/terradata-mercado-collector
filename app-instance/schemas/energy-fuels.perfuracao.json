@@ -132,6 +132,23 @@
         },
         {
           "field": {
+            "id": "responsible",
+            "label": {
+              "pt-BR": "Responsável:",
+              "en-US": "Responsible:"
+            },
+            "type": "sanitized_text"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+          }
+        },
+        {
+          "field": {
             "id": "reason",
             "type": "sanitized_text",
             "label": {
@@ -139,7 +156,7 @@
               "en-US": "Interruption Reason:"
             }
           }
-        }
+        }        
       ]
     },
     {

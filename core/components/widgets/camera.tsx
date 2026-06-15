@@ -14,6 +14,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 import { useField, useFormikContext } from 'formik';
 import { MaterialIcons } from '@expo/vector-icons';
+import GlobalStyles from '@/core/constants/styles';
 
 type CameraInputProps = {
     name: string;
@@ -125,8 +126,8 @@ export const CameraInput: React.FC<CameraInputProps> = ({
                 </View>
             )}
 
-            {meta.touched && meta.error && (
-                <Text style={styles.errorText}>{meta.error}</Text>
+            {meta.error && (
+                <Text style={GlobalStyles.errorText}>{meta.error}</Text>
             )}
         </View>
     );

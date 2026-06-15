@@ -41,7 +41,6 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
 
             // imagens de cada segmento
             for (let i = 0; i < segments.length; i++) {
-                console.log();
                 const photos = this.extractPhotosInfo(i, info);
                 await this.savePhotos(segmentsIds[i], photos);
             }
@@ -100,6 +99,7 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
                     fgk_induration: data.induration,
                     fgk_min_grainsize: data.minGrainsize,
                     fgk_max_grainsize: data.maxGrainsize,
+                    // fgk_sorting: data.sorting,
                     fgk_roundness: data.roundness,
                     clay: data.clay,
                     micah: data.micah,
@@ -186,6 +186,7 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
                 landowner: info.landowner,
                 start_date: formatDate(info.ef_dates.start),
                 end_date: formatDate(info.ef_dates.end),
+                responsible: info.responsible,
                 interruption_reason: info.reason
             }
         } catch (e) {
@@ -210,6 +211,7 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
                     induration: info.ef_depth_test.induration[i],
                     minGrainsize: info.ef_depth_test.minGrainsize[i],
                     maxGrainsize: info.ef_depth_test.maxGrainsize[i],
+                    sorting: info.ef_depth_test.sorting[i],
                     roundness: info.ef_depth_test.roundness[i],
                     clay: info.ef_depth_test.clayPct[i],
                     micah: info.ef_depth_test.micahPct[i],
