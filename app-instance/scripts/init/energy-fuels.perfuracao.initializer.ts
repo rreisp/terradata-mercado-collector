@@ -111,13 +111,13 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
 
   // -------------------------------------------------------------------
   private async createOptionsTables(): Promise<void> {
-    const options = `id INTEGER PRIMARY KEY AUTOINCREMENT, ptBR TEXT UNIQUE NOT NULL, enUS TEXT UNIQUE NOT NULL`;
+    const options = `id INTEGER PRIMARY KEY AUTOINCREMENT, ptBR TEXT UNIQUE NOT NULL, enUS TEXT UNIQUE NOT NULL, code TEXT UNIQUE NOT NULL`;
     try {
       await CrudService.createTable('moisture', options);
       await CrudService.insertMultiple('moisture', [
-        { 'ptBR': 'Molhada', 'enUS': 'Wet' },
-        { 'ptBR': 'Úmida', 'enUS': 'Moist' },
-        { 'ptBR': 'Seca', 'enUS': 'Dry' }], 'ptBR');
+        { 'ptBR': 'Molhada', 'enUS': 'Wet', 'code': 'W' },
+        { 'ptBR': 'Úmida', 'enUS': 'Moist', 'code': 'M' },
+        { 'ptBR': 'Seca', 'enUS': 'Dry', 'code': 'D' }], 'ptBR');
     } catch (error) {
       console.error('erro ao criar a tabela de opções de umidade', error);
     }
@@ -125,11 +125,11 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('hardness', options);
       await CrudService.insertMultiple('hardness', [
-        { 'ptBR': 'Inconsolidada', 'enUS': 'Unconsolidated' },
-        { 'ptBR': 'Esmagável com o dedo', 'enUS': 'Crushable with finger' },
-        { 'ptBR': 'Nenhuma resistência a penetração', 'enUS': 'No resistance to penetration' },
-        { 'ptBR': 'Resistência a penetração', 'enUS': 'Resistance to penetration' },
-        { 'ptBR': 'Total resistência a penetração', 'enUS': 'Total resistance to penetration' }
+        { 'ptBR': 'Inconsolidada', 'enUS': 'Unconsolidated', 'code': '1' },
+        { 'ptBR': 'Esmagável com o dedo', 'enUS': 'Crushable with finger', 'code': '2' },
+        { 'ptBR': 'Nenhuma resistência a penetração', 'enUS': 'No resistance to penetration', 'code': '3' },
+        { 'ptBR': 'Resistência a penetração', 'enUS': 'Resistance to penetration', 'code': '4' },
+        { 'ptBR': 'Total resistência a penetração', 'enUS': 'Refusal', 'code': '5' }
       ], 'ptBR');
 
     } catch (error) {
@@ -139,10 +139,10 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('wash', options);
       await CrudService.insertMultiple('wash', [
-        { 'ptBR': 'Fácil', 'enUS': 'Easy' },
-        { 'ptBR': 'Moderada', 'enUS': 'Moderate' },
-        { 'ptBR': 'Difícil', 'enUS': 'Hard' },
-        { 'ptBR': 'Muito difícil', 'enUS': 'Very hard' }
+        { 'ptBR': 'Fácil', 'enUS': 'Easy', 'code': 'E' },
+        { 'ptBR': 'Moderada', 'enUS': 'Moderate', 'code': 'M' },
+        { 'ptBR': 'Difícil', 'enUS': 'Hard', 'code': 'H' },
+        { 'ptBR': 'Muito difícil', 'enUS': 'Very difficult', 'code': 'VD' }
       ], 'ptBR');
 
     } catch (error) {
@@ -152,40 +152,36 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('color', options);
       await CrudService.insertMultiple('color', [
-        { "ptBR": "Clara", "enUS": "Light" },
-        { "ptBR": "Escura", "enUS": "Dark" },
-        { "ptBR": "Preta", "enUS": "Black" },
-        { "ptBR": "Marrom", "enUS": "Brown" },
-        { "ptBR": "Marrom alaranjada", "enUS": "Orange-brown" },
-        { "ptBR": "Marrom avermelhada", "enUS": "Reddish brown" },
-        { "ptBR": "Vermelha amarronzada", "enUS": "Brownish red" },
-        { "ptBR": "Vermelha", "enUS": "Red" },
-        { "ptBR": "Rosa", "enUS": "Pink" },
-        { "ptBR": "Laranja avermelhada", "enUS": "Reddish orange" },
-        { "ptBR": "Laranja amarronzada", "enUS": "Brownish orange" },
-        { "ptBR": "Laranja", "enUS": "Orange" },
-        { "ptBR": "Laranja amarelada", "enUS": "Yellowish orange" },
-        { "ptBR": "Amarela", "enUS": "Yellow" },
-        { "ptBR": "Amarelo amarronzada", "enUS": "Brownish yellow" },
-        { "ptBR": "Amarelo alaranjada", "enUS": "Orange-yellow" },
-        { "ptBR": "Bege", "enUS": "Beige" },
-        { "ptBR": "Creme", "enUS": "Cream" },
-        { "ptBR": "Cinza", "enUS": "Gray" },
-        { "ptBR": "Branco", "enUS": "White" },
-        { "ptBR": "Branca Amarelada", "enUS": "Yellowish white" },
-        { "ptBR": "Verde", "enUS": "Green" },
-        { "ptBR": "Cinza Clara", "enUS": "Light gray" },
-        { "ptBR": "Cinza Escura", "enUS": "Dark gray" },
-        { "ptBR": "Marrom Clara", "enUS": "Light brown" },
-        { "ptBR": "Marrom Escura", "enUS": "Dark brown" },
-        { "ptBR": "Vermelha Clara", "enUS": "Light red" },
-        { "ptBR": "Rosa Clara", "enUS": "Light pink" },
-        { "ptBR": "Laranja Clara", "enUS": "Light orange" },
-        { "ptBR": "Amarela Clara", "enUS": "Light yellow" },
-        { "ptBR": "Bege Clara", "enUS": "Light beige" },
-        { "ptBR": "Cinza Amarronzada", "enUS": "Brownish gray" },
-        { "ptBR": "Marrom Acizentada", "enUS": "Grayish brown" },
-        { "ptBR": "Cinza Esverdeada", "enUS": "Greenish gray" },
+        { "ptBR": "Clara", "enUS": "Light", "code": "L" },
+        { "ptBR": "Escura", "enUS": "Dark", "code": "D" },
+        { "ptBR": "Preta", "enUS": "Black", "code": "N" },
+        { "ptBR": "Marrom", "enUS": "Brown", "code": "B" },
+        { "ptBR": "Marrom Acinzentada", "enUS": "Brown Grey", "code": "BG" },
+        { "ptBR": "Marrom alaranjada", "enUS": "Brown Orange", "code": "BO" },
+        { "ptBR": "Marrom avermelhada", "enUS": "Brown Red", "code": "BR" },
+        { "ptBR": "Vermelha amarronzada", "enUS": "Red Brown", "code": "RB" },
+        { "ptBR": "Vermelha", "enUS": "Red", "code": "R" },
+        { "ptBR": "Rosa", "enUS": "Pink", "code": "P" },
+        { "ptBR": "Laranja avermelhada", "enUS": "Orange Red", "code": "OR" },
+        { "ptBR": "Laranja amarronzada", "enUS": "Orange Brown", "code": "OB" },
+        { "ptBR": "Laranja", "enUS": "Orange", "code": "O" },
+        { "ptBR": "Laranja amarelada", "enUS": "Orange Yellow", "code": "OY" },
+        { "ptBR": "Amarela", "enUS": "Yellow", "code": "Y" },
+        { "ptBR": "Amarelo amarronzado", "enUS": "Yellow Brown", "code": "YB" },
+        { "ptBR": "Amarelo alaranjado", "enUS": "Yellow Orange", "code": "YO" },
+        { "ptBR": "Bege", "enUS": "Khaki", "code": "K" },
+        { "ptBR": "Creme", "enUS": "Cream", "code": "C" },
+        { "ptBR": "Cinza", "enUS": "Grey", "code": "G" },
+        { "ptBR": "Cinza amarelado", "enUS": "Yellowish Grey", "code": "GI" },
+        { "ptBR": "Cinza alaranjado", "enUS": "Orange Gray", "code": "GO" },
+        { "ptBR": "Cinza azulado", "enUS": "Bluish Gray", "code": "CA" },
+        { "ptBR": "Cinza amarronzado", "enUS": "Grey Brown", "code": "GB" },
+        { "ptBR": "Marrom esverdeado", "enUS": "Greenish Brown", "code": "BV" },
+        { "ptBR": "Marrom amarelado", "enUS": "Yellowish Brown", "code": "MA" },
+        { "ptBR": "Branco", "enUS": "White", "code": "W" },
+        { "ptBR": "Branco amarelado", "enUS": "White Yellow", "code": "WY" },
+        { "ptBR": "Verde", "enUS": "Green", "code": "V" },
+        { "ptBR": "Verde acinzentado", "enUS": "Green Grey", "code": "VG" }
       ], 'ptBR');
 
     } catch (error) {
@@ -195,10 +191,10 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('induration', options);
       await CrudService.insertMultiple('induration', [
-        { 'ptBR': 'Nenhuma', 'enUS': 'None' },
-        { 'ptBR': 'Calcária', 'enUS': 'Calcareous' },
-        { 'ptBR': 'Arenosa', 'enUS': 'Sandy' },
-        { 'ptBR': 'Ferro', 'enUS': 'Iron' }
+        { 'ptBR': 'Nenhuma', 'enUS': 'None', 'code': 'N' },
+        { 'ptBR': 'Calcária', 'enUS': 'Limestone', 'code': 'LST' },
+        { 'ptBR': 'Arenosa', 'enUS': 'Sandystone', 'code': 'SST' },
+        { 'ptBR': 'Ferro', 'enUS': 'Fe cemented SST', 'code': 'FST' }
       ], 'ptBR');
     } catch (error) {
       console.error('erro ao criar a tabela de opções de Cimentação', error);
@@ -207,12 +203,13 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('min_grainsize', options + ", position INTEGER");
       await CrudService.insertMultiple('min_grainsize', [
-        { 'ptBR': 'Muito fina', 'enUS': 'Very fine', 'position': 1 },
-        { 'ptBR': 'Fina', 'enUS': 'Fine', 'position': 2 },
-        { 'ptBR': 'Média', 'enUS': 'Medium', 'position': 3 },
-        { 'ptBR': 'Grossa', 'enUS': 'Coarse', 'position': 4 },
-        { 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'position': 5 },
-        { 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'position': 6 }
+        { 'ptBR': 'Muito fina', 'enUS': 'Very fine', 'code': 'VF', 'position': 1 },
+        { 'ptBR': 'Fina', 'enUS': 'Fine', 'code': 'F', 'position': 2 },
+        { 'ptBR': 'Média', 'enUS': 'Medium', 'code': 'M', 'position': 3 },
+        { 'ptBR': 'Grossa', 'enUS': 'Coarse', 'code': 'C', 'position': 4 },
+        { 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'code': 'VC', 'position': 5 },
+        { 'ptBR': 'Gânulo', 'enUS': 'Granule', 'code': 'GR', 'position': 6 },
+        { 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'code': 'PB', 'position': 7 }
       ], 'ptBR');
 
     } catch (error) {
@@ -222,12 +219,13 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('max_grainsize', options + ", position INTEGER");
       await CrudService.insertMultiple('max_grainsize', [
-        { 'ptBR': 'Muito fina', 'enUS': 'Very fine', 'position': 1 },
-        { 'ptBR': 'Fina', 'enUS': 'Fine', 'position': 2 },
-        { 'ptBR': 'Média', 'enUS': 'Medium', 'position': 3 },
-        { 'ptBR': 'Grossa', 'enUS': 'Coarse', 'position': 4 },
-        { 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'position': 5 },
-        { 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'position': 6 }
+        { 'ptBR': 'Muito fina', 'enUS': 'Very fine', 'code': 'VF', 'position': 1 },
+        { 'ptBR': 'Fina', 'enUS': 'Fine', 'code': 'F', 'position': 2 },
+        { 'ptBR': 'Média', 'enUS': 'Medium', 'code': 'M', 'position': 3 },
+        { 'ptBR': 'Grossa', 'enUS': 'Coarse', 'code': 'C', 'position': 4 },
+        { 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'code': 'VC', 'position': 5 },
+        { 'ptBR': 'Gânulo', 'enUS': 'Granule', 'code': 'GR', 'position': 6 },
+        { 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'code': 'PB', 'position': 7 }
       ], 'ptBR');
 
     } catch (error) {
@@ -235,11 +233,13 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     }
 
     try {
-      await CrudService.createTable('roundness', options);
-      await CrudService.insertMultiple('roundness', [
-        { 'ptBR': 'Fraca', 'enUS': 'Poor' },
-        { 'ptBR': 'Moderada', 'enUS': 'Moderate' },
-        { 'ptBR': 'Boa', 'enUS': 'Good' }
+      await CrudService.createTable('sorting', options);
+      await CrudService.insertMultiple('sorting', [
+        { 'ptBR': 'Muito fraca', 'enUS': 'Very poor', 'code': 'VP' },
+        { 'ptBR': 'Fraca', 'enUS': 'Poor', 'code': 'P' },
+        { 'ptBR': 'Moderada', 'enUS': 'Moderate', 'code': 'M' },
+        { 'ptBR': 'Boa', 'enUS': 'Well', 'code': 'W' },
+        { 'ptBR': 'Muito boa', 'enUS': 'Very well', 'code': 'VW' }
       ], 'ptBR');
 
     } catch (error) {
@@ -249,20 +249,38 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     try {
       await CrudService.createTable('lithology', options);
       await CrudService.insertMultiple('lithology', [
-        { 'ptBR': 'Grupo Barreiras', 'enUS': 'Barreiras Group' },
-        { 'ptBR': 'Argila', 'enUS': 'Clay' },
-        { 'ptBR': 'Argila arenosa', 'enUS': 'Sandy clay' },
-        { 'ptBR': 'Silte', 'enUS': 'Silt' },
-        { 'ptBR': 'Areia argilosa', 'enUS': 'Clayey sand' },
-        { 'ptBR': 'Areia siltosa', 'enUS': 'Silty sand' },
-        { 'ptBR': 'Areia', 'enUS': 'Sand' },
-        { 'ptBR': 'Areia cascalhosa', 'enUS': 'Gravelly sand' },
-        { 'ptBR': 'Solo', 'enUS': 'Soil' },
-        { 'ptBR': 'Calcário', 'enUS': 'Limestone' },
-        { 'ptBR': 'Rocha', 'enUS': 'Rock' }
+        { "ptBR": "Grupo Barreiras", "enUS": "Barreiras Group", "code": "BG" },
+        { "ptBR": "Argila", "enUS": "Clay", "code": "CL" },
+        { "ptBR": "Argila arenosa", "enUS": "Sandy Clay", "code": "SC" },
+        { "ptBR": "Silte", "enUS": "Silt", "code": "SI" },
+        { "ptBR": "Argila Siltosa", "enUS": "Silty clay", "code": "AL" },
+        { "ptBR": "Silte argiloso", "enUS": "Clayey Silt", "code": "LA" },
+        { "ptBR": "Silte arenoso", "enUS": "Sandy Silt", "code": "LS" },
+        { "ptBR": "Areia argilosa", "enUS": "Clayey Sand", "code": "CS" },
+        { "ptBR": "Areia siltosa", "enUS": "Silty Sand", "code": "SS" },
+        { "ptBR": "Areia", "enUS": "Sand", "code": "SA" },
+        { "ptBR": "Areia granular", "enUS": "Granular sand", "code": "SG" },
+        { "ptBR": "Areia cascalhosa", "enUS": "Gravelly sand", "code": "GS" },
+        { "ptBR": "Solo", "enUS": "Soil", "code": "SO" },
+        { "ptBR": "Calcário", "enUS": "Limestone", "code": "CA" },
+        { "ptBR": "Rocha", "enUS": "Rock", "code": "RK" }
       ], 'ptBR');
     } catch (error) {
       console.error('erro ao criar a tabela de opções de tipos de litologia', error);
     }
+
+    try {
+      await CrudService.createTable('roundness', options);
+      await CrudService.insertMultiple('roundness', [
+        { 'ptBR': 'Angular', 'enUS': 'Angular', 'code': 'A' },
+        { 'ptBR': 'Sub-angular', 'enUS': 'Sub-angular', 'code': 'SA' },
+        { 'ptBR': 'Sub-rounded', 'enUS': 'Sub-rounded', 'code': 'SR' },
+        { 'ptBR': 'Arredondada', 'enUS': 'Rounded', 'code': 'R' }
+      ], 'ptBR');
+
+    } catch (error) {
+      console.error('erro ao criar a tabela de opções de esfericidade', error);
+    }
+    
   }
 }
