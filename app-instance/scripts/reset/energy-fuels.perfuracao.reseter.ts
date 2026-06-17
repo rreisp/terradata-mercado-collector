@@ -9,15 +9,17 @@ export class EnergyFuelsDrillingReseter implements DataReseter {
       await CrudService.drop("segments");
       await CrudService.drop("drillings");
 
-      // await CrudService.drop("moisture");
-      // await CrudService.drop("hardness");
-      // await CrudService.drop("wash");
-      // await CrudService.drop("color");
-      // await CrudService.drop("induration");
-      // await CrudService.drop("min_grainsize");
-      // await CrudService.drop("max_grainsize");
-      // await CrudService.drop("roundness");
-      // await CrudService.drop("lithology");
+      await CrudService.drop("moisture");
+      await CrudService.drop("hardness");
+      await CrudService.drop("wash");
+      await CrudService.drop("color");
+      await CrudService.drop("induration");
+      await CrudService.drop("min_grainsize");
+      await CrudService.drop("max_grainsize");
+      await CrudService.drop("sorting");
+      await CrudService.drop("roundness");
+      await CrudService.drop("lithology");        
+      
     } catch (e) {
       console.error("EnergyFuelsDrillingReseter.reset")
       console.log(e)

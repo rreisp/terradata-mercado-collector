@@ -118,7 +118,6 @@ export class EnergyFuelsDrillingReport {
         let str = ""
         for (let i = 0; i < segments.length; i++) {
             const liths = lithologies.filter(item => item.SEGMENT_ID === segments[i].SEGMENT_ID);
-            console.warn(liths)
             const style = i % 2 == 0 ? "background-color: #efefef;" : ""
             str += `
                 <div style="display: flex; width: 100%; padding: 3px 0px;${style}">

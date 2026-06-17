@@ -72,6 +72,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
                 landowner: data.landowner,
                 start_date: data.start_date,
                 end_date: data.end_date,
+                responsible: data.responsible,
                 interruption_reason: data.interruption_reason
             },
                 "id = ?",
@@ -102,6 +103,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
                             fgk_induration: data.induration,
                             fgk_min_grainsize: data.minGrainsize,
                             fgk_max_grainsize: data.maxGrainsize,
+                            fgk_sorting: data.sorting,
                             fgk_roundness: data.roundness,
                             clay: data.clay,
                             micah: data.micah,
@@ -129,6 +131,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
                             fgk_induration: data.induration,
                             fgk_min_grainsize: data.minGrainsize,
                             fgk_max_grainsize: data.maxGrainsize,
+                            fgk_sorting: data.sorting,
                             fgk_roundness: data.roundness,
                             clay: data.clay,
                             micah: data.micah,
@@ -249,6 +252,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
                 landowner: info.landowner,
                 start_date: formatDate(info.ef_dates.start),
                 end_date: formatDate(info.ef_dates.end),
+                responsible: info.responsible,
                 interruption_reason: info.reason
             }
         } catch (e) {
@@ -273,6 +277,7 @@ export class EnergyFuelsDrillingUpdater implements DataUpdater {
                     induration: info.ef_depth_test.induration[i],
                     minGrainsize: info.ef_depth_test.minGrainsize[i],
                     maxGrainsize: info.ef_depth_test.maxGrainsize[i],
+                    sorting: info.ef_depth_test.sorting[i],
                     roundness: info.ef_depth_test.roundness[i],
                     clay: info.ef_depth_test.clayPct[i],
                     micah: info.ef_depth_test.micahPct[i],

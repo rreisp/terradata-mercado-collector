@@ -32,6 +32,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             let moisture: number[] = [];
             let organicMatterPct: number[] = [];
             let roundness: number[] = [];
+            let sorting: number[] = [];            
             let recovery: number[] = [];
             let shellsPct: number[] = [];
             let wash: number[] = [];
@@ -54,6 +55,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
                 micahPct.push(segment.micah);
                 moisture.push(segment.fgk_moisture);
                 organicMatterPct.push(segment.organic_matter);
+                sorting.push(segment.fgk_sorting);
                 roundness.push(segment.fgk_roundness);
                 recovery.push(segment.recovery);
                 shellsPct.push(segment.shells);
@@ -88,6 +90,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
                 },
                 "tenement": drilling.tenement,
                 "landowner": drilling.landowner,
+                "responsible": drilling.responsible,
                 "ef_dates": {
                     "start": parseDate(drilling.start_date),
                     "end": parseDate(drilling.end_date)
@@ -106,6 +109,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
                     micahPct,
                     moisture,
                     organicMatterPct,
+                    sorting,
                     roundness,
                     recovery,
                     shellsPct,

@@ -34,6 +34,7 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       landowner TEXT,
       start_date TEXT,
       end_date TEXT,
+      responsible TEXT,      
       interruption_reason TEXT
     `);
     } catch (e) {
@@ -58,6 +59,7 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
       fgk_induration INTEGER NOT NULL,
       fgk_min_grainsize INTEGER NOT NULL,
       fgk_max_grainsize INTEGER NOT NULL,
+      fgk_sorting INTEGER NOT NULL,
       fgk_roundness INTEGER NOT NULL,
       clay NUMERIC NOT NULL,
       micah NUMERIC NOT NULL,
@@ -208,7 +210,7 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
         { 'ptBR': 'Média', 'enUS': 'Medium', 'code': 'M', 'position': 3 },
         { 'ptBR': 'Grossa', 'enUS': 'Coarse', 'code': 'C', 'position': 4 },
         { 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'code': 'VC', 'position': 5 },
-        { 'ptBR': 'Gânulo', 'enUS': 'Granule', 'code': 'GR', 'position': 6 },
+        { 'ptBR': 'Grânulo', 'enUS': 'Granule', 'code': 'GR', 'position': 6 },
         { 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'code': 'PB', 'position': 7 }
       ], 'ptBR');
 
@@ -224,7 +226,7 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
         { 'ptBR': 'Média', 'enUS': 'Medium', 'code': 'M', 'position': 3 },
         { 'ptBR': 'Grossa', 'enUS': 'Coarse', 'code': 'C', 'position': 4 },
         { 'ptBR': 'Muito grossa', 'enUS': 'Very coarse', 'code': 'VC', 'position': 5 },
-        { 'ptBR': 'Gânulo', 'enUS': 'Granule', 'code': 'GR', 'position': 6 },
+        { 'ptBR': 'Grânulo', 'enUS': 'Granule', 'code': 'GR', 'position': 6 },
         { 'ptBR': 'Cascalho', 'enUS': 'Gravel', 'code': 'PB', 'position': 7 }
       ], 'ptBR');
 
@@ -233,13 +235,13 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     }
 
     try {
-      await CrudService.createTable('sorting', options);
+      await CrudService.createTable('sorting', options + ", position INTEGER");
       await CrudService.insertMultiple('sorting', [
-        { 'ptBR': 'Muito fraca', 'enUS': 'Very poor', 'code': 'VP' },
-        { 'ptBR': 'Fraca', 'enUS': 'Poor', 'code': 'P' },
-        { 'ptBR': 'Moderada', 'enUS': 'Moderate', 'code': 'M' },
-        { 'ptBR': 'Boa', 'enUS': 'Well', 'code': 'W' },
-        { 'ptBR': 'Muito boa', 'enUS': 'Very well', 'code': 'VW' }
+        { 'ptBR': 'Muito fraca', 'enUS': 'Very poor', 'code': 'VP', 'position': 1 },
+        { 'ptBR': 'Fraca', 'enUS': 'Poor', 'code': 'P', 'position': 2 },
+        { 'ptBR': 'Moderada', 'enUS': 'Moderate', 'code': 'M', 'position': 3 },
+        { 'ptBR': 'Boa', 'enUS': 'Well', 'code': 'W', 'position': 4 },
+        { 'ptBR': 'Muito boa', 'enUS': 'Very well', 'code': 'VW', 'position': 5 }
       ], 'ptBR');
 
     } catch (error) {
@@ -281,6 +283,6 @@ export class EnergyFuelsDrillingInitializer implements DataInitializer {
     } catch (error) {
       console.error('erro ao criar a tabela de opções de esfericidade', error);
     }
-    
+
   }
 }

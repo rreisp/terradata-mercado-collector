@@ -73,6 +73,7 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
                 landowner: data.landowner,
                 start_date: data.start_date,
                 end_date: data.end_date,
+                responsible: data.responsible,
                 interruption_reason: data.interruption_reason
             });
         } catch (e) {
@@ -99,7 +100,7 @@ export class EnergyFuelsDrillingExtractor implements DataExtractor {
                     fgk_induration: data.induration,
                     fgk_min_grainsize: data.minGrainsize,
                     fgk_max_grainsize: data.maxGrainsize,
-                    // fgk_sorting: data.sorting,
+                    fgk_sorting: data.sorting,
                     fgk_roundness: data.roundness,
                     clay: data.clay,
                     micah: data.micah,

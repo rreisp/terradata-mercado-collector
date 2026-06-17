@@ -11,7 +11,8 @@ export type SegmentRecord = {
     fgk_induration: number;
     fgk_min_grainsize: number;
     fgk_max_grainsize: number;
-    fgk_roundness: number;
+    fgk_sorting: number;
+    fgk_roundness: number;    
     clay: number;
     micah: number;
     shells: number;

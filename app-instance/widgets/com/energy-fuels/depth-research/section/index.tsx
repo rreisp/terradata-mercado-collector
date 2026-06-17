@@ -153,16 +153,14 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                     </View>
 
                     <View style={[GlobalStyles.row, { marginTop: DEFAULT_MARGIN }]}>
-                        <View style={GlobalStyles.col}>
-                            <View style={GlobalStyles.col}>
-                                <EF_Sorting
-                                    index={index}
-                                    parent={parent}
-                                    options={options.sorting}
-                                />
-                            </View>
-                        </View>
                         <View style={[GlobalStyles.col, { marginRight: 2 }]}>
+                            <EF_Sorting
+                                index={index}
+                                parent={parent}
+                                options={options.sorting}
+                            />
+                        </View>
+                        <View style={GlobalStyles.col}>
                             <EF_Roundness
                                 index={index}
                                 parent={parent}
@@ -241,8 +239,8 @@ const Section = ({ segmentId, editMode, index, parent, options }) => {
                         </View>
                     </View>
                 </View>
-            </Collapsible>
-        </View>
+            </Collapsible >
+        </View >
     );
 };
 export default Section;

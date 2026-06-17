@@ -20,7 +20,7 @@ const EF_Sorting = ({ index, parent, options }) => {
     return (
         <View style={styles.container}>
             <Text style={GlobalStyles.label}>{language === 'pt-BR' ? `Seletividade granulométrica` : `Sorting`}:</Text>
-            <View style={[GlobalStyles.pickerView, GlobalStyles.pickerContainer]}>
+            <View style={[GlobalStyles.pickerContainer]}>
                 <Picker
                     selectedValue={values?.[parent]?.sorting?.[index] || options[0].id}
                     onValueChange={(itemValue) => setFieldValue(`${parent}.sorting[${index}]`, itemValue)}

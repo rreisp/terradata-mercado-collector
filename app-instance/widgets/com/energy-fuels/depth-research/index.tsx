@@ -17,11 +17,12 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
 
     const getOptions = async (table: string): Promise<Option[]> => {
         const lista = await CrudService.list<any>(table, {});
+
         const mapped = lista.map((item) => ({
             id: item.id,
             description: language === "pt-BR" ? item.ptBR : item.enUS
         }));
-
+        console.warn(mapped)
         return [
             { id: 0, description: language === 'pt-BR' ? 'Selecione' : 'Select' },
             ...mapped
@@ -54,11 +55,11 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
             "wash",
             "color",
             "induration",
+            "sorting",
             "roundness",
             "min_grainsize",
             "max_grainsize",
-            "lithology",
-            "sorting"
+            "lithology"
         ]);
     }, [language]);
 
@@ -111,13 +112,13 @@ const EF_DepthResearch = ({ parent, editMode }: { parent: string, editMode: bool
                         "images",
                         "fgk_segment = ?",
                         [id]
-                    ); 
-                    
+                    );
+
                     await CrudService.delete(
                         "lithologies",
                         "fgk_segment = ?",
                         [id]
-                    );                     
+                    );
                 } catch (e) {
                     console.log("Erro ao remover segmento do banco de dados:", e);
                 }
