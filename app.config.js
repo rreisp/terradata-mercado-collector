@@ -82,8 +82,8 @@ export default () => {
       extra: {
         router: {},
         eas: {
-          projectId: '1404efca-f924-456d-a036-8a9973dc1b78', // Rodrigo
-          // projectId: 'b48d5b7e-d8f5-42cf-a97d-a18e2c41cb84', // Jeferson
+          // projectId: '1404efca-f924-456d-a036-8a9973dc1b78', // Rodrigo
+          projectId: 'b48d5b7e-d8f5-42cf-a97d-a18e2c41cb84', // Jeferson
         },
 
         // valor dinâmico AAAAMMDDHHmm
