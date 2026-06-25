@@ -190,14 +190,14 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 s.depth_from AS _FROM,
                 s.depth_to AS _TO,
                 s.recovery AS RECOVERY,
-                m.${language} AS MOISTURE,
-                h.${language} AS HARDNESS,
-                w.${language} AS WASH,
-                c.${language} AS COLOR,
-                i.${language} AS INDURATION,
-                mg.${language} AS MINIMUM_GRANULOMETRY,
-                mg2.${language} AS MAXIMUM_GRANULOMETRY,
-                r.${language} AS ROUNDNESS,
+                m.code AS MOISTURE,
+                h.code AS HARDNESS,
+                w.code AS WASH,
+                c.code AS COLOR,
+                i.code AS INDURATION,
+                mg.code AS MINIMUM_GRANULOMETRY,
+                mg2.code AS MAXIMUM_GRANULOMETRY,
+                r.code AS ROUNDNESS,
                 s.clay AS CLAY,
                 s. micah AS MICAH,
                 s.shells AS SHELLS,
@@ -217,7 +217,43 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 LEFT join wash w on w.id = s.fgk_wash
                 WHERE d.title IS NOT NULL
                 ORDER BY d.title, s.depth_from;
-            `;
+                `;
+            // const sql = `
+            // SELECT 
+            //     d.title AS ID_HOLE,
+            //     s.fgk_drilling AS DRILLING_ID,
+            //     s.id AS SEGMENT_ID,
+            //     s.depth_from AS _FROM,
+            //     s.depth_to AS _TO,
+            //     s.recovery AS RECOVERY,
+            //     m.${language} AS MOISTURE,
+            //     h.${language} AS HARDNESS,
+            //     w.${language} AS WASH,
+            //     c.${language} AS COLOR,
+            //     i.${language} AS INDURATION,
+            //     mg.${language} AS MINIMUM_GRANULOMETRY,
+            //     mg2.${language} AS MAXIMUM_GRANULOMETRY,
+            //     r.${language} AS ROUNDNESS,
+            //     s.clay AS CLAY,
+            //     s. micah AS MICAH,
+            //     s.shells AS SHELLS,
+            //     s.organic_matter AS ORGANIC_MATTER,
+            //     s.lithic_fragments AS LITHIC_FRAGMENTS,
+            //     s.hms AS HMS,
+            //     s.comments AS COMMENTS
+            //     FROM segments s
+            //     LEFT JOIN drillings d ON s.fgk_drilling = d.id
+            //     LEFT join moisture m on s.fgk_moisture =m.id 
+            //     LEFT join color c on c.id = s.fgk_color 
+            //     LEFT join min_grainsize mg on s.fgk_min_grainsize  = mg.id 
+            //     LEFT JOIN max_grainsize mg2 ON s.fgk_max_grainsize = mg2.id 
+            //     LEFT join hardness h on h.id = s.fgk_hardness 
+            //     LEFT join induration i on i.id = s.fgk_induration 
+            //     LEFT join roundness r on r.id = s.fgk_roundness 
+            //     LEFT join wash w on w.id = s.fgk_wash
+            //     WHERE d.title IS NOT NULL
+            //     ORDER BY d.title, s.depth_from;
+            // `;
             await CrudService.createView('segmentsExport', sql);
         } catch (e) {
             console.error("EnergyFuelsDrillingExporter.createExportSegmentsView")
@@ -267,23 +303,77 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 
             // Remove a view se já existir (ignora o erro se não existir)
             await CrudService.dropView(viewName).catch(() => { });
+            const sql = `
+            WITH LithoComSegmento AS (
+    SELECT 
+        d.title AS DRILLING_ID,
+        s.id AS SEGMENT_ID,
+        s.depth_from AS _FROM, -- Profundidade inicial do SEGMENTO
+        s.depth_to AS _TO,     -- Profundidade final do SEGMENTO
+        (s.depth_to - s.depth_from) AS prof_total,
+        
+        l2.code AS LITHOLOGY_CODE, 
+        (l.depth_to - l.depth_from) AS prof_litho,
+        
+        -- 1. Numera as litologias por ordem de posição (profundidade)
+        ROW_NUMBER() OVER (PARTITION BY s.id ORDER BY l.depth_from) AS rn,
+        
+        -- 2. Numera as litologias pela MAIOR espessura (quem tiver a maior prof_litho ganha o rn_clv = 1)
+        ROW_NUMBER() OVER (PARTITION BY s.id ORDER BY (l.depth_to - l.depth_from) DESC, l.depth_from) AS rn_clv
+    FROM lithologies l
+    LEFT JOIN segments s ON l.fgk_segment = s.id 
+    LEFT JOIN drillings d ON s.fgk_drilling = d.id 
+    LEFT JOIN lithology l2 ON l2.id = l.fgk_lithology_type
+    WHERE d.title IS NOT NULL
+)
+SELECT
+    DRILLING_ID,
+    _FROM,
+    _TO,
+    
+    -- Litologia 1
+    MAX(CASE WHEN rn = 1 THEN LITHOLOGY_CODE END) AS LITH1,
+    MAX(CASE WHEN rn = 1 THEN (prof_litho * 100.0 / prof_total) END) AS LITH1_PC,
+    
+    -- Litologia 2
+    MAX(CASE WHEN rn = 2 THEN LITHOLOGY_CODE END) AS LITH2,
+    MAX(CASE WHEN rn = 2 THEN (prof_litho * 100.0 / prof_total) END) AS LITH2_PC,
+    
+    -- Litologia 3
+    MAX(CASE WHEN rn = 3 THEN LITHOLOGY_CODE END) AS LITH3,
+    MAX(CASE WHEN rn = 3 THEN (prof_litho * 100.0 / prof_total) END) AS LITH3_PC,
+
+    -- CLV: Retorna o CODE da litologia onde o rn_clv foi igual a 1 (maior porcentagem)
+    MAX(CASE WHEN rn_clv = 1 THEN LITHOLOGY_CODE END) AS CLV
+
+FROM LithoComSegmento
+GROUP BY 
+    DRILLING_ID,
+    SEGMENT_ID,
+    _FROM,
+    _TO
+ORDER BY 
+    DRILLING_ID, 
+    SEGMENT_ID;
+    `;
+
 
             // Cria a query de forma clara e sem vírgulas sobrando
-            const sql = `
-            SELECT 
-                d.title AS DRILLING_ID,
-                s.id AS SEGMENT_ID,                
-                l.id AS ID_LITO,
-                l.depth_from AS _FROM,
-                l.depth_to AS _TO,
-                l2.${normalizedLang} AS LITHOLOGY_TYPE
-            FROM lithologies l
-            LEFT JOIN segments s ON l.fgk_segment = s.id 
-            LEFT JOIN drillings d ON s.fgk_drilling = d.id 
-            LEFT JOIN lithology l2 ON l2.id = l.fgk_lithology_type
-            WHERE d.title IS NOT NULL
-            ORDER BY d.title, d.id;
-        `;
+            //     const sql = `
+            //     SELECT 
+            //         d.title AS DRILLING_ID,
+            //         s.id AS SEGMENT_ID,                
+            //         l.id AS ID_LITO,
+            //         l.depth_from AS _FROM,
+            //         l.depth_to AS _TO,
+            //         l2.${normalizedLang} AS LITHOLOGY_TYPE
+            //     FROM lithologies l
+            //     LEFT JOIN segments s ON l.fgk_segment = s.id 
+            //     LEFT JOIN drillings d ON s.fgk_drilling = d.id 
+            //     LEFT JOIN lithology l2 ON l2.id = l.fgk_lithology_type
+            //     WHERE d.title IS NOT NULL
+            //     ORDER BY d.title, d.id;
+            // `;
 
             await CrudService.createView(viewName, sql);
         } catch (e) {
