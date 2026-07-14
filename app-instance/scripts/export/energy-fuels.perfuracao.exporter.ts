@@ -230,13 +230,13 @@ SELECT
     mg.code AS MINIMUM_GRANULOMETRY,
     mg2.code AS MAXIMUM_GRANULOMETRY,
     r.code AS ROUNDNESS,
+    st.code AS SORTING,
     s.clay AS CLAY,
     s.micah AS MICAH,
     s.shells AS SHELLS,
     s.organic_matter AS ORGANIC_MATTER,
     s.lithic_fragments AS LITHIC_FRAGMENTS,
     s.hms AS HMS,
-    
     -- Novas colunas agregadas inseridas aqui:
     lp.LITH1,
     lp.LITH1_PC,
@@ -257,8 +257,7 @@ LEFT JOIN hardness h ON h.id = s.fgk_hardness
 LEFT JOIN induration i ON i.id = s.fgk_induration 
 LEFT JOIN roundness r ON r.id = s.fgk_roundness 
 LEFT JOIN wash w ON w.id = s.fgk_wash
-
--- Junção com a nossa tabela pivotada de litologias
+LEFT JOIN sorting st ON st.id = s.fgk_sorting-- Junção com a nossa tabela pivotada de litologias
 LEFT JOIN LithoPivotada lp ON s.id = lp.fgk_segment
 
 WHERE d.title IS NOT NULL
