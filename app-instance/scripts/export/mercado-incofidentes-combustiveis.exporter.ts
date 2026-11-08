@@ -4,11 +4,11 @@ import { CSVService } from "@/core/services/csv.service";
 import { ZIPService } from '@/core/services/zip.service';
 import * as FileSystem from 'expo-file-system';
 import { Alert } from "react-native";
-import { EnergyFuelsDrillingReport } from "@/app-instance/template/drilling-report";
+import { MercadoInconfidentesCombustiveisReport } from "@/app-instance/template/drilling-report";
 import { CsvFile } from "@/core/types/data/csv-file";
 import { LanguageCode } from "@/core/types/data/language-code";
 
-export class EnergyFuelsDrillingExporter implements DataExporter {
+export class MercadoInconfidentesCombustiveisExporter implements DataExporter {
     private language: string;
     private isPT: boolean;
 
@@ -27,7 +27,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                     }
                 });
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.getTitleHole")
+            console.error("MercadoInconfidentesCombustiveisExporter.getTitleHole")
             console.log(e)
         }
         // Se não encontrou nenhuma linha, retorna uma string vazia
@@ -38,10 +38,8 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
         try {
             const lang = await this.selectLanguage(this.language);
             if (lang) {
-                await this.createExportSegmentsView(lang);
-                await this.createExportDrillingsView(lang);
-                await this.createExportLithologiesView(lang);
-                await this.createExportImagesView();
+                await this.createExportCombustiveisView(lang);
+
                 try {
                     const table = "drillings"
                     // obtem o título do furo para nomear o arquivo
@@ -54,35 +52,14 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                     const resultImgs = await this.saveImagesFromTable('export_images', itemId);
 
                     const csvFilesToZip: CsvFile[] = [
-                        { path: drillingsTempCSV, fileName: 'collars.csv' },
-                        { path: segmentsTempCSV, fileName: 'drilling_logs.csv' },
-                        { path: lithologiesTempCSV, fileName: 'lithologies.csv' },
+                        { path: drillingsTempCSV, fileName: 'collars.csv' }
                     ];
-
-                    // gerar o ZIP
-                    const zipFilePath = await ZIPService.exportAllZIP(csvFilesToZip, resultImgs, idHole);
-                    // console.log(`Arquivo ZIP criado com sucesso em: ${zipFilePath}`);
-
-                    // excluir os arquivos CSV originais
-                    for (const csvFile of csvFilesToZip) {
-                        try {
-                            await FileSystem.deleteAsync(csvFile.path);
-                            console.log(`Arquivo ${csvFile.fileName} excluído com sucesso.`);
-                        } catch (deleteError) {
-                            console.error(`Falha ao excluir o arquivo ${csvFile.fileName}:`, deleteError);
-                        }
-
-                        Alert.alert(
-                            this.isPT ? 'Sucesso' : 'Success',
-                            this.isPT ? `Registro exportado.` : `Record exported.`
-                        );
-                    }
                 } catch (error) {
                     console.error(this.isPT ? 'Erro ao exportar' : 'Error while exporting', error);
                 }
             }
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.export")
+            console.error("MercadoInconfidentesCombustiveisExporter.export")
             console.log(e)
         }
     }
@@ -93,7 +70,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             if (lang) {
                 // criar as views e gerar os arquivos CSV         
                 await this.createExportSegmentsView(lang);
-                await this.createExportDrillingsView(lang);
+                await this.createExportCombustiveisView(lang);
                 await this.createExportLithologiesView(lang);
                 await this.createExportImagesView();
 
@@ -101,11 +78,11 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
                 const drillings = await this.getData('drillingsExport', itemId);
                 const segments = (await this.getData('segmentsExport')).filter(item => item.DRILLING_ID === itemId);
                 const lithologies = await this.getData('lithologiesExport');
-                const drillingReportDoc = new EnergyFuelsDrillingReport(lang)
+                const drillingReportDoc = new MercadoInconfidentesCombustiveisReport(lang)
                 drillingReportDoc.generate(drillings![0], segments, lithologies)
             }
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.exportPDF")
+            console.error("MercadoInconfidentesCombustiveisExporter.exportPDF")
             console.log(e)
         }
     }
@@ -117,7 +94,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
 
             // criar as views e gerar os arquivos CSV    
             await this.createExportSegmentsView(lang);
-            await this.createExportDrillingsView(lang);
+            await this.createExportCombustiveisView(lang);
             await this.createExportLithologiesView(lang);
 
             // obter e preparar a lista de arquivos para o ZIP              
@@ -147,7 +124,7 @@ export class EnergyFuelsDrillingExporter implements DataExporter {
             }
             console.log("Processo de exportação finalizado.");
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.exportAll")
+            console.error("MercadoInconfidentesCombustiveisExporter.exportAll")
             console.log(e)
         }
     }
@@ -301,12 +278,12 @@ ORDER BY d.title, s.depth_from;
             // `;
             await CrudService.createView('segmentsExport', sql);
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.createExportSegmentsView")
+            console.error("MercadoInconfidentesCombustiveisExporter.createExportSegmentsView")
             console.log(e)
         }
     }
 
-    private async createExportDrillingsView(language: string): Promise<void> {
+    private async createExportCombustiveisView(language: string): Promise<void> {
         try {
             language = language.replace('-', '');
             await CrudService.dropView("drillingsExport");
@@ -336,7 +313,7 @@ ORDER BY d.title, s.depth_from;
             `;
             await CrudService.createView('drillingsExport', sql);
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.createExportDrillingsView")
+            console.error("MercadoInconfidentesCombustiveisExporter.createExportCombustiveisView")
             console.log(e)
         }
     }
@@ -422,7 +399,7 @@ ORDER BY d.title, s.depth_from;
 
             await CrudService.createView(viewName, sql);
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.createExportLithologiesView")
+            console.error("MercadoInconfidentesCombustiveisExporter.createExportLithologiesView")
             console.log(e)
         }
     }
@@ -438,7 +415,7 @@ ORDER BY d.title, s.depth_from;
               `;
             await CrudService.createView('export_images', sql);
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.createExportImagesView")
+            console.error("MercadoInconfidentesCombustiveisExporter.createExportImagesView")
             console.log(e)
         }
     }
@@ -471,7 +448,7 @@ ORDER BY d.title, s.depth_from;
             });
             return result;
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.getTableDataByHoleTitle")
+            console.error("MercadoInconfidentesCombustiveisExporter.getTableDataByHoleTitle")
             console.log(e)
             return []
         }
@@ -490,7 +467,7 @@ ORDER BY d.title, s.depth_from;
             const result = await CrudService.list(tableName, {});
             return result;
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.getAllTableData")
+            console.error("MercadoInconfidentesCombustiveisExporter.getAllTableData")
             console.log(e)
             return []
         }
@@ -523,7 +500,7 @@ ORDER BY d.title, s.depth_from;
                 return data;
             }
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.getAllTableData")
+            console.error("MercadoInconfidentesCombustiveisExporter.getAllTableData")
             console.log(e)
             return []
         }
@@ -569,7 +546,7 @@ ORDER BY d.title, s.depth_from;
             return fileUri;
 
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.exportTableToCSV")
+            console.error("MercadoInconfidentesCombustiveisExporter.exportTableToCSV")
             console.log(e)
             return ''
         }
@@ -600,7 +577,7 @@ ORDER BY d.title, s.depth_from;
                 return result;
             }
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.getTableData")
+            console.error("MercadoInconfidentesCombustiveisExporter.getTableData")
             console.log(e)
             return []
         }
@@ -688,7 +665,7 @@ ORDER BY d.title, s.depth_from;
             return savedFilePaths;
 
         } catch (e) {
-            console.error("EnergyFuelsDrillingExporter.saveImagesFromTable")
+            console.error("MercadoInconfidentesCombustiveisExporter.saveImagesFromTable")
             console.log(e)
             return []
         }

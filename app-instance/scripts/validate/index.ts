@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingValidator } from "./energy-fuels.perfuracao.validator";
+export { MercadoInconfidentesCombustiveisValidator } from "./mercado-inconfidentes-combustiveis.validator";

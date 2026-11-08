@@ -1,5 +1,5 @@
-import EnergyFuelsDrilling from './energy-fuels.perfuracao.json';
+import MercadoInconfidentesCombustiveis from './mercado-incofidentes-combustiveis.json';
 
 export default {
-    EnergyFuelsDrilling,
+    MercadoInconfidentesCombustiveis,
 };

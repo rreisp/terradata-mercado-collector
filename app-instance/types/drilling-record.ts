@@ -1,6 +1,6 @@
 import { Identified } from "@/core/types/identified";
 
-export type DrillingRecord = Identified & {
+export type CombustiveisRecord = Identified & {
     title: string;
     easting: number;
     northing: number;

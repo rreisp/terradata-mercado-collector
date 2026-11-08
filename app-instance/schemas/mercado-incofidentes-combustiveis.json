@@ -1,14 +1,12 @@
 {
-  "form_id": "teste_ef_depth_report",
+  "form_id": "mercado-combustiveis",
   "formReturn": "LIST",
   "title": {
-    "pt-BR": "⚒️ ENERGY FUELS - RELATÓRIO DE PERFURAÇÃO",
-    "en-US": "⚒️ ENERGY FUELS - DRILLING REPORT"
+    "pt-BR": "⛽ COMBUSTÍVEIS"
   },
-  "logo": "EnergyFuels-Logo.png",
+  "logo": "MercadoInconfidentes-Logo.png",
   "description": {
-    "pt-BR": "Preencha os campos abaixo.",
-    "en-US": "Please fill out the fields below."
+    "pt-BR": "Preencha os campos abaixo."
   },
   "version": "1.0",
   "method": "POST",
@@ -17,16 +15,13 @@
     "size": "lg",
     "success": {
       "header": {
-        "pt-BR": "Sucesso",
-        "en-US": "Success"
+        "pt-BR": "Sucesso"
       },
       "message": {
-        "pt-BR": "Os dados foram enviados com sucesso.",
-        "en-US": "Data submitted successfully."
+        "pt-BR": "Os dados foram enviados com sucesso."
       },
       "button": {
-        "pt-BR": "Fechar",
-        "en-US": "Close"
+        "pt-BR": "Fechar"
       }
     },
     "error": {
@@ -35,12 +30,10 @@
         "en-US": "Warning"
       },
       "message": {
-        "pt-BR": "Houve um problema ao processar sua solicitação. Tente novamente mais tarde.",
-        "en-US": "There was a problem processing your request. Please try again later."
+        "pt-BR": "Houve um problema ao processar sua solicitação. Tente novamente mais tarde."
       },
       "button": {
-        "pt-BR": "Entendi",
-        "en-US": "Got it"
+        "pt-BR": "Entendi"
       }
     }
   },
@@ -55,8 +48,7 @@
           "field": {
             "id": "title",
             "label": {
-              "pt-BR": "ID da Perfuração:",
-              "en-US": "Drilling ID:"
+              "pt-BR": "Título da Pesquisa:"
             },
             "type": "sanitized_text",
             "max": 9
@@ -71,8 +63,12 @@
         },
         {
           "field": {
-            "id": "ef_coordinates",
-            "type": "coordinate_3d"
+            "id": "etanol",
+            "type": "number",
+            "step":0.01,
+            "label": {
+              "pt-BR": "Etanol:"
+            }            
           },
           "size": {
             "xs": 12,
@@ -84,13 +80,11 @@
         },
         {
           "field": {
-            "id": "tenement",
+            "id": "gasolina",
             "label": {
-              "pt-BR": "Direito Minerário:",
-              "en-US": "Tenement:"
+              "pt-BR": "Gasolina:"
             },
-            "type": "text",
-            "max": 12
+            "type": "number"
           },
           "size": {
             "xs": 12,
@@ -102,12 +96,11 @@
         },
         {
           "field": {
-            "id": "landowner",
+            "id": "gasolina_aditivada",
             "label": {
-              "pt-BR": "Superficiário:",
-              "en-US": "Landowner:"
+              "pt-BR": "Gasolina Aditivada:"
             },
-            "type": "sanitized_text"
+            "type": "number"
           },
           "size": {
             "xs": 12,
@@ -119,25 +112,11 @@
         },
         {
           "field": {
-            "id": "ef_dates",
-            "type": "date_range"
-          },
-          "size": {
-            "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
-          }
-        },
-        {
-          "field": {
-            "id": "responsible",
+            "id": "diesel_s10",
             "label": {
-              "pt-BR": "Responsável:",
-              "en-US": "Responsible:"
+              "pt-BR": "Diesel S10:"
             },
-            "type": "sanitized_text"
+            "type": "number"
           },
           "size": {
             "xs": 12,
@@ -149,35 +128,52 @@
         },
         {
           "field": {
-            "id": "reason",
-            "type": "sanitized_text",
+            "id": "diesel_s500",
             "label": {
-              "pt-BR": "Justificativa de Interrupção:",
-              "en-US": "Interruption Reason:"
-            }
-          }
-        }        
-      ]
-    },
-    {
-      "columns": [
-        {
-          "field": {
-            "id": "ef_depth_test",
-            "label": {
-              "pt-BR": "Segmentos:",
-              "en-US": "Segments:"
+              "pt-BR": "Diesel S500:"
             },
-            "type": "ef_depth_research"
+            "type": "number"
           },
           "size": {
             "xs": 12,
-            "sm": 12,
-            "md": 12,
-            "lg": 12,
-            "xl": 12
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
           }
-        }
+        },
+        {
+          "field": {
+            "id": "arla",
+            "label": {
+              "pt-BR": "Arla:"
+            },
+            "type": "number"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "label": {
+              "pt-BR": "Data:"
+            },
+            "type": "date"
+          },
+          "size": {
+            "xs": 12,
+            "sm": 6,
+            "md": 6,
+            "lg": 4,
+            "xl": 4
+          }
+        }                      
       ]
     }
   ]

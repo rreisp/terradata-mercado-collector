@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingInitializer } from "./energy-fuels.perfuracao.initializer";
+export { MercadoInconfidentesCombustiveisInitializer } from "./mercado-incofidentes-combustiveis.initializer";

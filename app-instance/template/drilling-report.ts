@@ -2,7 +2,7 @@ import * as Sharing from 'expo-sharing';
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
 
-export class EnergyFuelsDrillingReport {
+export class MercadoInconfidentesCombustiveisReport {
     private isPT = true;
 
     constructor(lang: string) {
@@ -29,7 +29,7 @@ export class EnergyFuelsDrillingReport {
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
         </header>
         <body>            
-            ${this.renderDrillingInfo(drilling)}
+            ${this.renderCombustiveisInfo(drilling)}
             ${this.renderSegmentInfo(segments, lithologies)}
         </body>
         </html>
@@ -60,7 +60,7 @@ export class EnergyFuelsDrillingReport {
         return finalPath;
     }
 
-    private renderDrillingInfo(drilling: any) {
+    private renderCombustiveisInfo(drilling: any) {
         const style = "background-color: #fff0d1;"
 
         return `
@@ -68,7 +68,7 @@ export class EnergyFuelsDrillingReport {
 
             <div style="display: flex; width: 100%;  padding: 3px 0px;${style}">
                 <div style="width: 33%;">
-                    <b>${this.isPT ? 'Identificação da Perfuração' : 'Drilling ID'}:</b><br/>${drilling.ID_HOLE}
+                    <b>${this.isPT ? 'Identificação da Perfuração' : 'Combustiveis ID'}:</b><br/>${drilling.ID_HOLE}
                 </div>
                 <div style="width: 34%;">
                     <b>${this.isPT ? 'Direito Minerário' : 'Mining Tenement'}:</b><br/>${drilling.MINING_TENEMENT}

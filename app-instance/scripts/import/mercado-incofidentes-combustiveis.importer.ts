@@ -3,7 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { CrudService } from "@/core/services/crud.service";
 
-export class EnergyFuelsDrillingImporter implements DataImporter {
+export class MercadoInconfidentesCombustiveisImporter implements DataImporter {
     private language: string;
     private isPT: boolean;
 

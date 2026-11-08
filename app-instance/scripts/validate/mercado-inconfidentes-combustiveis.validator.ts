@@ -3,9 +3,9 @@ import { DataValidator } from "@/core/types/data-validator";
 import { DefaultFieldValidator } from "@/core/validation/default-field-validator";
 import { Field } from "@/core/types/field";
 import { CrudService } from "@/core/services/crud.service";
-import { DrillingRecord } from "@/app-instance/types/drilling-record";
+import { CombustiveisRecord } from "@/app-instance/types/drilling-record";
 
-export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implements DataValidator {
+export class MercadoInconfidentesCombustiveisValidator extends DefaultFieldValidator implements DataValidator {
     private titleRegex = /^[A-Z]{2}\d{3}-\d{3}$/;
     private tenementRegex = /^\d{3}\.\d{3}\/\d{4}$/;
 
@@ -16,7 +16,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
     validate(field: Field, editMode: boolean): Yup.ObjectSchema<any, Yup.AnyObject, any, ""> {
         const requiredMsg = this.message('required');
         const formatMsg = this.isPT ? 'O formato deve ser ' : 'The format should be ';
-        const duplicateTitleValueMsg = this.isPT ? 'Perfuração já registrada' : 'Drilling already registered';
+        const duplicateTitleValueMsg = this.isPT ? 'Perfuração já registrada' : 'Combustiveis already registered';
         const finalGreaterThanInitialMsg = this.isPT ? 'A data final deve ser maior ou igual a inicial' : 'The end date must be greater than or equal to the start date';
 
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
@@ -30,7 +30,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
                     async (val) => {
                         if (editMode || !val || val === null || val.trim() === '') return true;
                         try {
-                            return this.getDrilling(val)
+                            return this.getCombustiveis(val)
                                 .then(rows => rows.length < 1)
                                 .catch(() => true);
                         } catch (ex) { return true }
@@ -315,9 +315,9 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
         return validator;
     }
 
-    async getDrilling(title: string) {
+    async getCombustiveis(title: string) {
         try {
-            const result = await CrudService.list<DrillingRecord>(
+            const result = await CrudService.list<CombustiveisRecord>(
                 "drillings",
                 {
                     where: ["title = ?"],
@@ -327,7 +327,7 @@ export class EnergyFuelsDrillingValidator extends DefaultFieldValidator implemen
 
             return result
         } catch (e) {
-            console.error("EnergyFuelsDrillingValidator.getDrilling")
+            console.error("MercadoInconfidentesCombustiveisValidator.getCombustiveis")
             console.log(e)
         }
     }

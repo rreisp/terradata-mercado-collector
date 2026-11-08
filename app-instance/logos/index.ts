@@ -1,3 +1,3 @@
 export const logos = {
-  "EnergyFuelsDrilling": require("@/app-instance/logos/EnergyFuels.png"),
+  "MercadoInconfidentesCombustiveis": require("@/app-instance/logos/MercadoInconfidentes.png"),
 };

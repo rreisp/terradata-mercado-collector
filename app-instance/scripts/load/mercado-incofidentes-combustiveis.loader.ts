@@ -1,5 +1,5 @@
 import { CrudService } from "@/core/services/crud.service";
-import { DrillingRecord } from "@/app-instance/types/drilling-record";
+import { CombustiveisRecord } from "@/app-instance/types/drilling-record";
 import { ImageRecord } from "@/app-instance/types/image-record";
 import { LithologyRecord } from "@/app-instance/types/lithology-record";
 import { DataLoader } from "@/core/types/data-loader";
@@ -10,10 +10,10 @@ function parseDate(dateStr: string): Date {
     return new Date(Number(year), Number(month) - 1, Number(day));
 }
 
-export class EnergyFuelsDrillingLoader implements DataLoader {
+export class MercadoInconfidentesCombustiveisLoader implements DataLoader {
     async load(rootItemId: number): Promise<{ [key: string]: any }> {
         try {
-            const drilling = await this.loadDrilling(rootItemId);
+            const drilling = await this.loadCombustiveis(rootItemId);
             const segments = await this.loadSegments(rootItemId);
 
             let segmentIds: (number | undefined)[] = [];
@@ -121,15 +121,15 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
                 }
             };
         } catch (e) {
-            console.error("EnergyFuelsDrillingLoader.load")
+            console.error("MercadoInconfidentesCombustiveisLoader.load")
             console.log(e)
         }
     }
 
     // -----------------------------------------------------------
-    private async loadDrilling(itemId: number) {
+    private async loadCombustiveis(itemId: number) {
         try {
-            const drilling = (await CrudService.list<DrillingRecord>(
+            const drilling = (await CrudService.list<CombustiveisRecord>(
                 "drillings",
                 {
                     where: ["id = ?"],
@@ -138,7 +138,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             ))[0];
             return drilling;
         } catch (e) {
-            console.error("EnergyFuelsDrillingLoader.loadDrilling")
+            console.error("MercadoInconfidentesCombustiveisLoader.loadCombustiveis")
             console.log(e)
         }
     }
@@ -154,7 +154,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             );
             return segments;
         } catch (e) {
-            console.error("EnergyFuelsDrillingLoader.loadSegments")
+            console.error("MercadoInconfidentesCombustiveisLoader.loadSegments")
             console.log(e)
         }
     }
@@ -171,7 +171,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             );
             return lithologies;
         } catch (e) {
-            console.error("EnergyFuelsDrillingLoader.loadSegments")
+            console.error("MercadoInconfidentesCombustiveisLoader.loadSegments")
             console.log(e)
         }
     }
@@ -187,7 +187,7 @@ export class EnergyFuelsDrillingLoader implements DataLoader {
             );
             return images;
         } catch (e) {
-            console.error("EnergyFuelsDrillingLoader.loadSegments")
+            console.error("MercadoInconfidentesCombustiveisLoader.loadSegments")
             console.log(e)
         }
     }

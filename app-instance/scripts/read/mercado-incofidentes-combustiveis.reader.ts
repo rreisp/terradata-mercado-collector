@@ -1,28 +1,28 @@
 import { DataReader } from "@/core/types/data-reader";
 import { CrudService } from "@/core/services/crud.service";
-import { DrillingRecord } from "@/app-instance/types/drilling-record";
-import { AdaptedDrillingRecord } from "@/app-instance/types/adapted-drilling-record";
+import { CombustiveisRecord } from "@/app-instance/types/drilling-record";
+import { AdaptedCombustiveisRecord } from "@/app-instance/types/adapted-drilling-record";
 
-export class EnergyFuelsDrillingReader implements DataReader {
+export class MercadoInconfidentesCombustiveisReader implements DataReader {
   private language: string;
 
   constructor(language: string) {
     this.language = language;
   }
 
-  async read(): Promise<AdaptedDrillingRecord[]> {
+  async read(): Promise<AdaptedCombustiveisRecord[]> {
     try {
-      const drillings = await CrudService.list<DrillingRecord>('drillings', {
+      const drillings = await CrudService.list<CombustiveisRecord>('drillings', {
         columns: ["id", "title", "start_date", "end_date"]
       });
-      const adaptedDrillings = drillings.map((item) => ({
+      const adaptedCombustiveiss = drillings.map((item) => ({
         id: item.id,
         title: item.title,
         dates: this.formatDates(item.start_date, item.end_date)
       }));
-      return adaptedDrillings;
+      return adaptedCombustiveiss;
     } catch (e) {
-      console.error("EnergyFuelsDrillingReader.read")
+      console.error("MercadoInconfidentesCombustiveisReader.read")
       console.log(e)
       return []
     }
@@ -32,7 +32,7 @@ export class EnergyFuelsDrillingReader implements DataReader {
     try {
       return ["title", "dates"];
     } catch (e) {
-      console.error("EnergyFuelsDrillingReader.columns")
+      console.error("MercadoInconfidentesCombustiveisReader.columns")
       console.log(e)
       return []
     }
@@ -49,7 +49,7 @@ export class EnergyFuelsDrillingReader implements DataReader {
         return mth + "/" + day + "/" + year;
       }
     } catch (e) {
-      console.error("EnergyFuelsDrillingReader.formatDate")
+      console.error("MercadoInconfidentesCombustiveisReader.formatDate")
       console.log(e)
       return ''
     }
@@ -60,7 +60,7 @@ export class EnergyFuelsDrillingReader implements DataReader {
       if (start === end) return this.formatDate(start, this.language)
       return this.formatDate(start, this.language) + (this.language === "pt-BR" ? " a " : " to ") + this.formatDate(end, this.language)
     } catch (e) {
-      console.error("EnergyFuelsDrillingReader.formatDate")
+      console.error("MercadoInconfidentesCombustiveisReader.formatDate")
       console.log(e)
       return ''
     }

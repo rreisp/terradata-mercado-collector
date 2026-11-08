@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingRemover } from "./energy-fuels.perfuracao.remover";
+export { MercadoInconfidentesCombustiveisRemover } from "./mercado-incofidentes-combustiveis.remover";

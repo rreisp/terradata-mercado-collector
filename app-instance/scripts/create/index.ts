@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingExtractor } from "./energy-fuels.perfuracao.extractor";
+export { MercadoInconfidentesCombustiveisExtractor } from "./mercado-incofidentes-combustiveis.extractor";

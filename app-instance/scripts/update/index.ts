@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingUpdater } from "./energy-fuels.perfuracao.updater";
+export { MercadoInconfidentesCombustiveisUpdater } from "./mercado-incofidentes-combustiveis.updater";

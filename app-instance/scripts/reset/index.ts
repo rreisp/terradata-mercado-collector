@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingReseter } from "./energy-fuels.perfuracao.reseter";
+export { MercadoInconfidentesCombustiveisReseter } from "./mercado-incofidentes-combustiveis.reseter";

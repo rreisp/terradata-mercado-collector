@@ -5,15 +5,16 @@ import GlobalStyles from "@/core/constants/styles";
 import { CameraInput } from "../components/widgets/camera";
 import { MultiCameraInput } from "../components/widgets/multi-camera";
 import NumericInput from "../components/widgets/numeric";
-import EF_DepthResearch from "../../app-instance/widgets/com/energy-fuels/depth-research";
 import { useLanguage } from "@/core/contexts/LanguageContext";
 import { Checkbox } from "expo-checkbox";
 import { FieldRendererProps } from "@/core/types/field-renderer-props";
+import DateTimeInput from "../components/widgets/date";
 import DateRangeInput from "../components/widgets/date-range";
 import GeoPosition3D from "../components/widgets/geo-position-3d";
 
 import { constants } from "@/core/constants/constants";
 import SanitizedTextInput, { removeAccentsAndSpecialChars } from "../components/widgets/sanitized-text-input";
+import DateInput from "../components/widgets/date";
 
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();
@@ -27,8 +28,8 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    {/* TODO: adequar a função handleDelete */}                    
-                    <CameraInput name={field.id} language={language.replace("-","")}/>
+                    {/* TODO: adequar a função handleDelete */}
+                    <CameraInput name={field.id} language={language.replace("-", "")} />
                 </View>
             );
         case "photos":
@@ -36,7 +37,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     {/* TODO: adequar a função handleDelete */}
-                    <MultiCameraInput name={field.id} handleDelete={()=>{}} language={language.replace("-","")} />
+                    <MultiCameraInput name={field.id} handleDelete={() => { }} language={language.replace("-", "")} />
                 </View>
             );
         case "number":
@@ -121,6 +122,15 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     <GeoPosition3D parent={field.id} field={field} />
                 </View>
             );
+        case "date":
+            return (
+                <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <DateInput value={value || ''}
+                        onChange={(text) => onChange(field.id, text)}
+                        parent={field.id} error={error}
+                    />
+                </View>
+            );
         case "date_range":
             return (
                 <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
@@ -128,15 +138,15 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                 </View>
             );
         // customizados
-        case "ef_depth_research":
-            return (
-                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
-                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
-                    <View>
-                        <EF_DepthResearch editMode={editMode ?? false} parent={field.id} />
-                    </View>
-                </View>
-            );
+        // case "ef_depth_research":
+        //     return (
+        //         <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+        //             <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+        //             <View>
+        //                 <EF_DepthResearch editMode={editMode ?? false} parent={field.id} />
+        //             </View>
+        //         </View>
+        //     );
         // Adicione outros componentes especiais aqui quando necessário
         default:
             return null;

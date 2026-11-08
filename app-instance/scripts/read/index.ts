@@ -1,1 +1,1 @@
-export { EnergyFuelsDrillingReader } from "./energy-fuels.perfuracao.reader";
+export { MercadoInconfidentesCombustiveisReader } from "./mercado-incofidentes-combustiveis.reader";

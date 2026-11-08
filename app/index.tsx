@@ -110,7 +110,7 @@ export default function Index() {
         />
 
         <Text style={[GlobalStyles.title, styles.title]}>
-          CAPTURE<Text style={{ color: colors.grey }}>WISE</Text>
+          MERCADO<Text style={{ color: colors.grey }}>COLLECTOR</Text>
         </Text>
 
         <Text style={[GlobalStyles.textMuted, {fontSize: 10, fontStyle: 'italic'}]}>

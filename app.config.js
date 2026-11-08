@@ -13,18 +13,18 @@ export default () => {
 
   return {
     expo: {
-      name: 'CAPTUREWISE',
-      slug: 'capture-wise',
+      name: 'MERCADO COLLECTOR',
+      slug: 'mercado-collector',
       version: '1.0.0',
       orientation: 'portrait',
       icon: './assets/images/icon.png',
-      scheme: 'capturewise',
+      scheme: 'mercado',
       userInterfaceStyle: 'automatic',
       newArchEnabled: true,
 
       ios: {
         supportsTablet: true,
-        bundleIdentifier: 'com.terradata.capturewise',
+        bundleIdentifier: 'com.terradata.mercado',
       },
 
       android: {
@@ -32,7 +32,7 @@ export default () => {
           foregroundImage: './assets/images/icon.png',
           backgroundColor: '#ffffff',
         },
-        package: 'com.terradata.capturewise',
+        package: 'com.terradata.mercado',
 
         // Mantido por clareza (Expo-level)
         largeHeap: true,

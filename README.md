@@ -1,2 +1,2 @@
-# terradata-capturewise-mobile
-CaptureWise Mobile
+# terradata-mercado-collector
+Mercado Collector
