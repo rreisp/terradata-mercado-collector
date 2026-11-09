@@ -3,7 +3,7 @@ import { DataValidator } from "@/core/types/data-validator";
 import { DefaultFieldValidator } from "@/core/validation/default-field-validator";
 import { Field } from "@/core/types/field";
 import { CrudService } from "@/core/services/crud.service";
-import { CombustiveisRecord } from "@/app-instance/types/drilling-record";
+import { CombustiveisRecord } from "@/app-instance/types/combustiveis-record";
 
 export class MercadoInconfidentesCombustiveisValidator extends DefaultFieldValidator implements DataValidator {
     private titleRegex = /^[A-Z]{2}\d{3}-\d{3}$/;

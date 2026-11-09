@@ -1,7 +1,6 @@
 // default-extractor.ts
 import { DataExtractor } from "@/core/types/data-extractor";
 import { CrudService } from "@/core/services/crud.service";
-import { ImageRecord } from '@/app-instance/types/image-record';
 import { Alert } from 'react-native';
 
 function formatDate(date: Date) {

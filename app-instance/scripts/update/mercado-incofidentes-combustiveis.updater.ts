@@ -21,11 +21,11 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
     async update(info: any): Promise<void> {
         try {
             // informação básica da perfuração
-            const drilling = this.extractCombustiveisInfo(info);
-            // console.log(drilling);
-            await this.updateCombustiveis(drilling);
+            const combustiveis = this.extractCombustiveisInfo(info);
+            // console.log(combustiveis);
+            await this.updateCombustiveis(combustiveis);
 
-            console.log(`Registro com ID ${drilling!.id} atualizado com sucesso.`);
+            console.log(`Registro com ID ${combustiveis!.id} atualizado com sucesso.`);
             Alert.alert(
                 this.isPT ? 'Sucesso' : 'Success',
                 this.isPT ? `Registro atualizado.` : `Record updated.`
@@ -39,17 +39,16 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
     // -----------------------------------------------------------
     private async updateCombustiveis(data: any) {
         try {
-            await CrudService.update('drillings', {
-                title: data.title,
-                easting: data.easting,
-                northing: data.northing,
-                elevation: data.elevation,
-                tenement: data.tenement,
-                landowner: data.landowner,
-                start_date: data.start_date,
-                end_date: data.end_date,
-                responsible: data.responsible,
-                interruption_reason: data.interruption_reason
+            await CrudService.update('mercado_combustiveis', {
+                titulo: data.titulo,
+                etanol: data.etanol,
+                gasolina: data.gasolina,
+                gasolina_aditivada: data.gasolina_aditivada,
+                gasolina_premium: data.gasolina_premium,
+                diesel_s10: data.diesel_s10,
+                diesel_s500: data.diesel_s500,
+                arla: data.arla,
+                data: data.data
             },
                 "id = ?",
                 [data.id]
@@ -64,16 +63,15 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
         try {
             return {
                 id: info.id,
-                title: info.title,
-                easting: info.ef_coordinates.easting,
-                northing: info.ef_coordinates.northing,
-                elevation: info.ef_coordinates.elevation,
-                tenement: info.tenement,
-                landowner: info.landowner,
-                start_date: formatDate(info.ef_dates.start),
-                end_date: formatDate(info.ef_dates.end),
-                responsible: info.responsible,
-                interruption_reason: info.reason
+                titulo: info.titulo,
+                etanol: info.etanol,
+                gasolina: info.gasolina,
+                gasolina_aditivada: info.gasolina_aditivada,
+                gasolina_premium: info.gasolina_premium,
+                diesel_s10: info.diesel_s10,
+                diesel_s500: info.diesel_s500,
+                arla: info.arla,
+                data: info.data
             }
         } catch (e) {
             console.error("MercadoInconfidentesCombustiveisUpdater.extractCombustiveisInfo")

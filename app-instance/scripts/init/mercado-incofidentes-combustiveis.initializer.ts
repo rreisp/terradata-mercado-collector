@@ -15,18 +15,17 @@ export class MercadoInconfidentesCombustiveisInitializer implements DataInitiali
   // -------------------------------------------------------------------
   private async createCombustiveisTable(): Promise<void> {
     try {
-      await CrudService.createTable('drillings', `
+      await CrudService.createTable('mercado_combustiveis', `
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      easting INTEGER NOT NULL,
-      northing INTEGER NOT NULL,
-      elevation NUMERIC NOT NULL,
-      tenement TEXT,
-      landowner TEXT,
-      start_date TEXT,
-      end_date TEXT,
-      responsible TEXT,      
-      interruption_reason TEXT
+      titulo TEXT NOT NULL,
+      etanol REAL,
+      gasolina REAL,
+      gasolina_aditivada REAL,
+      gasolina_premium REAL,      
+      diesel_s10 REAL,
+      diesel_s500 REAL,
+      arla REAL,
+      data TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
     `);
     } catch (e) {
       console.error("MercadoInconfidentesCombustiveisInitializer.createCombustiveisTable")

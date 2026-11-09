@@ -1,7 +1,7 @@
 import { DataReader } from "@/core/types/data-reader";
 import { CrudService } from "@/core/services/crud.service";
-import { CombustiveisRecord } from "@/app-instance/types/drilling-record";
-import { AdaptedCombustiveisRecord } from "@/app-instance/types/adapted-drilling-record";
+import { CombustiveisRecord } from "@/app-instance/types/combustiveis-record";
+import { AdaptedCombustiveisRecord } from "@/app-instance/types/adapted-combustiveis-record";
 
 export class MercadoInconfidentesCombustiveisReader implements DataReader {
   private language: string;
@@ -12,15 +12,15 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
 
   async read(): Promise<AdaptedCombustiveisRecord[]> {
     try {
-      const drillings = await CrudService.list<CombustiveisRecord>('drillings', {
-        columns: ["id", "title", "start_date", "end_date"]
+      const registros = await CrudService.list<CombustiveisRecord>('mercado_combustiveis', {
+        columns: ["id", "titulo", "data"]
       });
-      const adaptedCombustiveiss = drillings.map((item) => ({
+      const adaptedCombustiveis = registros.map((item) => ({
         id: item.id,
-        title: item.title,
-        dates: this.formatDates(item.start_date, item.end_date)
+        titulo: item.titulo,
+        data: this.formatDate(item.data)
       }));
-      return adaptedCombustiveiss;
+      return adaptedCombustiveis;
     } catch (e) {
       console.error("MercadoInconfidentesCombustiveisReader.read")
       console.log(e)
@@ -30,7 +30,7 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
 
   columns(): string[] {
     try {
-      return ["title", "dates"];
+      return ["titulo", "data"];
     } catch (e) {
       console.error("MercadoInconfidentesCombustiveisReader.columns")
       console.log(e)
@@ -48,17 +48,6 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
       } else {
         return mth + "/" + day + "/" + year;
       }
-    } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisReader.formatDate")
-      console.log(e)
-      return ''
-    }
-  }
-
-  private formatDates(start: string, end: string): string {
-    try {
-      if (start === end) return this.formatDate(start, this.language)
-      return this.formatDate(start, this.language) + (this.language === "pt-BR" ? " a " : " to ") + this.formatDate(end, this.language)
     } catch (e) {
       console.error("MercadoInconfidentesCombustiveisReader.formatDate")
       console.log(e)
