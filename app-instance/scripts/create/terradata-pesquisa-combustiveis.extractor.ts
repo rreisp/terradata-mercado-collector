@@ -1,16 +1,9 @@
 // default-extractor.ts
-import { DataUpdater } from "@/core/types/data-updater";
+import { DataExtractor } from "@/core/types/data-extractor";
 import { CrudService } from "@/core/services/crud.service";
 import { Alert } from 'react-native';
 
-function formatDate(date: Date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-}
-
-export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
+export class TerradataPesquisaCombustiveisExtractor implements DataExtractor {
     private isPT: boolean;
 
     constructor(language: string) {
@@ -18,28 +11,34 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
     }
 
     // -----------------------------------------------------------    
-    async update(info: any): Promise<void> {
+    async extract(info: any): Promise<void> {
         try {
-            // informação básica da perfuração
-            const combustiveis = this.extractCombustiveisInfo(info);
-            // console.log(combustiveis);
-            await this.updateCombustiveis(combustiveis);
+            // console.warn('Extract Info');
+            // console.log(info);
 
-            console.log(`Registro com ID ${combustiveis!.id} atualizado com sucesso.`);
+            // informação básica da pesquisa
+            const combustiveis = this.extractCombustiveisInfo(info);
+
+            // console.log(combustiveis);
+            await this.saveCombustiveis(combustiveis);
+
+            const lastCombustiveisId = await CrudService.lastInsertId();
+
+            console.log(`Registro com ID ${lastCombustiveisId} inserido com sucesso.`);
             Alert.alert(
                 this.isPT ? 'Sucesso' : 'Success',
-                this.isPT ? `Registro atualizado.` : `Record updated.`
+                this.isPT ? `Registro criado.` : `Record created.`
             );
         } catch (e) {
-            console.error("MercadoInconfidentesCombustiveisUpdater.update")
+            console.error("TerradataPesquisaCombustiveisExtractor.extract")
             console.log(e)
         }
     }
 
     // -----------------------------------------------------------
-    private async updateCombustiveis(data: any) {
+    private async saveCombustiveis(data: any) {
         try {
-            await CrudService.update('mercado_combustiveis', {
+            await CrudService.insert('mercado_combustiveis', {
                 estabelecimento: data.estabelecimento,
                 etanol: data.etanol,
                 gasolina: data.gasolina,
@@ -49,20 +48,16 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
                 diesel_s500: data.diesel_s500,
                 arla: data.arla,
                 data: data.data
-            },
-                "id = ?",
-                [data.id]
-            );
+            });
         } catch (e) {
-            console.error("MercadoInconfidentesCombustiveisUpdater.updateCombustiveis")
+            console.error("TerradataPesquisaCombustiveisExtractor.saveCombustiveis")
             console.log(e)
         }
     }
-
+    
     private extractCombustiveisInfo(info: any) {
         try {
             return {
-                id: info.id,
                 estabelecimento: info.estabelecimento,
                 etanol: info.etanol,
                 gasolina: info.gasolina,
@@ -74,7 +69,7 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
                 data: info.data
             }
         } catch (e) {
-            console.error("MercadoInconfidentesCombustiveisUpdater.extractCombustiveisInfo")
+            console.error("TerradataPesquisaCombustiveisExtractor.extractCombustiveisInfo")
             console.log(e)
         }
     }

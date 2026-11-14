@@ -1,8 +1,8 @@
-import { DataUpdater } from "@/core/types/data-updater";
+import { DataExtractor } from "@/core/types/data-extractor";
 import { CrudService } from "@/core/services/crud.service";
 import { Alert } from 'react-native';
 
-export class MercadoInconfidentesCarnesUpdater implements DataUpdater {
+export class TerradataPesquisaCarnesExtractor implements DataExtractor {
     private isPT: boolean;
 
     constructor(language: string) {
@@ -10,26 +10,29 @@ export class MercadoInconfidentesCarnesUpdater implements DataUpdater {
     }
 
     // -----------------------------------------------------------    
-    async update(info: any): Promise<void> {
+    async extract(info: any): Promise<void> {
         try {
             const carnes = this.extractCarnesInfo(info);
-            await this.updateCarnes(carnes);
+            await this.saveCarnes(carnes);
 
-            console.log(`Registro com ID ${carnes!.id} atualizado com sucesso.`);
+            const lastCarnesId = await CrudService.lastInsertId();
+
+            console.log(`Registro com ID ${lastCarnesId} inserido com sucesso.`);
             Alert.alert(
                 this.isPT ? 'Sucesso' : 'Success',
-                this.isPT ? `Registro atualizado.` : `Record updated.`
+                this.isPT ? `Registro criado.` : `Record created.`
             );
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesUpdater.update");
+            console.error("TerradataPesquisaCarnesExtractor.extract");
             console.log(e);
         }
     }
 
     // -----------------------------------------------------------
-    private async updateCarnes(data: any) {
+    private async saveCarnes(data: any) {
+        console.log('-----', data.data)
         try {
-            await CrudService.update('mercado_carnes', {
+            await CrudService.insert('mercado_carnes', {
                 estabelecimento: data.estabelecimento,
                 data: data.data,
                 acem: data.acem,
@@ -52,20 +55,17 @@ export class MercadoInconfidentesCarnesUpdater implements DataUpdater {
                 lombo_suino: data.lombo_suino,
                 panceta_barriga_suina: data.panceta_barriga_suina,
                 pernil_suino: data.pernil_suino
-            },
-                "id = ?",
-                [data.id]
-            );
+            });
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesUpdater.updateCarnes");
+            console.error("TerradataPesquisaCarnesExtractor.saveCarnes");
             console.log(e);
         }
     }
 
     private extractCarnesInfo(info: any) {
+        console.warn('aqui', info)
         try {
             return {
-                id: info.id,
                 estabelecimento: info.estabelecimento,
                 data: info.data,
                 acem: info.acem,
@@ -90,7 +90,7 @@ export class MercadoInconfidentesCarnesUpdater implements DataUpdater {
                 pernil_suino: info.pernil_suino
             };
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesUpdater.extractCarnesInfo");
+            console.error("TerradataPesquisaCarnesExtractor.extractCarnesInfo");
             console.log(e);
         }
     }

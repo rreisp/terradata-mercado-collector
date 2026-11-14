@@ -56,6 +56,51 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     {/* )} */}
                 </View>
             );
+        case "currency":
+            return (
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+
+                    {/* A View herda o visual de caixa do GlobalStyles.input */}
+                    <View style={[GlobalStyles.input, { flexDirection: 'row', alignItems: 'center' }]}>
+                        <Text style={{ marginRight: 6, color: '#555', fontWeight: 'bold' }}>
+                            {field.currency || "R$"}
+                        </Text>
+
+                        <TextInput
+                            placeholder={field.placeholder ? field.placeholder[language] : "0.00"}
+                            value={value !== undefined && value !== null ? String(value) : ''}
+                            onChangeText={(text) => {
+                                // 1. Substitui vírgula por ponto
+                                let formatted = text.replace(',', '.');
+
+                                // 2. Remove tudo o que não for número ou ponto
+                                formatted = formatted.replace(/[^0-9.]/g, '');
+
+                                // 3. Garante que haja apenas um ponto decimal
+                                const parts = formatted.split('.');
+                                if (parts.length > 2) {
+                                    formatted = parts[0] + '.' + parts.slice(1).join('');
+                                }
+
+                                // 4. Aplica a precisão máxima de casas decimais (padrão 2)
+                                const precision = field.precision !== undefined ? field.precision : 2;
+                                if (parts.length === 2 && parts[1].length > precision) {
+                                    formatted = `${parts[0]}.${parts[1].substring(0, precision)}`;
+                                }
+
+                                onChange(field.id, formatted);
+                            }}
+                            // Removemos bordas/paddings internos do TextInput para não duplicar o visual da caixa
+                            style={{ flex: 1, padding: 0, margin: 0, borderWidth: 0, backgroundColor: 'transparent' }}
+                            keyboardType="numeric"
+                            maxLength={field.max}
+                        />
+                    </View>
+
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
+                </View>
+            );
         case "text":
         case "email":
         case "password":
@@ -73,7 +118,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
             );
-        case "uppercase_text":        
+        case "uppercase_text":
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
@@ -82,13 +127,13 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         value={value || ''}
                         onChangeText={(text) => onChange(field.id, text.toUpperCase())}
                         style={GlobalStyles.input}
-                        secureTextEntry={field.type === "uppercase_text"}
+                        autoCapitalize="characters"
                         maxLength={field.max}
                     />
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
-            );  
-        case "lowercase_text":        
+            );
+        case "lowercase_text":
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
@@ -97,12 +142,12 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         value={value || ''}
                         onChangeText={(text) => onChange(field.id, text.toLowerCase())}
                         style={GlobalStyles.input}
-                        secureTextEntry={field.type === "lowercase_text"}
+                        autoCapitalize="none"
                         maxLength={field.max}
                     />
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
-            );                          
+            );
         case "sanitized_text":
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>

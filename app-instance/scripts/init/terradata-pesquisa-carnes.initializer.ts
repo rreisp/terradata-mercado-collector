@@ -1,13 +1,13 @@
 import { DataInitializer } from "@/core/types/data-initializer";
 import { CrudService } from "@/core/services/crud.service";
 
-export class MercadoInconfidentesCarnesInitializer implements DataInitializer {
+export class TerradataPesquisaCarnesInitializer implements DataInitializer {
   async init(): Promise<void> {
     try {
       await this.createCarnesTable();
       await new Promise(resolve => setTimeout(resolve, 100));
     } catch (e) {
-      console.error("MercadoInconfidentesCarnesInitializer.init");
+      console.error("TerradataPesquisaCarnesInitializer.init");
       console.log(e);
     }
   }
@@ -41,7 +41,7 @@ export class MercadoInconfidentesCarnesInitializer implements DataInitializer {
       data TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
     `);
     } catch (e) {
-      console.error("MercadoInconfidentesCarnesInitializer.createCarnesTable");
+      console.error("TerradataPesquisaCarnesInitializer.createCarnesTable");
       console.log(e);
     }
   }

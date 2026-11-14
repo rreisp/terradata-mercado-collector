@@ -1,2 +1,2 @@
-export { MercadoInconfidentesCarnesValidator } from "./mercado-inconfidentes-carnes.validator";
-export { MercadoInconfidentesCombustiveisValidator } from "./mercado-inconfidentes-combustiveis.validator";
+export { TerradataPesquisaCarnesValidator } from "./terradata-pesquisa-carnes.validator";
+export { TerradataPesquisaCombustiveisValidator } from "./terradata-pesquisa-combustiveis.validator";

@@ -1,2 +1,2 @@
-export { MercadoInconfidentesCarnesInitializer } from "./mercado-inconfidentes-carnes.initializer";
-export { MercadoInconfidentesCombustiveisInitializer } from "./mercado-inconfidentes-combustiveis.initializer";
+export { TerradataPesquisaCarnesInitializer } from "./terradata-pesquisa-carnes.initializer";
+export { TerradataPesquisaCombustiveisInitializer } from "./terradata-pesquisa-combustiveis.initializer";

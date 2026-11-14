@@ -1,13 +1,13 @@
 import { DataInitializer } from "@/core/types/data-initializer";
 import { CrudService } from "@/core/services/crud.service";
 
-export class MercadoInconfidentesCombustiveisInitializer implements DataInitializer {
+export class TerradataPesquisaCombustiveisInitializer implements DataInitializer {
   async init(): Promise<void> {
     try {
       await this.createCombustiveisTable();
       await new Promise(resolve => setTimeout(resolve, 100));
     } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisInitializer.init")
+      console.error("TerradataPesquisaCombustiveisInitializer.init")
       console.log(e)
     }
   }
@@ -28,7 +28,7 @@ export class MercadoInconfidentesCombustiveisInitializer implements DataInitiali
       data TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
     `);
     } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisInitializer.createCombustiveisTable")
+      console.error("TerradataPesquisaCombustiveisInitializer.createCombustiveisTable")
       console.log(e)
     }
   }

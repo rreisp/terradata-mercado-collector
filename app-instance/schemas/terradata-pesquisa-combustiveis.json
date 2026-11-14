@@ -4,7 +4,7 @@
   "title": {
     "pt-BR": "⛽ COMBUSTÍVEIS"
   },
-  "logo": "MercadoInconfidentes-Logo.png",
+  "logo": "TerradataPesquisa-Logo.png",
   "description": {
     "pt-BR": "Preencha os campos abaixo."
   },
@@ -38,7 +38,7 @@
         {
           "field": {
             "id": "etanol",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Etanol:"
@@ -48,7 +48,7 @@
         {
           "field": {
             "id": "gasolina",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Gasolina:"
@@ -58,7 +58,7 @@
         {
           "field": {
             "id": "gasolina_aditivada",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Gasolina Aditivada:"
@@ -68,7 +68,7 @@
         {
           "field": {
             "id": "diesel_s10",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Diesel S10:"
@@ -78,7 +78,7 @@
         {
           "field": {
             "id": "diesel_s500",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Diesel S500:"
@@ -88,7 +88,7 @@
         {
           "field": {
             "id": "arla",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Arla:"

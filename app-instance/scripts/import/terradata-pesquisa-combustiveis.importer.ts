@@ -3,7 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { CrudService } from "@/core/services/crud.service";
 
-export class MercadoInconfidentesCombustiveisImporter implements DataImporter {
+export class TerradataPesquisaCombustiveisImporter implements DataImporter {
     private isPT: boolean;
 
     constructor(language: string) {
@@ -13,7 +13,7 @@ export class MercadoInconfidentesCombustiveisImporter implements DataImporter {
     public async importDatabase(): Promise<void> {
         try {
         } catch (e) {
-            console.error("MercadoInconfidentesCombustiveisImporter.importDatabase")
+            console.error("TerradataPesquisaCombustiveisImporter.importDatabase")
             console.log(e)
         }
     }

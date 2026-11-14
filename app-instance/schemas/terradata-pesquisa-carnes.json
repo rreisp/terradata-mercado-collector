@@ -4,7 +4,7 @@
   "title": {
     "pt-BR": "🥩 CARNES"
   },
-  "logo": "MercadoInconfidentes-Logo.png",
+  "logo": "TerradataPesquisa-Logo.png",
   "description": {
     "pt-BR": "Preencha os campos abaixo."
   },
@@ -42,7 +42,7 @@
         {
           "field": {
             "id": "acem",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Acém:"
@@ -52,7 +52,7 @@
         {
           "field": {
             "id": "alcatra",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Alcatra:"
@@ -62,7 +62,7 @@
         {
           "field": {
             "id": "carne_moida_bovina",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Carne moída bovina:"
@@ -72,7 +72,7 @@
         {
           "field": {
             "id": "contrafile",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Contrafilé:"
@@ -82,7 +82,7 @@
         {
           "field": {
             "id": "costela_bovina",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Costela bovina:"
@@ -92,7 +92,7 @@
         {
           "field": {
             "id": "coxao_mole",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Coxão mole:"
@@ -102,7 +102,7 @@
         {
           "field": {
             "id": "fraldinha",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Fraldinha:"
@@ -112,7 +112,7 @@
         {
           "field": {
             "id": "musculo",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Músculo:"
@@ -122,7 +122,7 @@
         {
           "field": {
             "id": "patinho",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Patinho:"
@@ -132,7 +132,7 @@
         {
           "field": {
             "id": "picanha",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Picanha:"
@@ -146,7 +146,7 @@
         {
           "field": {
             "id": "asa_de_frango",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Asa de frango:"
@@ -156,7 +156,7 @@
         {
           "field": {
             "id": "coxa_de_frango",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Coxa de frango:"
@@ -166,7 +166,7 @@
         {
           "field": {
             "id": "file_de_peito_de_frango",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Filé de peito de frango:"
@@ -176,7 +176,7 @@
         {
           "field": {
             "id": "peito_de_frango",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Peito de frango:"
@@ -186,7 +186,7 @@
         {
           "field": {
             "id": "sobrecoxa_de_frango",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Sobrecoxa de frango:"
@@ -200,7 +200,7 @@
         {
           "field": {
             "id": "costelinha_suina",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Costelinha suína:"
@@ -210,7 +210,7 @@
         {
           "field": {
             "id": "linguica_suina",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Linguiça suína:"
@@ -220,7 +220,7 @@
         {
           "field": {
             "id": "lombo_suino",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Lombo suíno:"
@@ -230,7 +230,7 @@
         {
           "field": {
             "id": "panceta_barriga_suina",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Panceta / barriga suína:"
@@ -240,7 +240,7 @@
         {
           "field": {
             "id": "pernil_suino",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Pernil suíno:"

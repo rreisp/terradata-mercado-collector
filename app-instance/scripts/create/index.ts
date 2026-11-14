@@ -1,2 +1,2 @@
-export { MercadoInconfidentesCarnesExtractor } from "./mercado-inconfidentes-carnes.extractor";
-export { MercadoInconfidentesCombustiveisExtractor } from "./mercado-inconfidentes-combustiveis.extractor";
+export { TerradataPesquisaCarnesExtractor } from "./terradata-pesquisa-carnes.extractor";
+export { TerradataPesquisaCombustiveisExtractor } from "./terradata-pesquisa-combustiveis.extractor";

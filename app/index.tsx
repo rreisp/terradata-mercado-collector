@@ -105,7 +105,7 @@ export default function Index() {
         style={[GlobalStyles.container, GlobalStyles.centered]}
       >
         <Image
-          source={require('../assets/images/capturewise.png')}
+          source={require('../assets/images/main-logo.png')}
           style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
         />
 

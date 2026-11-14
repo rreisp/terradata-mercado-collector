@@ -1,12 +1,12 @@
 import { DataReseter } from "@/core/types/data-reseter";
 import { CrudService } from "@/core/services/crud.service";
 
-export class MercadoInconfidentesCombustiveisReseter implements DataReseter {
+export class TerradataPesquisaCombustiveisReseter implements DataReseter {
   async reset(): Promise<void> {
     try {
       await CrudService.drop("mercado_combustiveis"); 
     } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisReseter.reset")
+      console.error("TerradataPesquisaCombustiveisReseter.reset")
       console.log(e)
     }
   }

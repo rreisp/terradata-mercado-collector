@@ -1,2 +1,2 @@
-export { MercadoInconfidentesCarnesReseter } from "./mercado-inconfidentes-carnes.reseter";
-export { MercadoInconfidentesCombustiveisReseter } from "./mercado-inconfidentes-combustiveis.reseter";
+export { TerradataPesquisaCarnesReseter } from "./terradata-pesquisa-carnes.reseter";
+export { TerradataPesquisaCombustiveisReseter } from "./terradata-pesquisa-combustiveis.reseter";

@@ -1,2 +1,2 @@
-export { MercadoInconfidentesCarnesReader } from "./mercado-inconfidentes-carnes.reader";
-export { MercadoInconfidentesCombustiveisReader } from "./mercado-inconfidentes-combustiveis.reader";
+export { TerradataPesquisaCarnesReader } from "./terradata-pesquisa-carnes.reader";
+export { TerradataPesquisaCombustiveisReader } from "./terradata-pesquisa-combustiveis.reader";

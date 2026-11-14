@@ -1,7 +1,7 @@
-import MercadoInconfidentesCarnes from './mercado-inconfidentes-carnes.json';
-import MercadoInconfidentesCombustiveis from './mercado-inconfidentes-combustiveis.json';
+import TerradataPesquisaCarnes from './terradata-pesquisa-carnes.json';
+import TerradataPesquisaCombustiveis from './terradata-pesquisa-combustiveis.json';
 
 export default {
-    MercadoInconfidentesCarnes,
-    MercadoInconfidentesCombustiveis,
+    TerradataPesquisaCarnes,
+    TerradataPesquisaCombustiveis,
 };

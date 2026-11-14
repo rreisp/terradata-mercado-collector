@@ -1,2 +1,2 @@
-export { MercadoInconfidentesCarnesImporter } from "./mercado-inconfidentes-carnes.importer"
-export { MercadoInconfidentesCombustiveisImporter } from "./mercado-inconfidentes-combustiveis.importer"
+export { TerradataPesquisaCarnesImporter } from "./terradata-pesquisa-carnes.importer"
+export { TerradataPesquisaCombustiveisImporter } from "./terradata-pesquisa-combustiveis.importer"

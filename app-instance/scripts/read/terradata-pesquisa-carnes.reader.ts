@@ -1,30 +1,31 @@
 import { DataReader } from "@/core/types/data-reader";
 import { CrudService } from "@/core/services/crud.service";
-import { CombustiveisRecord } from "@/app-instance/types/combustiveis-record";
-import { AdaptedCombustiveisRecord } from "@/app-instance/types/adapted-combustiveis-record";
+import { CarnesRecord } from "@/app-instance/types/carnes-record";
+import { AdaptedCarnesRecord } from "@/app-instance/types/adapted-carnes-record";
 
-export class MercadoInconfidentesCombustiveisReader implements DataReader {
+export class TerradataPesquisaCarnesReader implements DataReader {
   private language: string;
 
   constructor(language: string) {
     this.language = language;
   }
 
-  async read(): Promise<AdaptedCombustiveisRecord[]> {
+  async read(): Promise<AdaptedCarnesRecord[]> {
     try {
-      const registros = await CrudService.list<CombustiveisRecord>('mercado_combustiveis', {
+      const registros = await CrudService.list<CarnesRecord>('mercado_carnes', {
         columns: ["id", "estabelecimento", "data"]
       });
-      const adaptedCombustiveis = registros.map((item) => ({
+      console.warn(registros)
+      const adaptedCarnes = registros.map((item) => ({
         id: item.id,
         estabelecimento: item.estabelecimento,
         data: this.formatDate(item.data)
       }));
-      return adaptedCombustiveis;
+      return adaptedCarnes;
     } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisReader.read")
-      console.log(e)
-      return []
+      console.error("TerradataPesquisaCarnesReader.read");
+      console.log(e);
+      return [];
     }
   }
 
@@ -32,9 +33,9 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
     try {
       return ["estabelecimento", "data"];
     } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisReader.columns")
-      console.log(e)
-      return []
+      console.error("TerradataPesquisaCarnesReader.columns");
+      console.log(e);
+      return [];
     }
   }
 
@@ -49,9 +50,9 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
         return mth + "/" + day + "/" + year;
       }
     } catch (e) {
-      console.error("MercadoInconfidentesCombustiveisReader.formatDate")
-      console.log(e)
-      return ''
+      console.error("TerradataPesquisaCarnesReader.formatDate");
+      console.log(e);
+      return '';
     }
   }
 }

@@ -2,13 +2,13 @@ import { CrudService } from "@/core/services/crud.service";
 import { CarnesRecord } from "@/app-instance/types/carnes-record";
 import { DataLoader } from "@/core/types/data-loader";
 
-export class MercadoInconfidentesCarnesLoader implements DataLoader {
+export class TerradataPesquisaCarnesLoader implements DataLoader {
     async load(rootItemId: number): Promise<{ [key: string]: any }> {
         let carnes = null;
         try {
             carnes = await this.loadCarnes(rootItemId);
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesLoader.load");
+            console.error("TerradataPesquisaCarnesLoader.load");
             console.log(e);
         }
 
@@ -51,7 +51,7 @@ export class MercadoInconfidentesCarnesLoader implements DataLoader {
                 }
             ))[0];
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesLoader.loadCarnes");
+            console.error("TerradataPesquisaCarnesLoader.loadCarnes");
             console.log(e);
         }
         return carnes;

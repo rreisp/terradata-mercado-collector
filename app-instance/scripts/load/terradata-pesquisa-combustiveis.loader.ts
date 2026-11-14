@@ -7,13 +7,13 @@ function parseDate(dateStr: string): Date {
     return new Date(Number(year), Number(month) - 1, Number(day));
 }
 
-export class MercadoInconfidentesCombustiveisLoader implements DataLoader {
+export class TerradataPesquisaCombustiveisLoader implements DataLoader {
     async load(rootItemId: number): Promise<{ [key: string]: any }> {
         let combustiveis = null
         try {
             combustiveis = await this.loadCombustiveis(rootItemId);
         } catch (e) {
-            console.error("MercadoInconfidentesCombustiveisLoader.load")
+            console.error("TerradataPesquisaCombustiveisLoader.load")
             console.log(e)
         }
         
@@ -43,7 +43,7 @@ export class MercadoInconfidentesCombustiveisLoader implements DataLoader {
                 }
             ))[0];
         } catch (e) {
-            console.error("MercadoInconfidentesCombustiveisLoader.loadCombustiveis")
+            console.error("TerradataPesquisaCombustiveisLoader.loadCombustiveis")
             console.log(e)
         }
         return combustiveis;

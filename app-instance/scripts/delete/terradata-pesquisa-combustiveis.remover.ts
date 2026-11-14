@@ -2,7 +2,7 @@ import { CrudService } from "@/core/services/crud.service";
 import { DataRemover } from "@/core/types/data-remover";
 import { Alert } from "react-native";
 
-export class MercadoInconfidentesCarnesRemover implements DataRemover {
+export class TerradataPesquisaCombustiveisRemover implements DataRemover {
     private isPT: boolean;
 
     constructor(language: string) {
@@ -11,7 +11,8 @@ export class MercadoInconfidentesCarnesRemover implements DataRemover {
 
     async remove(rootItemId: number): Promise<void> {
         try {
-            await CrudService.delete('mercado_carnes', 'id = ?', [rootItemId]);
+            // apaga o registro principal da pesquisa  
+            await CrudService.delete('mercado_combustiveis', 'id = ?', [rootItemId]);
 
             console.log(`Registro com ID ${rootItemId} removido com sucesso.`);
             Alert.alert(
@@ -19,8 +20,8 @@ export class MercadoInconfidentesCarnesRemover implements DataRemover {
                 this.isPT ? `Registro removido.` : `Record removed.`
             );
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesRemover.remove");
-            console.log(e);
+            console.error("TerradataPesquisaCombustiveisRemover.remove")
+            console.log(e)
         }
     }
 }

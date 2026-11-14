@@ -1,6 +1,6 @@
 import { DataImporter } from "@/core/types/data-importer";
 
-export class MercadoInconfidentesCarnesImporter implements DataImporter {
+export class TerradataPesquisaCarnesImporter implements DataImporter {
     private isPT: boolean;
 
     constructor(language: string) {
@@ -10,7 +10,7 @@ export class MercadoInconfidentesCarnesImporter implements DataImporter {
     public async importDatabase(): Promise<void> {
         try {
         } catch (e) {
-            console.error("MercadoInconfidentesCarnesImporter.importDatabase");
+            console.error("TerradataPesquisaCarnesImporter.importDatabase");
             console.log(e);
         }
     }
