@@ -1,6 +1,6 @@
 import { Identified } from "@/core/types/identified";
 
 export type AdaptedCombustiveisRecord = Identified & {
-    titulo: string;
+    estabelecimento: string;
     data: string;
 };

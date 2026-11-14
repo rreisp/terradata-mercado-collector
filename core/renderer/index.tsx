@@ -52,9 +52,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         onChange={(text: string) => onChange(field.id, text)}
                     />
                     {/* {easting === '' && ( */}
-                    <Text style={GlobalStyles.errorText}>
-                        {isPT ? "Campo obrigatório" : "Required field"}
-                    </Text>
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                     {/* )} */}
                 </View>
             );
@@ -75,6 +73,36 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
             );
+        case "uppercase_text":        
+            return (
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                    <TextInput
+                        placeholder={field.placeholder ? field.placeholder[language] : ""}
+                        value={value || ''}
+                        onChangeText={(text) => onChange(field.id, text.toUpperCase())}
+                        style={GlobalStyles.input}
+                        secureTextEntry={field.type === "uppercase_text"}
+                        maxLength={field.max}
+                    />
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
+                </View>
+            );  
+        case "lowercase_text":        
+            return (
+                <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
+                    <TextInput
+                        placeholder={field.placeholder ? field.placeholder[language] : ""}
+                        value={value || ''}
+                        onChangeText={(text) => onChange(field.id, text.toLowerCase())}
+                        style={GlobalStyles.input}
+                        secureTextEntry={field.type === "lowercase_text"}
+                        maxLength={field.max}
+                    />
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
+                </View>
+            );                          
         case "sanitized_text":
             return (
                 <View style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
@@ -125,6 +153,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
         case "date":
             return (
                 <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>
+                    <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <DateInput value={value || ''}
                         onChange={(text) => onChange(field.id, text)}
                         parent={field.id} error={error}

@@ -13,11 +13,11 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
   async read(): Promise<AdaptedCombustiveisRecord[]> {
     try {
       const registros = await CrudService.list<CombustiveisRecord>('mercado_combustiveis', {
-        columns: ["id", "titulo", "data"]
+        columns: ["id", "estabelecimento", "data"]
       });
       const adaptedCombustiveis = registros.map((item) => ({
         id: item.id,
-        titulo: item.titulo,
+        estabelecimento: item.estabelecimento,
         data: this.formatDate(item.data)
       }));
       return adaptedCombustiveis;
@@ -30,7 +30,7 @@ export class MercadoInconfidentesCombustiveisReader implements DataReader {
 
   columns(): string[] {
     try {
-      return ["titulo", "data"];
+      return ["estabelecimento", "data"];
     } catch (e) {
       console.error("MercadoInconfidentesCombustiveisReader.columns")
       console.log(e)

@@ -1,1 +1,2 @@
-export { MercadoInconfidentesCombustiveisExtractor } from "./mercado-incofidentes-combustiveis.extractor";
+export { MercadoInconfidentesCarnesExtractor } from "./mercado-inconfidentes-carnes.extractor";
+export { MercadoInconfidentesCombustiveisExtractor } from "./mercado-inconfidentes-combustiveis.extractor";

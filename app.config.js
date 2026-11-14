@@ -13,7 +13,7 @@ export default () => {
 
   return {
     expo: {
-      name: 'MERCADO COLLECTOR',
+      name: 'Mercado Collector',
       slug: 'mercado-collector',
       version: '1.0.0',
       orientation: 'portrait',
@@ -21,6 +21,7 @@ export default () => {
       scheme: 'mercado',
       userInterfaceStyle: 'automatic',
       newArchEnabled: true,
+      owner: "rreisp", 
 
       ios: {
         supportsTablet: true,
@@ -82,7 +83,7 @@ export default () => {
       extra: {
         router: {},
         eas: {
-          projectId: '1404efca-f924-456d-a036-8a9973dc1b78', // Rodrigo
+          projectId: '495eb5db-c06d-4e0d-8499-e608ae07af8a', // Rodrigo
           // projectId: 'b48d5b7e-d8f5-42cf-a97d-a18e2c41cb84', // Jeferson
         },
 

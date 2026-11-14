@@ -1,31 +1,109 @@
+import { Text } from 'react-native';
 import React, { useState } from 'react';
-import { View, Platform, StyleSheet, Pressable } from 'react-native';
+import { View, Platform, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MaskInput, { Masks } from 'react-native-mask-input';
 import GlobalStyles from '@/core/constants/styles';
 
 type DateInputProps = {
-    value: Date | null;
-    onChange: (date: Date) => void;
+    value: string | null;
+    onChange: (date: string) => void;
     format?: 'dd/MM/yyyy' | 'MM/dd/yyyy' | 'yyyy-MM-dd';
     placeholder?: string;
 };
 
-const formatDate = (date: Date, format: string) => {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    const day = pad(date.getDate());
-    const month = pad(date.getMonth() + 1);
-    const year = date.getFullYear();
-
-    return format
-        .replace('dd', day)
-        .replace('MM', month)
-        .replace('yyyy', year.toString());
+type DateParts = {
+    day: number;
+    month: number;
+    year: number;
 };
 
-// Remove hora, minuto, segundo, milissegundo
-const normalizeDate = (date: Date): Date => {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+// Converte uma string para componentes numéricos da data
+const parseDate = (
+    value: string,
+    format: DateInputProps['format']
+): DateParts | null => {
+    const separator = format === 'yyyy-MM-dd' ? '-' : '/';
+    const parts = value.split(separator).map(Number);
+
+    if (parts.length !== 3 || parts.some(Number.isNaN)) {
+        return null;
+    }
+
+    let day: number;
+    let month: number;
+    let year: number;
+
+    switch (format) {
+        case 'dd/MM/yyyy':
+            [day, month, year] = parts;
+            break;
+
+        case 'MM/dd/yyyy':
+            [month, day, year] = parts;
+            break;
+
+        case 'yyyy-MM-dd':
+            [year, month, day] = parts;
+            break;
+
+        default:
+            return null;
+    }
+
+    const date = new Date(year, month - 1, day);
+
+    // Impede que datas inválidas sejam normalizadas automaticamente
+    if (
+        date.getFullYear() !== year ||
+        date.getMonth() !== month - 1 ||
+        date.getDate() !== day
+    ) {
+        return null;
+    }
+
+    return { day, month, year };
+};
+
+// Converte string para Date
+const toDate = (
+    value: string | null,
+    format: DateInputProps['format']
+): Date => {
+    const parts = value ? parseDate(value, format) : null;
+
+    if (!parts) {
+        return new Date();
+    }
+
+    return new Date(
+        parts.year,
+        parts.month - 1,
+        parts.day
+    );
+};
+
+// Converte Date para string no formato selecionado
+const formatDate = (
+    date: Date,
+    format: DateInputProps['format']
+): string => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear());
+
+    switch (format) {
+        case 'dd/MM/yyyy':
+            return `${day}/${month}/${year}`;
+
+        case 'MM/dd/yyyy':
+            return `${month}/${day}/${year}`;
+
+        case 'yyyy-MM-dd':
+            return `${year}-${month}-${day}`;
+
+        default:
+            return `${day}/${month}/${year}`;
+    }
 };
 
 const DateInput: React.FC<DateInputProps> = ({
@@ -36,50 +114,47 @@ const DateInput: React.FC<DateInputProps> = ({
 }) => {
     const [showPicker, setShowPicker] = useState(false);
 
-    const handleDateChange = (_event: any, selectedDate?: Date) => {
+    const handleDateChange = (
+        _event: any,
+        selectedDate?: Date
+    ) => {
         setShowPicker(false);
+
         if (selectedDate) {
-            onChange(normalizeDate(selectedDate));
+            onChange(formatDate(selectedDate, format));
         }
     };
+
+    const validDate = value
+        ? parseDate(value, format) !== null
+        : false;
 
     return (
         <View>
             <Pressable onPress={() => setShowPicker(true)}>
-                <MaskInput
-                    editable={false}
-                    value={value ? formatDate(value, format) : ''}
-                    style={GlobalStyles.input}
-                    mask={
-                        format === 'dd/MM/yyyy' ? Masks.DATE_DDMMYYYY :
-                            format === 'MM/dd/yyyy' ? Masks.DATE_MMDDYYYY :
-                                Masks.DATE_YYYYMMDD
-                    }
-                    placeholder={placeholder}
-                />
+                <View pointerEvents="none">
+                    <View style={GlobalStyles.input}>
+                        <Text>
+                            {value && validDate ? value : placeholder}
+                        </Text>
+                    </View>
+                </View>
             </Pressable>
 
             {showPicker && (
                 <DateTimePicker
-                    value={value ? normalizeDate(value) : normalizeDate(new Date())}
+                    value={toDate(value, format)}
                     mode="date"
-                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    display={
+                        Platform.OS === 'ios'
+                            ? 'spinner'
+                            : 'default'
+                    }
                     onChange={handleDateChange}
                 />
             )}
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 12,
-        borderRadius: 6,
-        fontSize: 16,
-        backgroundColor: '#fff',
-    },
-});
 
 export default DateInput;

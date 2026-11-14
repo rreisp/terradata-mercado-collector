@@ -3,13 +3,6 @@ import { DataExtractor } from "@/core/types/data-extractor";
 import { CrudService } from "@/core/services/crud.service";
 import { Alert } from 'react-native';
 
-function formatDate(date: Date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
-}
-
 export class MercadoInconfidentesCombustiveisExtractor implements DataExtractor {
     private isPT: boolean;
 
@@ -26,7 +19,7 @@ export class MercadoInconfidentesCombustiveisExtractor implements DataExtractor 
             // informação básica da pesquisa
             const combustiveis = this.extractCombustiveisInfo(info);
 
-            // console.log(drilling);
+            // console.log(combustiveis);
             await this.saveCombustiveis(combustiveis);
 
             const lastCombustiveisId = await CrudService.lastInsertId();
@@ -45,17 +38,16 @@ export class MercadoInconfidentesCombustiveisExtractor implements DataExtractor 
     // -----------------------------------------------------------
     private async saveCombustiveis(data: any) {
         try {
-            await CrudService.insert('drillings', {
-                title: data.title,
-                easting: data.easting,
-                northing: data.northing,
-                elevation: data.elevation,
-                tenement: data.tenement,
-                landowner: data.landowner,
-                start_date: data.start_date,
-                end_date: data.end_date,
-                responsible: data.responsible,
-                interruption_reason: data.interruption_reason
+            await CrudService.insert('mercado_combustiveis', {
+                estabelecimento: data.estabelecimento,
+                etanol: data.etanol,
+                gasolina: data.gasolina,
+                gasolina_aditivada: data.gasolina_aditivada,
+                gasolina_premium: data.gasolina_premium,
+                diesel_s10: data.diesel_s10,
+                diesel_s500: data.diesel_s500,
+                arla: data.arla,
+                data: data.data
             });
         } catch (e) {
             console.error("MercadoInconfidentesCombustiveisExtractor.saveCombustiveis")
@@ -66,16 +58,15 @@ export class MercadoInconfidentesCombustiveisExtractor implements DataExtractor 
     private extractCombustiveisInfo(info: any) {
         try {
             return {
-                title: info.title,
-                easting: info.ef_coordinates.easting,
-                northing: info.ef_coordinates.northing,
-                elevation: info.ef_coordinates.elevation,
-                tenement: info.tenement,
-                landowner: info.landowner,
-                start_date: formatDate(info.ef_dates.start),
-                end_date: formatDate(info.ef_dates.end),
-                responsible: info.responsible,
-                interruption_reason: info.reason
+                estabelecimento: info.estabelecimento,
+                etanol: info.etanol,
+                gasolina: info.gasolina,
+                gasolina_aditivada: info.gasolina_aditivada,
+                gasolina_premium: info.gasolina_premium,
+                diesel_s10: info.diesel_s10,
+                diesel_s500: info.diesel_s500,
+                arla: info.arla,
+                data: info.data
             }
         } catch (e) {
             console.error("MercadoInconfidentesCombustiveisExtractor.extractCombustiveisInfo")

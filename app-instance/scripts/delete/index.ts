@@ -1,1 +1,2 @@
-export { MercadoInconfidentesCombustiveisRemover } from "./mercado-incofidentes-combustiveis.remover";
+export { MercadoInconfidentesCarnesRemover } from "./mercado-inconfidentes-carnes.remover";
+export { MercadoInconfidentesCombustiveisRemover } from "./mercado-inconfidentes-combustiveis.remover";

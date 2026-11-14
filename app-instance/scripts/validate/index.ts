@@ -1,1 +1,2 @@
+export { MercadoInconfidentesCarnesValidator } from "./mercado-inconfidentes-carnes.validator";
 export { MercadoInconfidentesCombustiveisValidator } from "./mercado-inconfidentes-combustiveis.validator";

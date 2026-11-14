@@ -12,7 +12,7 @@ export class MercadoInconfidentesCombustiveisRemover implements DataRemover {
     async remove(rootItemId: number): Promise<void> {
         try {
             // apaga o registro principal da pesquisa  
-            await CrudService.delete('drillings', 'id = ?', [rootItemId]);
+            await CrudService.delete('mercado_combustiveis', 'id = ?', [rootItemId]);
 
             console.log(`Registro com ID ${rootItemId} removido com sucesso.`);
             Alert.alert(

@@ -1,0 +1,253 @@
+{
+  "form_id": "mercado-carnes",
+  "formReturn": "LIST",
+  "title": {
+    "pt-BR": "🥩 CARNES"
+  },
+  "logo": "MercadoInconfidentes-Logo.png",
+  "description": {
+    "pt-BR": "Preencha os campos abaixo."
+  },
+  "version": "1.0",
+  "grid": {
+    "columns": 12,
+    "gap": "3"
+  },
+  "rows": [
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "estabelecimento",
+            "label": {
+              "pt-BR": "Estabelecimento:"
+            },
+            "type": "text",
+            "max": 256
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "type": "date",
+            "label": {
+              "pt-BR": "Data:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "acem",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Acém:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "alcatra",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Alcatra:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "carne_moida_bovina",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Carne moída bovina:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "contrafile",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Contrafilé:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "costela_bovina",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Costela bovina:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "coxao_mole",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Coxão mole:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "fraldinha",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Fraldinha:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "musculo",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Músculo:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "patinho",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Patinho:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "picanha",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Picanha:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "asa_de_frango",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Asa de frango:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "coxa_de_frango",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Coxa de frango:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "file_de_peito_de_frango",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Filé de peito de frango:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "peito_de_frango",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Peito de frango:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "sobrecoxa_de_frango",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Sobrecoxa de frango:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "costelinha_suina",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Costelinha suína:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "linguica_suina",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Linguiça suína:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "lombo_suino",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Lombo suíno:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "panceta_barriga_suina",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Panceta / barriga suína:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "pernil_suino",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Pernil suíno:"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

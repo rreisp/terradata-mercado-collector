@@ -40,7 +40,7 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
     private async updateCombustiveis(data: any) {
         try {
             await CrudService.update('mercado_combustiveis', {
-                titulo: data.titulo,
+                estabelecimento: data.estabelecimento,
                 etanol: data.etanol,
                 gasolina: data.gasolina,
                 gasolina_aditivada: data.gasolina_aditivada,
@@ -63,7 +63,7 @@ export class MercadoInconfidentesCombustiveisUpdater implements DataUpdater {
         try {
             return {
                 id: info.id,
-                titulo: info.titulo,
+                estabelecimento: info.estabelecimento,
                 etanol: info.etanol,
                 gasolina: info.gasolina,
                 gasolina_aditivada: info.gasolina_aditivada,

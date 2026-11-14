@@ -17,7 +17,7 @@ export class MercadoInconfidentesCombustiveisInitializer implements DataInitiali
     try {
       await CrudService.createTable('mercado_combustiveis', `
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      titulo TEXT NOT NULL,
+      estabelecimento TEXT NOT NULL,
       etanol REAL,
       gasolina REAL,
       gasolina_aditivada REAL,

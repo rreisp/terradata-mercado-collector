@@ -1,0 +1,101 @@
+{
+  "form_id": "mercado-combustiveis",
+  "formReturn": "LIST",
+  "title": {
+    "pt-BR": "⛽ COMBUSTÍVEIS"
+  },
+  "logo": "MercadoInconfidentes-Logo.png",
+  "description": {
+    "pt-BR": "Preencha os campos abaixo."
+  },
+  "version": "1.0",
+  "grid": {
+    "columns": 12,
+    "gap": "3"
+  },
+  "rows": [
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "estabelecimento",
+            "label": {
+              "pt-BR": "Estabelecimento:"
+            },
+            "type": "text",
+            "max": 256
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "type": "date",
+            "label": {
+              "pt-BR": "Data:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "etanol",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Etanol:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "gasolina",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Gasolina:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "gasolina_aditivada",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Gasolina Aditivada:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "diesel_s10",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Diesel S10:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "diesel_s500",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Diesel S500:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "arla",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Arla:"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,1 +1,2 @@
-export { MercadoInconfidentesCombustiveisInitializer } from "./mercado-incofidentes-combustiveis.initializer";
+export { MercadoInconfidentesCarnesInitializer } from "./mercado-inconfidentes-carnes.initializer";
+export { MercadoInconfidentesCombustiveisInitializer } from "./mercado-inconfidentes-combustiveis.initializer";

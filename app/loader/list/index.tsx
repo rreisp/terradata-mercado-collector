@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useLanguage } from '@/core/contexts/LanguageContext';
 import { DataExporter } from "@/core/types/data-exporter";
@@ -6,6 +6,7 @@ import { DataInitializer } from "@/core/types/data-initializer";
 import { DataReader } from "@/core/types/data-reader";
 import { DataRemover } from "@/core/types/data-remover";
 import { DataReseter } from "@/core/types/data-reseter";
+import { DataImporter } from "@/core/types/data-importer";
 
 import * as Exporters from "@/app-instance/scripts/export";
 import * as Importers from "@/app-instance/scripts/import";
@@ -16,38 +17,58 @@ import * as Reseters from "@/app-instance/scripts/reset";
 
 import DynamicList from '../../dynamic/list/index';
 import { OperationModeProvider } from "@/core/contexts/OperationModeContext";
-import { DataImporter } from "@/core/types/data-importer";
 
 const ListLoader = () => {
     const { language } = useLanguage();
     const schemaIdParam = useLocalSearchParams().schemaId;
     const schemaId = Array.isArray(schemaIdParam) ? schemaIdParam[0] : schemaIdParam;
 
-    const exporterRegistry: Record<string, new (language: string) => DataExporter> = {
-        ...Exporters,
-    };
-    const importerRegistry: Record<string, new (language: string) => DataImporter> = {
-        ...Importers,
-    };
-    const initializerRegistry: Record<string, new () => DataInitializer> = {
-        ...Initializers,
-    };
-    const readerRegistry: Record<string, new (language: string) => DataReader> = {
-        ...Readers,
-    };
-    const removerRegistry: Record<string, new (language: string) => DataRemover> = {
-        ...Removers,
-    };
-    const reseterRegistry: Record<string, new () => DataReseter> = {
-        ...Reseters,
-    };
+    // Se o schemaId ainda não estiver disponível, exibe um loading ou vazio para evitar quebras
+    if (!schemaId) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Carregando...</Text>
+            </View>
+        );
+    }
 
-    const importer = new importerRegistry[schemaId + "Importer"](language);
-    const exporter = new exporterRegistry[schemaId + "Exporter"](language);
-    const intializer = new initializerRegistry[schemaId + "Initializer"]();
-    const reader = new readerRegistry[schemaId + "Reader"](language);
-    const remover = new removerRegistry[schemaId + "Remover"](language);
-    const reseter = new reseterRegistry[schemaId + "Reseter"]();
+    const exporterRegistry: Record<string, new (language: string) => DataExporter> = { ...Exporters };
+    const importerRegistry: Record<string, new (language: string) => DataImporter> = { ...Importers };
+    const initializerRegistry: Record<string, new () => DataInitializer> = { ...Initializers };
+    const readerRegistry: Record<string, new (language: string) => DataReader> = { ...Readers };
+    const removerRegistry: Record<string, new (language: string) => DataRemover> = { ...Removers };
+    const reseterRegistry: Record<string, new () => DataReseter> = { ...Reseters };
+
+    // ***************************************************************************************
+    // Verificação de segurança opcional para alertar ausência de classes
+    const ImporterClass = importerRegistry[schemaId + "Importer"];
+    const ExporterClass = exporterRegistry[schemaId + "Exporter"];
+    const InitializerClass = initializerRegistry[schemaId + "Initializer"];
+    const ReaderClass = readerRegistry[schemaId + "Reader"];
+    const RemoverClass = removerRegistry[schemaId + "Remover"];
+    const ReseterClass = reseterRegistry[schemaId + "Reseter"];
+
+    const renderErroSchemaNaoEncontrado = (schemaId: string, script: string) => (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Erro: Script "{script}" não encontrado para o schema "{schemaId}".</Text>
+        </View>
+    );
+
+    if (!ImporterClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Importer")); }
+    if (!ExporterClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Exporter")); }
+    if (!InitializerClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Initializer")); }
+    if (!ReaderClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Reader")); }
+    if (!RemoverClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Remover")); }
+    if (!ReseterClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Reseter")); }
+
+    // ***************************************************************************************    
+
+    const importer = new ImporterClass(language);
+    const exporter = new ExporterClass(language);
+    const initializer = InitializerClass ? new InitializerClass() : null;
+    const reader = new ReaderClass(language);
+    const remover = new RemoverClass(language);
+    const reseter = ReseterClass ? new ReseterClass() : null;
 
     return (
         <OperationModeProvider>
@@ -56,13 +77,16 @@ const ListLoader = () => {
                     schemaId={schemaId}
                     columns={reader.columns()}
                     onExport={exporter.export.bind(exporter)}
-                    onExportPDF={exporter.exportPDF.bind(exporter)}
-                    onExportAll={exporter.exportAll.bind(exporter)}
+                    onExportPDF={exporter.exportPDF?.bind(exporter)}
+                    onExportAll={exporter.exportAll?.bind(exporter)}
                     onImportDatabase={importer.importDatabase.bind(importer)}
-                    onInit={intializer.init.bind(intializer)}
+                    onInit={initializer?.init.bind(initializer)}
                     onDelete={remover.remove.bind(remover)}
                     onList={reader.read.bind(reader)}
-                    onReset={reseter.reset.bind(reseter)}
+                    onReset={reseter?.reset.bind(reseter)}
+                    onExportDatabase={async () => {
+                        throw new Error("Function not implemented.");
+                    }}
                 />
             </View>
         </OperationModeProvider>

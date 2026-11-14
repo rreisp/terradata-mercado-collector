@@ -1,1 +1,2 @@
-export { MercadoInconfidentesCombustiveisImporter } from "./mercado-incofidentes-combustiveis.importer"
+export { MercadoInconfidentesCarnesImporter } from "./mercado-inconfidentes-carnes.importer"
+export { MercadoInconfidentesCombustiveisImporter } from "./mercado-inconfidentes-combustiveis.importer"
