@@ -10,9 +10,7 @@
   },
   "logo": "TerradataPesquisa-Logo.png",
   "export": [
-    "single",
     "all",
-    "pdf",
     "database"
   ],
   "rows": [

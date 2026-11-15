@@ -48,7 +48,8 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
     } else if (!hasExport || !hasExportPDF) {
         centerColStyle = GlobalStyles.col9;
     }
-
+    const showPDF = Boolean(formSchema && formSchema.export?.includes("pdf") && hasExportPDF);
+    const showSingle = Boolean(formSchema && formSchema.export?.includes("single") && hasExport);
     // ********************************************************************************************    
     // FUNÇÕES AUXILIARES
     async function loadSchema(schemaId: string) {
@@ -265,7 +266,6 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                 <View style={[GlobalStyles.row]}>
                     <View style={[GlobalStyles.col12, styles.center]}>
                         <Image
-                            // source={require(`../../../assets/images/${formSchema?.logo || ""}`)}
                             source={logos[schemaId]}
                             style={[GlobalStyles.logo, { resizeMode: 'contain' }]}
                         />
@@ -273,77 +273,108 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                     </View>
                 </View>
 
-                <View style={GlobalStyles.row}>
-                    <View style={GlobalStyles.col10}></View>
-                    <View style={[GlobalStyles.col2, { alignItems: "flex-end", marginRight: 2 }]}>
-                        <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
-                            <Icon name="plus" size={16} color="#fff" />
-                        </Pressable>
+                {/* --- CABEÇALHO --- */}
+                <View style={[GlobalStyles.row, { alignItems: 'center', marginBottom: 6 }]}>
+                    {/* Colunas de dados (ocupam o espaço flexível) */}
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
+                        {columns.map((field, index) => {
+                            const colStyle = {
+                                flex: 1 / columns.length,
+                                marginRight: 2
+                            };
+
+                            return (
+                                <View key={index} style={[GlobalStyles.col, colStyle]}>
+                                    {/* CORRIGIDO: Enenvolvido com a tag <Text> */}
+                                    <Text style={{ fontWeight: 'bold' }}>{field}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
+
+                    {/* Container dos botões do cabeçalho alinhados à direita */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {showPDF && <View style={{ width: 34, marginRight: 2 }} />}
+                        {showSingle && <View style={{ width: 34, marginRight: 2 }} />}
+                        <View style={{ width: 34, marginRight: 2 }} />
+
+                        {/* Botão Adicionar */}
+                        <View style={{ alignItems: "flex-end" }}>
+                            <Pressable accessibilityRole="button" style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]} onPress={openForm}>
+                                <Icon name="plus" size={16} color="#fff" />
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
 
+                {/* --- FLATLIST --- */}
                 <FlatList
                     data={records}
                     keyExtractor={(item) => item.id!.toString()}
-                    contentContainerStyle={{ paddingBottom: 2, marginRight: 5 }}
+                    contentContainerStyle={{ paddingBottom: 2, marginRight: 1 }}
                     renderItem={({ item }) => (
-                        <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                            <View style={[[centerColStyle]]}>
-                                <View style={[GlobalStyles.row]}>
-                                    {columns.map((field, index) => {
-                                        const colStyle = {
-                                            flex: 1 / columns.length,
-                                            marginRight: 2
-                                        };
+                        <View style={[GlobalStyles.row, { paddingVertical: 3, alignItems: 'center' }]}>
+                            {/* Colunas de dados do registro */}
+                            <View style={{ flex: 1, flexDirection: 'row' }}>
+                                {columns.map((field, index) => {
+                                    const colStyle = {
+                                        flex: 1 / columns.length,
+                                        marginRight: 2
+                                    };
 
-                                        return (
-                                            <View key={index} style={[GlobalStyles.col, colStyle]}>
-                                                <Text>{item[field]}</Text>
-                                            </View>
-                                        );
-                                    })}
-                                </View>
+                                    return (
+                                        <View key={index} style={[GlobalStyles.col, colStyle]}>
+                                            <Text>{item[field]}</Text>
+                                        </View>
+                                    );
+                                })}
                             </View>
 
-                            {/* Botão PDF (Condicional) */}
-                            {(formSchema && formSchema.export.includes("pdf") && hasExportPDF) &&
-                                <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
+                            {/* Container de Ações (Botões) alinhado à direita */}
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                {/* Botão PDF (Condicional) */}
+                                {showPDF &&
+                                    <View style={{ marginRight: 2, alignItems: "flex-end" }}>
+                                        <Pressable
+                                            accessibilityRole="button"
+                                            style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                            onPress={() => handleExportPDF(item.id)}>
+                                            <Icon name="file-pdf-o" size={16} color="white" />
+                                        </Pressable>
+                                    </View>
+                                }
+
+                                {/* Botão Salvar/Exportar Individual (Condicional) */}
+                                {showSingle &&
+                                    <View style={{ marginRight: 2, alignItems: "flex-end" }}>
+                                        <Pressable
+                                            accessibilityRole="button"
+                                            style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                            onPress={() => handleExport(item.id)}>
+                                            <Icon name="save" size={16} color="white" />
+                                        </Pressable>
+                                    </View>
+                                }
+
+                                {/* Botão Editar */}
+                                <View style={{ marginRight: 2, alignItems: "flex-end" }}>
                                     <Pressable
                                         accessibilityRole="button"
                                         style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
-                                        onPress={() => handleExportPDF(item.id)}>
-                                        <Icon name="file-pdf-o" size={16} color="white" />
+                                        onPress={() => handleEdit(item.id)}>
+                                        <Icon name="edit" size={16} color="white" />
                                     </Pressable>
                                 </View>
-                            }
 
-                            {/* Botão Salvar/Exportar Individual (Condicional) */}
-                            {(formSchema && formSchema.export.includes("single") && hasExport) &&
-                                <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
+                                {/* Botão Excluir */}
+                                <View style={{ alignItems: "flex-end" }}>
                                     <Pressable
                                         accessibilityRole="button"
-                                        style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
-                                        onPress={() => handleExport(item.id)}>
-                                        <Icon name="save" size={16} color="white" />
+                                        style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}
+                                        onPress={() => handleDelete(item.id)}>
+                                        <Icon name="trash" size={16} color="red" />
                                     </Pressable>
                                 </View>
-                            }
-
-                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
-                                <Pressable
-                                    accessibilityRole="button"
-                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
-                                    onPress={() => handleEdit(item.id)}>
-                                    <Icon name="edit" size={16} color="white" />
-                                </Pressable>
-                            </View>
-                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end", }]}>
-                                <Pressable
-                                    accessibilityRole="button"
-                                    style={[GlobalStyles.warnButton, GlobalStyles.iconButton]}
-                                    onPress={() => handleDelete(item.id)}>
-                                    <Icon name="trash" size={16} color="red" />
-                                </Pressable>
                             </View>
                         </View>
                     )}
@@ -404,4 +435,3 @@ const styles = StyleSheet.create({
 });
 
 export default DynamicList;
-
