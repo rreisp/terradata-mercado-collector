@@ -306,7 +306,7 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                             </View>
 
                             {/* Botão PDF (Condicional) */}
-                            {hasExportPDF &&
+                            {(formSchema && formSchema.export.includes("pdf") && hasExportPDF) &&
                                 <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                     <Pressable
                                         accessibilityRole="button"
@@ -318,7 +318,7 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                             }
 
                             {/* Botão Salvar/Exportar Individual (Condicional) */}
-                            {hasExport &&
+                            {(formSchema && formSchema.export.includes("single") && hasExport) &&
                                 <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                     <Pressable
                                         accessibilityRole="button"
@@ -328,7 +328,7 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                                     </Pressable>
                                 </View>
                             }
-                            
+
                             <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                 <Pressable
                                     accessibilityRole="button"
