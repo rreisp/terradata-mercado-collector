@@ -63,7 +63,6 @@ export class TerradataPesquisaCarnesExtractor implements DataExtractor {
     }
 
     private extractCarnesInfo(info: any) {
-        console.warn('aqui', info)
         try {
             return {
                 estabelecimento: info.estabelecimento,

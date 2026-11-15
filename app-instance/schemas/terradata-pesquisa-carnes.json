@@ -1,18 +1,20 @@
 {
-  "form_id": "mercado-carnes",
-  "formReturn": "LIST",
+  "id": "mercado-carnes",
+  "version": "1.0",
+  "return": "LIST",
   "title": {
     "pt-BR": "🥩 CARNES"
   },
-  "logo": "TerradataPesquisa-Logo.png",
   "description": {
     "pt-BR": "Preencha os campos abaixo."
   },
-  "version": "1.0",
-  "grid": {
-    "columns": 12,
-    "gap": "3"
-  },
+  "logo": "TerradataPesquisa-Logo.png",
+  "export": [
+    "single",
+    "all",
+    "pdf",
+    "database"
+  ],
   "rows": [
     {
       "columns": [

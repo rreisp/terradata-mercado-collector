@@ -15,7 +15,7 @@ export class TerradataPesquisaCarnesReader implements DataReader {
       const registros = await CrudService.list<CarnesRecord>('mercado_carnes', {
         columns: ["id", "estabelecimento", "data"]
       });
-      console.warn(registros)
+      // console.warn(registros)
       const adaptedCarnes = registros.map((item) => ({
         id: item.id,
         estabelecimento: item.estabelecimento,

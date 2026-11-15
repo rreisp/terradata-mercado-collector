@@ -141,7 +141,7 @@ const DynamicForm = ({ schemaId, editMode, itemId, onExport, onLoad, onUpdate, o
                                 { cancelable: false },
                             );
 
-                            if (formSchema?.formReturn === "FORM") {
+                            if (formSchema?.return === "FORM") {
                                 // navigation.navigate('loader/form/index', { schemaId: schemaId }, { pop: true });
                                 navigation.dispatch(
                                     StackActions.replace('loader/form/index', { schemaId })

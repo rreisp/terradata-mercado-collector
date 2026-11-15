@@ -3,12 +3,15 @@ import { LocalizedString } from "./localized-string";
 import { ModalContent } from "./modal-content";
 import { ResponsiveSize } from "./responsive-size";
 
+export type ExportOption = "single" | "all" | "pdf" | "database";
+
 export type FormSchema = {
     formId: string;
-    formReturn: 'FORM' | 'LIST';
+    return: 'FORM' | 'LIST';
     title: LocalizedString;
     description: LocalizedString;
     logo?: string;
+    export:ExportOption[];
     version: string;
     method: string;
     url: string;
@@ -16,10 +19,6 @@ export type FormSchema = {
         size: string;
         success: ModalContent;
         error: ModalContent;
-    };
-    grid: {
-        columns: number;
-        gap?: string | number;
     };
     rows: Array<{
         columns: Array<{

@@ -25,37 +25,32 @@ import { BackupService } from "@/core/services/backup.service";
 const { version } = Constants.expoConfig ?? {};
 const buildStamp = Constants.expoConfig?.extra?.buildStamp;
 
-const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onExport, onExportPDF, onExportAll, onImportDatabase }: DynamicListProps) => {
+const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onExport = undefined, onExportPDF = undefined, onExportAll, onImportDatabase }: DynamicListProps) => {
     const { language } = useLanguage();
     const isOnline = useOperationMode();
     const navigation = useNavigation();
     const [formSchema, setFormSchema] = useState<FormSchema | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
-    // const [modalContent, setModalContent] = useState("");
-    // const insets = useSafeAreaInsets();
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     const isPT = language === 'pt-BR';
 
-    useFocusEffect(
-        useCallback(() => {
-            loadSchema(schemaId);
-            fetchRecords();
-        }, [])
-    );
+    const hasExport = !!onExport;
+    const hasExportAll = !!onExportAll;
+    const hasExportPDF = !!onExportPDF;
+    const hasImportDatabase = !!onImportDatabase
 
-    async function fetchRecords() {
-        try {
-            const data = await onList(language);
-            setRecords(data);
-        } catch (error) {
-            console.error(isPT ? 'Erro ao carregar registros:' : 'Error loading records: ', error);
-        } finally {
-            setLoading(false);
-        }
+    // Determina a classe de largura dinamicamente com base nas funções de exportação disponíveis
+    let centerColStyle: any = GlobalStyles.col8;
+    if (!hasExport && !hasExportPDF) {
+        centerColStyle = GlobalStyles.col10;
+    } else if (!hasExport || !hasExportPDF) {
+        centerColStyle = GlobalStyles.col9;
     }
 
+    // ********************************************************************************************    
+    // FUNÇÕES AUXILIARES
     async function loadSchema(schemaId: string) {
         const timer = setTimeout(() => setLoading(false), constants.delay);
         // Icon.loadFont();
@@ -76,6 +71,19 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
         }
     }
 
+    async function fetchRecords() {
+        try {
+            const data = await onList(language);
+            setRecords(data);
+        } catch (error) {
+            console.error(isPT ? 'Erro ao carregar registros:' : 'Error loading records: ', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // ********************************************************************************************    
+    // FUNÇÕES PARA TRATAMENTO DE EVENTOS
     async function handleDelete(rootItemId: number): Promise<void> {
         const doDelete = () => {
             onDelete(rootItemId);
@@ -163,7 +171,6 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
         }
     }
 
-
     async function handleExportDatabase() {
         try {
             const backupUri = await BackupService.exportDatabase();
@@ -224,6 +231,15 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
         setModalVisible(true);
     };
 
+    // ********************************************************************************************   
+    useFocusEffect(
+        useCallback(() => {
+            loadSchema(schemaId);
+            fetchRecords();
+        }, [])
+    );
+
+
     return (
         <SafeAreaContainer scrollable={false}>
             {loading && (
@@ -272,7 +288,7 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                     contentContainerStyle={{ paddingBottom: 2, marginRight: 5 }}
                     renderItem={({ item }) => (
                         <View style={[GlobalStyles.row, { paddingVertical: 3 }]}>
-                            <View style={[GlobalStyles.col8]}>
+                            <View style={[[centerColStyle]]}>
                                 <View style={[GlobalStyles.row]}>
                                     {columns.map((field, index) => {
                                         const colStyle = {
@@ -289,23 +305,30 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
                                 </View>
                             </View>
 
-                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
-                                <Pressable
-                                    accessibilityRole="button"
-                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
-                                    onPress={() => handleExportPDF(item.id)}>
-                                    <Icon name="file-pdf-o" size={16} color="white" />
-                                </Pressable>
-                            </View>
+                            {/* Botão PDF (Condicional) */}
+                            {hasExportPDF &&
+                                <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
+                                    <Pressable
+                                        accessibilityRole="button"
+                                        style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                        onPress={() => handleExportPDF(item.id)}>
+                                        <Icon name="file-pdf-o" size={16} color="white" />
+                                    </Pressable>
+                                </View>
+                            }
 
-                            <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
-                                <Pressable
-                                    accessibilityRole="button"
-                                    style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
-                                    onPress={() => handleExport(item.id)}>
-                                    <Icon name="save" size={16} color="white" />
-                                </Pressable>
-                            </View>
+                            {/* Botão Salvar/Exportar Individual (Condicional) */}
+                            {hasExport &&
+                                <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
+                                    <Pressable
+                                        accessibilityRole="button"
+                                        style={[GlobalStyles.primaryButton, GlobalStyles.iconButton]}
+                                        onPress={() => handleExport(item.id)}>
+                                        <Icon name="save" size={16} color="white" />
+                                    </Pressable>
+                                </View>
+                            }
+                            
                             <View style={[GlobalStyles.col1, { marginRight: 2, alignItems: "flex-end" }]}>
                                 <Pressable
                                     accessibilityRole="button"
@@ -334,18 +357,21 @@ const DynamicList = ({ schemaId, onList, columns, onDelete, onReset, onInit, onE
 
             <Modal isVisible={modalVisible} backdropColor="white" backdropOpacity={constants.opacity}>
                 <View>
-                    {/* <View style={{ marginBottom: 12 }}>
-                        <Button title={isPT ? "💾 Exportar todos os registros" : "💾 Export all records"} onPress={handleExportAll} />
-                    </View> */}
+                    {(formSchema && formSchema.export.includes("all") && hasExportAll) &&
+                        <View style={{ marginBottom: 12 }}>
+                            <Button title={isPT ? "💾 Exportar todos os registros" : "💾 Export all records"} onPress={handleExportAll} />
+                        </View>
+                    }
 
                     <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗃️ Exportar banco de dados" : "🗃️ Export database"} onPress={handleExportDatabase} />
                     </View>
 
-                    {/* <View style={{ marginBottom: 12 }}>
-                        <Button title={isPT ? "🗃️ Importar banco de dados" : "🗃️ Import database"} onPress={handleImportDatabase} />
-                    </View>                     */}
-
+                    {hasImportDatabase &&
+                        <View style={{ marginBottom: 12 }}>
+                            <Button title={isPT ? "🗃️ Importar banco de dados" : "🗃️ Import database"} onPress={handleImportDatabase} />
+                        </View>
+                    }
                     <View style={{ marginBottom: 12 }}>
                         <Button title={isPT ? "🗑️ Resetar banco de dados" : "🗑️ Reset database"} onPress={handleReset} />
                     </View>
