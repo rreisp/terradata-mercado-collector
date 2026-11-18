@@ -41,7 +41,7 @@ const ListLoader = () => {
     const reseterRegistry: Record<string, new () => DataReseter> = { ...Reseters };
 
     // ***************************************************************************************
-    // Verificação de segurança opcional para alertar ausência de classes
+    // Verificação de segurança para alertar ausência de classes
     const ImporterClass = importerRegistry[schemaId + "Importer"];
     const ExporterClass = exporterRegistry[schemaId + "Exporter"];
     const InitializerClass = initializerRegistry[schemaId + "Initializer"];
@@ -67,7 +67,6 @@ const ListLoader = () => {
     if (!ReseterClass) { return (renderErroSchemaNaoEncontrado(schemaId, "Reseter")); }
 
     // ***************************************************************************************    
-
     const importer = new ImporterClass(language);
     const exporter = new ExporterClass(language);
     const initializer = InitializerClass ? new InitializerClass() : null;
