@@ -48,6 +48,7 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
     } else if (!hasExport || !hasExportPDF) {
         centerColStyle = GlobalStyles.col9;
     }
+    
     const showPDF = Boolean(formSchema && formSchema.export?.includes("pdf") && hasExportPDF);
     const showSingle = Boolean(formSchema && formSchema.export?.includes("single") && hasExport);
     // ********************************************************************************************    

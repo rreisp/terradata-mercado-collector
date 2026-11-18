@@ -127,4 +127,25 @@ export default StyleSheet.create({
         fontSize: 12,
         marginTop: 4,
     },
+    errorTitle: {
+        color: 'red',
+        fontSize: 12,
+        marginTop: 4,
+        fontWeight: "bold"
+    },    
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 16,
+    },
+    errorBox: {
+        width: '100%',
+        padding: 16,
+        borderWidth: 1,
+        borderColor: '#FFCC80',
+        borderRadius: 8,
+        backgroundColor: '#FFF3E0',
+    },  
 });

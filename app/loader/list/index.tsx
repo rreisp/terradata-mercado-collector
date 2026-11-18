@@ -17,6 +17,7 @@ import * as Reseters from "@/app-instance/scripts/reset";
 
 import DynamicList from '../../dynamic/list/index';
 import { OperationModeProvider } from "@/core/contexts/OperationModeContext";
+import GlobalStyles from '@/core/constants/styles';
 
 const ListLoader = () => {
     const { language } = useLanguage();
@@ -49,8 +50,12 @@ const ListLoader = () => {
     const ReseterClass = reseterRegistry[schemaId + "Reseter"];
 
     const renderErroSchemaNaoEncontrado = (schemaId: string, script: string) => (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Erro: Script "{script}" não encontrado para o schema "{schemaId}".</Text>
+        <View style={GlobalStyles.errorContainer}>
+            <View style={GlobalStyles.errorBox}>
+                <Text style={GlobalStyles.errorText}>
+                    Erro: Script "{script}" não encontrado para o schema "{schemaId}".
+                </Text>
+            </View>
         </View>
     );
 

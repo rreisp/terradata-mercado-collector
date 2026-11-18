@@ -1,0 +1,197 @@
+{
+  "id": "mercado-frutas",
+  "version": "1.0",
+  "return": "LIST",
+  "title": {
+    "pt-BR": "🍎 FRUTAS"
+  },
+  "description": {
+    "pt-BR": "Preencha os campos abaixo."
+  },
+  "logo": "TerradataPesquisa-Logo.png",
+  "export": [
+    "single",
+    "all",
+    "pdf",
+    "database"
+  ],
+  "rows": [
+    {
+      "columns": [ 
+        {
+          "field": {
+            "id": "estabelecimento",
+            "label": {
+              "pt-BR": "Estabelecimento:"
+            },
+            "type": "text",
+            "max": 256
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "type": "date",
+            "label": {
+              "pt-BR": "Data:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "abacate",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Abacate:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "abacaxi",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Abacaxi:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "banana_caturra",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Banana Caturra:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "banana_prata",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Banana Prata:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "laranja_pera_rio",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Laranja Pêra Rio:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "limao_tahiti",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Limão Tahiti:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "maca_fuji",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Maçã Fuji:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "mamao_havai",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Mamão Havaí:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "manga_palmer",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Manga Palmer:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "manga_tommy",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Manga Tommy:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "mexerica_ponkan",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Mexerica Ponkan:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "melancia",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Melancia:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "morango",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Morango:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "pera",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Pêra:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "uva_italia",
+            "type": "number",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Uva Itália:"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
