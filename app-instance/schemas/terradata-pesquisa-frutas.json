@@ -44,7 +44,7 @@
         {
           "field": {
             "id": "abacate",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Abacate:"
@@ -54,7 +54,7 @@
         {
           "field": {
             "id": "abacaxi",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Abacaxi:"
@@ -64,7 +64,7 @@
         {
           "field": {
             "id": "banana_caturra",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Banana Caturra:"
@@ -74,7 +74,7 @@
         {
           "field": {
             "id": "banana_prata",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Banana Prata:"
@@ -84,7 +84,7 @@
         {
           "field": {
             "id": "laranja_pera_rio",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Laranja Pêra Rio:"
@@ -94,7 +94,7 @@
         {
           "field": {
             "id": "limao_tahiti",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Limão Tahiti:"
@@ -104,7 +104,7 @@
         {
           "field": {
             "id": "maca_fuji",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Maçã Fuji:"
@@ -114,7 +114,7 @@
         {
           "field": {
             "id": "mamao_havai",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Mamão Havaí:"
@@ -124,7 +124,7 @@
         {
           "field": {
             "id": "manga_palmer",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Manga Palmer:"
@@ -134,7 +134,7 @@
         {
           "field": {
             "id": "manga_tommy",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Manga Tommy:"
@@ -144,7 +144,7 @@
         {
           "field": {
             "id": "mexerica_ponkan",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Mexerica Ponkan:"
@@ -154,7 +154,7 @@
         {
           "field": {
             "id": "melancia",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Melancia:"
@@ -164,7 +164,7 @@
         {
           "field": {
             "id": "morango",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Morango:"
@@ -174,7 +174,7 @@
         {
           "field": {
             "id": "pera",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Pêra:"
@@ -184,7 +184,7 @@
         {
           "field": {
             "id": "uva_italia",
-            "type": "number",
+            "type": "currency",
             "step": 0.01,
             "label": {
               "pt-BR": "Uva Itália:"

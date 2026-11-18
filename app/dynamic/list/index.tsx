@@ -387,8 +387,113 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                     )}
                 />
             </View>
+<Modal
+    isVisible={modalVisible}
+    backdropColor="white"
+    backdropOpacity={constants.opacity}
+>
+    <View style={GlobalStyles.modalContainer}>
 
-            <Modal isVisible={modalVisible} backdropColor="white" backdropOpacity={constants.opacity}>
+        {/* Cabeçalho */}
+        <View style={GlobalStyles.modalHeader}>
+            <Text style={GlobalStyles.headerIcon}>⚙️</Text>
+
+            <Text style={GlobalStyles.headerTitle}>
+                {isPT ? 'CONFIGURAÇÕES' : 'SETTINGS'}
+            </Text>
+        </View>
+
+        {/* Opções */}
+        <View style={GlobalStyles.optionsContainer}>
+
+            {(formSchema && formSchema.export.includes("all") && hasExportAll) &&
+                <Pressable
+                    style={({ pressed }) => [
+                        GlobalStyles.optionButton,
+                        pressed && GlobalStyles.optionPressed
+                    ]}
+                    onPress={handleExportAll}
+                >
+                    <Text style={GlobalStyles.optionIcon}>💾</Text>
+
+                    <Text style={GlobalStyles.optionText}>
+                        {isPT ? 'Exportar todos os registros' : 'Export all records'}
+                    </Text>
+
+                    {/* <Text style={GlobalStyles.optionArrow}>›</Text> */}
+                </Pressable>
+            }
+
+            <Pressable
+                style={({ pressed }) => [
+                    GlobalStyles.optionButton,
+                    pressed && GlobalStyles.optionPressed
+                ]}
+                onPress={handleExportDatabase}
+            >
+                <Text style={GlobalStyles.optionIcon}>🗃️</Text>
+
+                <Text style={GlobalStyles.optionText}>
+                    {isPT ? 'Exportar banco de dados' : 'Export database'}
+                </Text>
+
+                {/* <Text style={GlobalStyles.optionArrow}>›</Text> */}
+            </Pressable>
+
+            {hasImportDatabase &&
+                <Pressable
+                    style={({ pressed }) => [
+                        GlobalStyles.optionButton,
+                        pressed && GlobalStyles.optionPressed
+                    ]}
+                    onPress={handleImportDatabase}
+                >
+                    <Text style={GlobalStyles.optionIcon}>📥</Text>
+
+                    <Text style={GlobalStyles.optionText}>
+                        {isPT ? 'Importar banco de dados' : 'Import database'}
+                    </Text>
+
+                    {/* <Text style={GlobalStyles.optionArrow}>›</Text> */}
+                </Pressable>
+            }
+
+            <Pressable
+                style={({ pressed }) => [
+                    GlobalStyles.optionButton,
+                    GlobalStyles.lastOption,
+                    pressed && GlobalStyles.optionPressed
+                ]}
+                onPress={handleReset}
+            >
+                <Text style={GlobalStyles.optionIcon}>🗑️</Text>
+
+                <Text style={GlobalStyles.optionText}>
+                    {isPT ? 'Resetar banco de dados' : 'Reset database'}
+                </Text>
+
+                {/* <Text style={GlobalStyles.optionArrow}>›</Text> */}
+            </Pressable>
+
+        </View>
+
+        {/* Botão fechar */}
+        <Pressable
+            style={({ pressed }) => [
+                GlobalStyles.closeButton,
+                pressed && GlobalStyles.closeButtonPressed
+            ]}
+            onPress={() => setModalVisible(false)}
+        >
+            <Text style={GlobalStyles.closeIcon}>✖</Text>
+
+            <Text style={GlobalStyles.closeText}>
+                {isPT ? 'Fechar' : 'Close'}
+            </Text>
+        </Pressable>
+    </View>
+</Modal>
+            {/* <Modal isVisible={modalVisible} backdropColor="white" backdropOpacity={constants.opacity}>
                 <View>
                     {(formSchema && formSchema.export.includes("all") && hasExportAll) &&
                         <View style={{ marginBottom: 12 }}>
@@ -412,7 +517,7 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
                     <Button title={isPT ? "❎ Fechar" : "❎ Close"} onPress={() => setModalVisible(false)} />
                     <Text style={[GlobalStyles.textMuted, { marginTop: 5, fontSize: 10, fontStyle: 'italic' }]}>{isPT ? 'Versão ' : 'Version'} {version} {buildStamp}</Text>
                 </View>
-            </Modal>
+            </Modal> */}
         </SafeAreaContainer>
     );
 };

@@ -65,7 +65,7 @@ export default StyleSheet.create({
         height: 32
     },
     primaryButton: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#1976B9',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',
@@ -132,7 +132,7 @@ export default StyleSheet.create({
         fontSize: 12,
         marginTop: 4,
         fontWeight: "bold"
-    },    
+    },
     errorContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -147,5 +147,131 @@ export default StyleSheet.create({
         borderColor: '#FFCC80',
         borderRadius: 8,
         backgroundColor: '#FFF3E0',
-    },  
+    },
+
+    // Container principal
+    modalContainer: {
+        width: '100%',
+        alignSelf: 'center',
+        backgroundColor: 'rgba(255,255,255,0.96)',
+        borderRadius: 12,
+        overflow: 'hidden',
+
+        borderWidth: 1,
+        borderColor: '#D5DDE3',
+
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        },
+        shadowOpacity: 0.18,
+        shadowRadius: 5,
+    },
+
+    // Cabeçalho
+    modalHeader: {
+        height: 52,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+
+        backgroundColor: '#1976B9',
+
+        borderBottomWidth: 1,
+        borderBottomColor: '#125B91',
+    },
+
+    headerIcon: {
+        fontSize: 21,
+        marginRight: 10,
+    },
+
+    headerTitle: {
+        color: '#FFFFFF',
+        fontSize: 15,
+        fontWeight: 'bold',
+        letterSpacing: 0.8,
+    },
+
+    // Lista de opções
+    optionsContainer: {
+        backgroundColor: '#FFFFFF',
+        paddingHorizontal: 12,
+    },
+
+    optionButton: {
+        minHeight: 53,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 8,
+
+        borderBottomWidth: 1,
+        borderBottomColor: '#E8EAEC',
+    },
+
+    lastOption: {
+        borderBottomWidth: 0,
+    },
+
+    optionPressed: {
+        backgroundColor: '#F0F5F9',
+    },
+
+    optionIcon: {
+        width: 36,
+        fontSize: 19,
+    },
+
+    optionText: {
+        flex: 1,
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#454B50',
+    },
+
+    optionArrow: {
+        fontSize: 24,
+        color: '#92999E',
+        marginLeft: 8,
+    },
+
+    // Botão fechar
+    closeButton: {
+        height: 50,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        marginTop: 5,
+
+        backgroundColor: '#999',
+
+        borderTopWidth: 1,
+        borderTopColor: '#A0A5A9',
+    },
+
+    closeButtonPressed: {
+        backgroundColor: '#555D63',
+    },
+
+    closeIcon: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        marginRight: 12,
+    },
+
+    closeText: {
+        color: '#FFFFFF',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+
+    // Rodapé
+    versionText: {
+        fontSize: 10,
+        fontStyle: 'italic',
+        textAlign: 'center',
+        paddingVertical: 7,
+    },
 });

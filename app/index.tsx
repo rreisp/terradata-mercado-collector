@@ -1,9 +1,9 @@
-import { 
-  View, 
-  Text, 
-  Image, 
-  Pressable, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  StyleSheet,
   ActivityIndicator,
   Alert
 } from "react-native";
@@ -18,8 +18,12 @@ import SafeAreaContainer from "@/core/components/safe-container";
 import * as Initializers from "@/app-instance/scripts/init";
 
 import { getLicenseStatus } from "@/core/services/license.service";
-import ActivationScreen from "@/core/components/widgets/activationScreen"; 
+import ActivationScreen from "@/core/components/widgets/activationScreen";
 import { getLocales } from 'expo-localization';
+import Constants from "expo-constants";
+
+const { version } = Constants.expoConfig ?? {};
+const buildStamp = Constants.expoConfig?.extra?.buildStamp;
 
 export default function Index() {
   const { setLanguage } = useLanguage();
@@ -39,7 +43,7 @@ export default function Index() {
 
       if (status.licensed) {
         setIsLicensed(true);
-        
+
         // Roda seus initializers (pois o usuário é válido)
         Object.entries(Initializers).forEach(([className, ClassRef]) => {
           const initializer = new (ClassRef as any)();
@@ -52,14 +56,14 @@ export default function Index() {
           Alert.alert("Aviso", status.message);
         }
       }
-      
+
       // Termina o carregamento
       setIsCheckingLicense(false);
     };
 
     initializeAndCheckLicense();
 
-    
+
   }, []); // Roda apenas uma vez na inicialização
 
   const escolherIdioma = (lang: 'pt-BR' | 'en-US') => {
@@ -84,7 +88,7 @@ export default function Index() {
   //Se não estiver licenciado, mostra a tela de Ativação
   if (!isLicensed) {
     return (
-      <ActivationScreen 
+      <ActivationScreen
         onLicenseVerified={() => {
           // Esta função é chamada pela ActivationScreen quando
           // o usuário ativa com sucesso.
@@ -93,7 +97,7 @@ export default function Index() {
             const initializer = new (ClassRef as any)();
             initializer.init();
           });
-        }} 
+        }}
       />
     );
   }
@@ -112,25 +116,21 @@ export default function Index() {
         <Text style={[GlobalStyles.title, styles.title]}>
           MERCADO<Text style={{ color: colors.grey }}>COLLECTOR</Text>
         </Text>
-
-        <Text style={[GlobalStyles.textMuted, {fontSize: 10, fontStyle: 'italic'}]}>
+        <Text style={[GlobalStyles.textMuted, { fontSize: 10, fontStyle: 'italic' }]}>
           {idiomaDoSistema === 'pt' ? 'DESENVOLVIDO POR' : 'DESIGNED BY'} TERRADATA
+        </Text>        
+        <Text style={[GlobalStyles.textMuted, { fontSize: 10, fontStyle: 'italic' }]}>
+          {idiomaDoSistema === 'pt' ? 'Versao' : 'Version'} {version} {buildStamp}
         </Text>
 
+
+
         <View style={[GlobalStyles.row, styles.row]}>
-          <View style={GlobalStyles.col6}>
+          <View style={GlobalStyles.col12}>
             <Link href="/tools" asChild>
               <Pressable style={styles.button} accessibilityRole="button" onPress={() => escolherIdioma('pt-BR')}>
                 <CountryFlag isoCode="br" size={25} />
                 <Text style={styles.buttonText}>ACESSAR</Text>
-              </Pressable>
-            </Link>
-          </View>
-          <View style={GlobalStyles.col6}>
-            <Link href="/tools" asChild>
-              <Pressable style={styles.button} accessibilityRole="button" onPress={() => escolherIdioma('en-US')}>
-                <CountryFlag isoCode="us" size={25} />
-                <Text style={styles.buttonText}>ENTER</Text>
               </Pressable>
             </Link>
           </View>
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.green,
+    marginBottom: 0
   },
   button: {
     width: '100%',
