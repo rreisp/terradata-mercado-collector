@@ -2,3 +2,4 @@ export { TerradataPesquisaCarnesInitializer } from "./terradata-pesquisa-carnes.
 export { TerradataPesquisaCombustiveisInitializer } from "./terradata-pesquisa-combustiveis.initializer";
 export { TerradataPesquisaFrutasInitializer } from "./terradata-pesquisa-frutas.initializer";
 export { TerradataPesquisaLegumesInitializer } from "./terradata-pesquisa-legumes.initializer";
+export { TerradataPesquisaPadariaInitializer } from "./terradata-pesquisa-padaria.initializer";

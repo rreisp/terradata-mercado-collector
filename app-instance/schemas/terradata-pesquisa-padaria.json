@@ -1,0 +1,53 @@
+{
+  "id": "mercado-combustiveis",
+  "version": "1.0",
+  "return": "LIST",
+  "title": {
+    "pt-BR": "🥖 PADARIA"
+  },
+  "description": {
+    "pt-BR": "Preencha os campos abaixo."
+  },
+  "logo": "TerradataPesquisa-Logo.png",
+  "export": [
+    "single",
+    "all",
+    "pdf",
+    "database"
+  ],
+  "rows": [
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "estabelecimento",
+            "label": {
+              "pt-BR": "Estabelecimento:"
+            },
+            "type": "text",
+            "max": 256
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "type": "date",
+            "label": {
+              "pt-BR": "Data:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "pao_frances",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Pão Francês:"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

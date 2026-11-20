@@ -2,3 +2,4 @@ export { TerradataPesquisaCarnesReseter } from "./terradata-pesquisa-carnes.rese
 export { TerradataPesquisaCombustiveisReseter } from "./terradata-pesquisa-combustiveis.reseter";
 export { TerradataPesquisaFrutasReseter } from "./terradata-pesquisa-frutas.reseter";
 export { TerradataPesquisaLegumesReseter } from "./terradata-pesquisa-legumes.reseter";
+export { TerradataPesquisaPadariaReseter } from "./terradata-pesquisa-padaria.reseter";

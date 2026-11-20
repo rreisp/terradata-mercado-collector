@@ -2,3 +2,4 @@ export { TerradataPesquisaCarnesImporter } from "./terradata-pesquisa-carnes.imp
 export { TerradataPesquisaCombustiveisImporter } from "./terradata-pesquisa-combustiveis.importer"
 export { TerradataPesquisaFrutasImporter } from "./terradata-pesquisa-frutas.importer"
 export { TerradataPesquisaLegumesImporter } from "./terradata-pesquisa-legumes.importer"
+export { TerradataPesquisaPadariaImporter } from "./terradata-pesquisa-padaria.importer"
