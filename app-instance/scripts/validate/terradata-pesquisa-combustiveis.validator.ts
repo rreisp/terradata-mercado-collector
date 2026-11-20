@@ -27,15 +27,14 @@ export class TerradataPesquisaCombustiveisValidator extends DefaultFieldValidato
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
         const validators = {
             estabelecimento: Yup.string().trim().required(this.message('required')),
+            data: Yup.string().required(this.message('required')),            
             etanol: this.mandatoryPriceField(),
             gasolina: this.mandatoryPriceField(),
             gasolina_aditivada: this.priceField(),
             gasolina_premium: this.priceField(),
             diesel_s10: this.priceField(),
             diesel_s500: this.priceField(),
-            arla: this.priceField(),
-            data: Yup.string().required(),
-            // data: Yup.date().typeError(this.message("invalid")).required(this.message('required')),
+            arla: this.priceField()
         };
 
         if (field.id in validators) {

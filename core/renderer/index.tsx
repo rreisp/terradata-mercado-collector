@@ -51,9 +51,7 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                         min={field.min ?? undefined}
                         onChange={(text: string) => onChange(field.id, text)}
                     />
-                    {/* {easting === '' && ( */}
                     {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
-                    {/* )} */}
                 </View>
             );
         case "currency":
@@ -201,10 +199,12 @@ const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }
                     <Text style={GlobalStyles.label}>{field.label[language]}</Text>
                     <DateInput value={value || ''}
                         onChange={(text) => onChange(field.id, text)}
-                        parent={field.id} error={error}
                     />
+                    {error && <Text style={GlobalStyles.errorText}>{error}</Text>}
                 </View>
             );
+
+
         case "date_range":
             return (
                 <View key={field.id} style={[GlobalStyles.fieldContainer, { marginTop: constants.margin }]}>

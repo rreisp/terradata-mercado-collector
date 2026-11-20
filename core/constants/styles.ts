@@ -72,7 +72,7 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     warnButton: {
-        backgroundColor: '#FFA500',
+        backgroundColor: '#FFC500',
         padding: 7,
         borderRadius: 5,
         alignItems: 'center',

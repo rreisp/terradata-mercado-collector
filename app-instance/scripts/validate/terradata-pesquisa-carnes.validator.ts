@@ -22,7 +22,7 @@ export class TerradataPesquisaCarnesValidator extends DefaultFieldValidator impl
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
         const validators = {
             estabelecimento: Yup.string().trim().required(this.message('required')),
-            data: Yup.string().required(),
+            data: Yup.string().required(this.message('required')),
             acem: this.priceField(),
             alcatra: this.priceField(),
             carne_moida_bovina: this.priceField(),

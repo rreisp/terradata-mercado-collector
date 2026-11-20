@@ -286,7 +286,7 @@ const DynamicList = ({ schemaId, columns, onList, onDelete, onReset, onInit, onE
 
                             return (
                                 <View key={index} style={[GlobalStyles.col, colStyle]}>
-                                    <Text style={[GlobalStyles.textMuted, { fontWeight: 'bold', textTransform: 'capitalize' }]}>
+                                    <Text style={[GlobalStyles.textMuted, { fontWeight: 'bold', textTransform: 'capitalize'}]}>
                                         {field}
                                     </Text>
                                 </View>

@@ -22,7 +22,7 @@ export class TerradataPesquisaFrutasValidator extends DefaultFieldValidator impl
         let validator: Yup.ObjectSchema<any, Yup.AnyObject, any, "">;
         const validators = {
             estabelecimento: Yup.string().trim().required(this.message('required')),
-            data: Yup.string().required(),
+            data: Yup.string().required(this.message('required')),
             abacate: this.numberField(),
             abacaxi: this.numberField(),
             banana_caturra: this.numberField(),

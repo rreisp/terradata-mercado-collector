@@ -1,0 +1,393 @@
+{
+  "id": "mercado-legumes",
+  "version": "1.0",
+  "return": "LIST",
+  "title": {
+    "pt-BR": "🫜 LEGUMES E VERDURAS"
+  },
+  "description": {
+    "pt-BR": "Preencha os campos abaixo."
+  },
+  "logo": "TerradataPesquisa-Logo.png",
+  "export": [
+    "single",
+    "all",
+    "pdf",
+    "database"
+  ],
+  "rows": [
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "estabelecimento",
+            "label": {
+              "pt-BR": "Estabelecimento:"
+            },
+            "type": "text",
+            "max": 256
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "type": "date",
+            "label": {
+              "pt-BR": "Data:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "abobora_moranga",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Abóbora Moranga:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "abobrinha",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Abobrinha:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "acelga",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Acelga:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "agriao",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Agrião:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "almeirao",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Almeirão:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "alface",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Alface:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "alho",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Alho:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "alho_poro",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Alho-poró:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "batata_baroa",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Batata Baroa:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "batata_doce_roxa",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Batata-doce Roxa:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "batata_inglesa",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Batata Inglesa:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "berinjela",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Berinjela:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "beterraba",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Beterraba:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "brocolis",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Brócolis:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "cebola_amarela",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Cebola Amarela:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "cebola_roxa",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Cebola Roxa:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "cebolinha",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Cebolinha:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "cenoura_vermelha",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Cenoura Vermelha:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "chuchu",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Chuchu:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "couve",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Couve:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "couve_flor",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Couve-flor:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "gengibre",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Gengibre:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "inhame",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Inhame:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "jilo",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Jiló:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "mandioca",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Mandioca:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "pepino",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Pepino:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "pimentao_verde",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Pimentão Verde:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "quiabo",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Quiabo:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "repolho",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Repolho:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "rucula",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Rúcula:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "salsinha",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Salsinha:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "tomate_italiano",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Tomate Italiano:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "vagem",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Vagem:"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
