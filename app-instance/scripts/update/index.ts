@@ -1,3 +1,4 @@
+export { TerradataPesquisaBarbeariaUpdater } from "./terradata-pesquisa-barbearia.updater";
 export { TerradataPesquisaCarnesUpdater } from "./terradata-pesquisa-carnes.updater";
 export { TerradataPesquisaCombustiveisUpdater } from "./terradata-pesquisa-combustiveis.updater";
 export { TerradataPesquisaFrutasUpdater } from "./terradata-pesquisa-frutas.updater";

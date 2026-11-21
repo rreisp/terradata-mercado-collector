@@ -136,7 +136,8 @@ const DynamicForm = ({ schemaId, editMode, itemId, onExport, onLoad, onUpdate, o
                                 'Atenção!',
                                 'Informações enviadas com sucesso.', // <- this part is optional, you can pass an empty string
                                 [
-                                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                                    { text: 'OK', onPress: () => {} },
+                                    //{ text: 'OK', onPress: () => console.log('OK Pressed') },
                                 ],
                                 { cancelable: false },
                             );
