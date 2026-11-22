@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisReader } from "./terradata-pesquisa-combus
 export { TerradataPesquisaFrutasReader } from "./terradata-pesquisa-frutas.reader";
 export { TerradataPesquisaLegumesReader } from "./terradata-pesquisa-legumes.reader";
 export { TerradataPesquisaPadariaReader } from "./terradata-pesquisa-padaria.reader";
+export { TerradataPesquisaSalaoDeBelezaReader } from "./terradata-pesquisa-salao-de-beleza.reader";

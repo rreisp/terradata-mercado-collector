@@ -8,13 +8,13 @@ import NumericInput from "../components/widgets/numeric";
 import { useLanguage } from "@/core/contexts/LanguageContext";
 import { Checkbox } from "expo-checkbox";
 import { FieldRendererProps } from "@/core/types/field-renderer-props";
+import DateInput from "../components/widgets/date";
 import DateTimeInput from "../components/widgets/date";
 import DateRangeInput from "../components/widgets/date-range";
 import GeoPosition3D from "../components/widgets/geo-position-3d";
 
 import { constants } from "@/core/constants/constants";
 import SanitizedTextInput, { removeAccentsAndSpecialChars } from "../components/widgets/sanitized-text-input";
-import DateInput from "../components/widgets/date";
 
 const FieldRenderer: React.FC<FieldRendererProps> = ({ field, editMode, formik }) => {
     const { language } = useLanguage();

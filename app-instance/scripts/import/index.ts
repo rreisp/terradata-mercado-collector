@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisImporter } from "./terradata-pesquisa-comb
 export { TerradataPesquisaFrutasImporter } from "./terradata-pesquisa-frutas.importer"
 export { TerradataPesquisaLegumesImporter } from "./terradata-pesquisa-legumes.importer"
 export { TerradataPesquisaPadariaImporter } from "./terradata-pesquisa-padaria.importer"
+export { TerradataPesquisaSalaoDeBelezaImporter } from "./terradata-pesquisa-salao-de-beleza.importer"

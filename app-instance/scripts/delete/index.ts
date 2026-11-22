@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisRemover } from "./terradata-pesquisa-combu
 export { TerradataPesquisaFrutasRemover } from "./terradata-pesquisa-frutas.remover";
 export { TerradataPesquisaLegumesRemover } from "./terradata-pesquisa-legumes.remover";
 export { TerradataPesquisaPadariaRemover } from "./terradata-pesquisa-padaria.remover";
+export { TerradataPesquisaSalaoDeBelezaRemover } from "./terradata-pesquisa-salao-de-beleza.remover";

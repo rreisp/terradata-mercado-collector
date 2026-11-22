@@ -1,0 +1,181 @@
+{
+  "id": "mercado-salao-de-beleza",
+  "version": "1.0",
+  "return": "LIST",
+  "title": {
+    "pt-BR": "💇 SALÃO DE BELEZA"
+  },
+  "description": {
+    "pt-BR": "Preencha os campos abaixo"
+  },
+  "logo": "TerradataPesquisa-Logo.png",
+  "export": [
+    "single",
+    "all",
+    "pdf",
+    "database"
+  ],
+  "rows": [
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "estabelecimento",
+            "label": {
+              "pt-BR": "Estabelecimento:"
+            },
+            "type": "text",
+            "max": 256
+          }
+        },
+        {
+          "field": {
+            "id": "data",
+            "type": "date",
+            "label": {
+              "pt-BR": "Data:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "corte_feminino",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Corte Feminino:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "depilacao_completa",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Depilação (completa):"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "escova",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Escova:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "escova_progressiva",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Escova Progressiva:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "hidratacao",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Hidratação:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "manicure",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Manicure:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "manicure_e_pedicure",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Manicure e Pedicure:"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "field": {
+            "id": "maquiagem",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Maquiagem:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "pedicure",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Pedicure:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "reestruturacao_capilar",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Reestruturação Capilar:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "spa_das_maos",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "SPA das Mãos:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "spa_dos_pes",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "SPA dos Pés:"
+            }
+          }
+        },
+        {
+          "field": {
+            "id": "tintura",
+            "type": "currency",
+            "step": 0.01,
+            "label": {
+              "pt-BR": "Tintura:"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

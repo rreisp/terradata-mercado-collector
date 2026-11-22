@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisExtractor } from "./terradata-pesquisa-com
 export { TerradataPesquisaFrutasExtractor } from "./terradata-pesquisa-frutas.extractor";
 export { TerradataPesquisaLegumesExtractor } from "./terradata-pesquisa-legumes.extractor";
 export { TerradataPesquisaPadariaExtractor } from "./terradata-pesquisa-padaria.extractor";
+export { TerradataPesquisaSalaoDeBelezaExtractor } from "./terradata-pesquisa-salao-de-beleza.extractor";

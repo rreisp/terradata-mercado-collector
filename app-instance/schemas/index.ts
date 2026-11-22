@@ -4,6 +4,7 @@ import TerradataPesquisaCombustiveis from './terradata-pesquisa-combustiveis.jso
 import TerradataPesquisaFrutas from './terradata-pesquisa-frutas.json';
 import TerradataPesquisaLegumes from './terradata-pesquisa-legumes.json';
 import TerradataPesquisaPadaria from './terradata-pesquisa-padaria.json';
+import TerradataPesquisaSalaoDeBeleza from './terradata-pesquisa-salao-de-beleza.json';
 
 export default {
     TerradataPesquisaBarbearia,
@@ -11,5 +12,6 @@ export default {
     TerradataPesquisaCombustiveis,
     TerradataPesquisaFrutas,
     TerradataPesquisaLegumes,
-    TerradataPesquisaPadaria
+    TerradataPesquisaPadaria,
+    TerradataPesquisaSalaoDeBeleza
 };

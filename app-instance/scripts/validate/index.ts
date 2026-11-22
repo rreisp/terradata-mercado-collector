@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisValidator } from "./terradata-pesquisa-com
 export { TerradataPesquisaFrutasValidator } from "./terradata-pesquisa-frutas.validator";
 export { TerradataPesquisaLegumesValidator } from "./terradata-pesquisa-legumes.validator";
 export { TerradataPesquisaPadariaValidator } from "./terradata-pesquisa-padaria.validator";
+export { TerradataPesquisaSalaoDeBelezaValidator } from "./terradata-pesquisa-salao-de-beleza.validator";

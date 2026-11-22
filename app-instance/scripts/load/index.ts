@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisLoader } from "./terradata-pesquisa-combus
 export { TerradataPesquisaFrutasLoader } from "./terradata-pesquisa-frutas.loader";
 export { TerradataPesquisaLegumesLoader } from "./terradata-pesquisa-legumes.loader";
 export { TerradataPesquisaPadariaLoader } from "./terradata-pesquisa-padaria.loader";
+export { TerradataPesquisaSalaoDeBelezaLoader } from "./terradata-pesquisa-salao-de-beleza.loader";

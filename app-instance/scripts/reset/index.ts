@@ -4,3 +4,4 @@ export { TerradataPesquisaCombustiveisReseter } from "./terradata-pesquisa-combu
 export { TerradataPesquisaFrutasReseter } from "./terradata-pesquisa-frutas.reseter";
 export { TerradataPesquisaLegumesReseter } from "./terradata-pesquisa-legumes.reseter";
 export { TerradataPesquisaPadariaReseter } from "./terradata-pesquisa-padaria.reseter";
+export { TerradataPesquisaSalaoDeBelezaReseter } from "./terradata-pesquisa-salao-de-beleza.reseter";
